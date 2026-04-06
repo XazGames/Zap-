@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zap!</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --card: #f4f4f5;
+      --border: #e4e4e7;
+      --accent: #000000;
+      --muted: #71717a;
+    }
+    [data-theme="dark"] {
+      --bg: #0a0a0a;
+      --text: #fafafa;
+      --card: #18181b;
+      --border: #27272a;
+      --accent: #ffffff;
+      --muted: #a1a1aa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.25s ease, color 0.25s ease;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+    
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .theme-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--text);
+      padding: 6px 10px; border-radius: 99px; cursor: pointer; font-size: 16px;
+      transition: 0.2s;
+    }
+    .theme-btn:hover { opacity: 0.8; }
+
+    nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; }
+    nav button {
+      background: none; border: none; color: var(--muted); font-size: 14px; font-weight: 500;
+      padding: 8px 14px; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: 0.2s;
+    }
+    nav button.active, nav button:hover { background: var(--card); color: var(--text); font-weight: 600; }
+
+    .section { display: none; animation: fade 0.2s ease; }
+    .section.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Feed */
+    .post {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px; margin-bottom: 12px;
+    }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border); }
+    .post-meta { font-size: 13px; color: var(--muted); }
+    .post-text { margin-bottom: 10px; }
+    .post-actions { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
+    .post-actions span { cursor: pointer; }
+    .post-actions span:hover { color: var(--text); }
+
+    /* Grids (Friends, Chats, Games) */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; text-align: center; cursor: pointer; transition: 0.15s;
+    }
+    .card:hover { transform: translateY(-2px); border-color: var(--text); }
+    .card-icon { font-size: 24px; margin-bottom: 6px; }
+    .card-title { font-weight: 600; margin-bottom: 4px; }
+    .card-sub { font-size: 12px; color: var(--muted); }
+
+    /* Profile */
+    .profile { text-align: center; padding: 20px 0; }
+    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--border); margin: 0 auto 12px; }
+    .profile h2 { margin-bottom: 4px; }
+    .profile p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .stats { display: flex; justify-content: center; gap: 24px; font-size: 14px; }
+    .stats div { text-align: center; }
+    .stats strong { display: block; font-size: 18px; }
+
+    @media (max-width: 500px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      nav button { padding: 6px 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Zap!</div>
+      <button class="theme-btn" onclick="toggleTheme()" title="Сменить тему">◑</button>
+    </header>
+
+    <nav>
+      <button class="active" onclick="show('feed', this)">Лента</button>
+      <button onclick="show('friends', this)">Друзья</button>
+      <button onclick="show('chats', this)">Чаты</button>
+      <button onclick="show('games', this)">Игры</button>
+      <button onclick="show('profile', this)">Профиль</button>
+    </nav>
+
+    <!-- ЛЕНТА -->
+    <div id="feed" class="section active">
+      <div class="post">
+        <div class="post-header"><div class="avatar"></div><div class="post-meta">Новки • 2ч назад</div></div>
+        <div class="post-text">Запустил новую мини-игру на Zap! 🐍 Змейка уже ждёт противников. Кто готов?</div>
+        <div class="post-actions"><span>❤️ 24</span><span>💬 3</span><span>↗️ Поделиться</span></div>
+      </div>
+      <div class="post">
+        <div class="post-header"><div class="avatar"></div><div class="post-meta">Дизайн-блог • 5ч назад</div></div>
+        <div class="post-text">Минимализм в вебе — это не пустота. Это пространство для контента. Как вам новая тема Zap? ⚫⚪</div>
+        <div class="post-actions"><span>❤️ 89</span><span>💬 12</span><span>↗️ Поделиться</span></div>
+      </div>
+    </div>
+
+    <!-- ДРУЗЬЯ -->
+    <div id="friends" class="section">
+      <div class="grid">
+        <div class="card"><div class="card-icon">👤</div><div class="card-title">Алексей</div><div class="card-sub">Онлайн</div></div>
+        <div class="card"><div class="card-icon">👤</div><div class="card-title">Мария</div><div class="card-sub">Был(а) 5м назад</div></div>
+        <div class="card"><div class="card-icon">👤</div><div class="card-title">Дима</div><div class="card-sub">Онлайн</div></div>
+        <div class="card"><div class="card-icon">👤</div><div class="card-title">Катя</div><div class="card-sub">Был(а) 2ч назад</div></div>
+      </div>
+    </div>
+
+    <!-- ЧАТЫ -->
+    <div id="chats" class="section">
+      <div class="grid">
+        <div class="card"><div class="card-icon">💬</div><div class="card-title">Алексей</div><div class="card-sub">Привет, заходи в змейку!</div></div>
+        <div class="card"><div class="card-icon">💬</div><div class="card-title">Мария</div><div class="card-sub">Кто на ракету?</div></div>
+        <div class="card"><div class="card-icon">👥</div><div class="card-title">Групповой чат</div><div class="card-sub">Дима: Го турнир</div></div>
+      </div>
+    </div>
+
+    <!-- ИГРЫ -->
+    <div id="games" class="section">
+      <div class="grid">
+        <div class="card"><div class="card-icon">🐍</div><div class="card-title">Змейка</div><div class="card-sub">2–3 игрока</div></div>
+        <div class="card"><div class="card-icon">🚀</div><div class="card-title">Ракета</div><div class="card-sub">Уклонение</div></div>
+        <div class="card"><div class="card-icon">🏓</div><div class="card-title">Пинг-Понг</div><div class="card-sub">Классика</div></div>
+        <div class="card"><div class="card-icon">🔥</div><div class="card-title">Картошка</div><div class="card-sub">На реакцию</div></div>
+      </div>
+    </div>
+
+    <!-- ПРОФИЛЬ -->
+    <div id="profile" class="section">
+      <div class="profile">
+        <div class="profile-avatar"></div>
+        <h2>Ваш Ник</h2>
+        <p>Уровень 12 • 🏆 3 победы</p>
+        <div class="stats">
+          <div><strong>24</strong>друзей</div>
+          <div><strong>142</strong>игр</div>
+          <div><strong>8ч</strong>в игре</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function show(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+  </script>
+</body>
+</html>
