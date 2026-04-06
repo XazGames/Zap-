@@ -3,370 +3,695 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Zap! — Минималистичная платформа для игр, чатов и друзей.">
   <title>Zap!</title>
   <style>
-    :root { --bg:#fff; --text:#000; --card:#f4f4f5; --border:#e4e4e7; --accent:#000; --muted:#71717a; }
-    [data-theme="dark"] { --bg:#0a0a0a; --text:#fafafa; --card:#18181b; --border:#27272a; --accent:#fff; --muted:#a1a1aa; }
-    *{box-sizing:border-box;margin:0;padding:0} body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:.2s}
-    .container{max-width:720px;margin:0 auto;padding:16px}
-    header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:12px}
-    .logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
-    .btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:13px;transition:.15s}
-    .btn:hover,.btn.active{background:var(--accent);color:var(--bg)}
-    nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px}
-    nav button{background:none;border:none;color:var(--muted);font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
-    nav button.active{background:var(--card);color:var(--text);font-weight:600}
-    section{display:none;animation:fade .2s ease} section.active{display:block}
-    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    .post{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px}
-    .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--muted)}
-    .avatar{width:24px;height:24px;border-radius:50%;background:var(--border)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:.15s}
-    .card:hover{transform:translateY(-2px);border-color:var(--text)}
-    .card-icon{font-size:20px;margin-bottom:4px} .card-title{font-weight:600;font-size:14px} .card-sub{font-size:11px;color:var(--muted)}
-    .auth-box{max-width:300px;margin:15vh auto;text-align:center}
-    input{width:100%;padding:8px 10px;margin:6px 0;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)}
-    .profile{text-align:center;padding:16px 0} .profile h2{margin-bottom:4px} .profile p{color:var(--muted);font-size:13px}
-    .stats{display:flex;justify-content:center;gap:20px;font-size:13px;margin-top:12px} .stats div strong{display:block;font-size:16px}
-    #game-modal{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100}
-    #game-modal.active{display:flex}
-    #game-canvas{background:#111;border:1px solid var(--border);border-radius:8px;max-width:95vw;max-height:60vh;touch-action:none}
-    .game-ui{margin-top:8px;text-align:center}
-    .controls{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;justify-content:center}
-    .ctrl-btn{padding:10px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer}
-    .close-btn{position:absolute;top:12px;right:12px;font-size:20px;background:none;border:none;cursor:pointer;color:var(--text)}
-    .hidden{display:none!important}
-    @media(max-width:500px){.grid{grid-template-columns:repeat(2,1fr)} nav button{padding:5px 8px;font-size:12px}}
+    :root {
+      --bg: #f8f9fa; --bg-alt: #ffffff; --text: #111827; --text-muted: #6b7280;
+      --card: #ffffff; --card-border: #e5e7eb; --accent: #2563eb; --accent-glow: rgba(37,99,235,0.2);
+      --radius: 16px; --shadow: 0 4px 20px rgba(0,0,0,0.08); --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="dark"] {
+      --bg: #0b0f19; --bg-alt: #111827; --text: #f3f4f6; --text-muted: #9ca3af;
+      --card: #1f2937; --card-border: #374151; --accent: #60a5fa; --accent-glow: rgba(96,165,250,0.2);
+      --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+    /* ===== THEME TOGGLE ICONS ===== */
+    .theme-icon { width: 24px; height: 24px; position: relative; display: inline-block; }
+    .theme-icon::before, .theme-icon::after { content: ''; position: absolute; transition: var(--transition); }
+    .sun { --icon-size: 20px; }
+    .sun::before { width: var(--icon-size); height: var(--icon-size); background: #fbbf24; border-radius: 50%; top: 2px; left: 2px; box-shadow: 0 0 8px #fbbf24; }
+    .sun::after { width: 24px; height: 24px; border: 2px solid #fbbf24; border-radius: 50%; top: 0; left: 0; opacity: 0; transform: rotate(-90deg); }
+    .moon { --icon-size: 20px; }
+    .moon::before { width: var(--icon-size); height: var(--icon-size); background: #e2e8f0; border-radius: 50%; top: 2px; left: 4px; }
+    .moon::after { content: ''; position: absolute; width: 20px; height: 20px; background: var(--bg); border-radius: 50%; top: 4px; left: 10px; opacity: 0; transition: var(--transition); }
+    [data-theme="light"] .sun::after { opacity: 1; }
+    [data-theme="dark"] .moon::after { opacity: 1; transform: translateX(-6px); }
+
+    /* ===== AUTH MODAL ===== */
+    #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 900; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .auth-box { background: var(--card); border: 1px solid var(--card-border); padding: 32px; border-radius: var(--radius); width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow); animation: slideUp 0.4s ease; }
+    .auth-title { font-size: 28px; font-weight: 800; margin-bottom: 24px; letter-spacing: -0.5px; }
+    .avatar-picker { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px; }
+    .avatar-opt { width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 20px; background: var(--bg-alt); }
+    .avatar-opt.selected { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 0 0 3px var(--accent-glow); }
+    input[type="text"] { width: 100%; padding: 12px 16px; margin-bottom: 12px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text); font-size: 15px; transition: 0.2s; }
+    input:focus { border-color: var(--accent); }
+    .btn { background: var(--accent); color: #fff; border: none; padding: 12px 20px; border-radius: 99px; font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; font-size: 15px; }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ===== LAYOUT ===== */
+    #app { display: none; opacity: 0; transition: opacity 0.4s ease; }
+    #app.visible { display: flex; opacity: 1; }
+    .sidebar { width: 76px; background: var(--bg-alt); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 14px; z-index: 50; position: sticky; top: 0; height: 100vh; }
+    .nav-btn { width: 56px; height: 38px; border-radius: 19px; background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); position: relative; overflow: hidden; }
+    .nav-btn:hover { background: var(--bg); transform: scale(1.05); }
+    .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 12px var(--accent-glow); }
+    .nav-btn .tooltip { position: absolute; left: 70px; background: var(--card); padding: 6px 10px; border-radius: 6px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: 0.2s; border: 1px solid var(--card-border); box-shadow: var(--shadow); transform: translateX(8px); }
+    .nav-btn:hover .tooltip { opacity: 1; transform: translateX(0); }
+
+    .main { flex: 1; padding: 24px 32px; max-width: 860px; margin: 0 auto; width: 100%; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
+    .logo { font-size: 24px; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; gap: 8px; }
+    .logout-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.2s; padding: 6px; border-radius: 50%; }
+    .logout-btn:hover { background: var(--bg-alt); color: #ef4444; }
+
+    /* ===== SECTIONS ===== */
+    .section { display: none; animation: fadeIn 0.3s ease; }
+    .section.active { display: block; }
+    .card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: var(--transition); }
+    .card:hover { transform: translateY(-2px); }
+
+    /* ===== FRIENDS & PROFILES ===== */
+    .friend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .friend-card { text-align: center; cursor: pointer; }
+    .friend-avatar { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: var(--bg-alt); border: 2px solid var(--card-border); }
+    .friend-name { font-weight: 600; margin-bottom: 2px; }
+    .friend-status { font-size: 12px; color: var(--text-muted); }
+
+    .profile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 800; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .profile-modal { background: var(--card); border-radius: var(--radius); width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; position: relative; }
+    .profile-header { position: relative; height: 120px; border-radius: var(--radius) var(--radius) 0 0; background-size: cover; background-position: center; }
+    .profile-close { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.5); border: none; color: #fff; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; }
+    .profile-body { padding: 0 20px 20px; }
+    .profile-info { margin-top: -40px; display: flex; align-items: flex-end; gap: 14px; margin-bottom: 16px; }
+    .profile-pic { width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--card); display: flex; align-items: center; justify-content: center; font-size: 32px; background: var(--bg-alt); }
+    .wall-input { width: 100%; padding: 10px; margin-top: 12px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--bg); color: var(--text); resize: vertical; min-height: 60px; }
+    .wall-post { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 14px; line-height: 1.4; }
+
+    /* ===== CHAT ===== */
+    .chat-container { display: flex; flex-direction: column; height: 70vh; border: 1px solid var(--card-border); border-radius: var(--radius); background: var(--card); overflow: hidden; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .msg { max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: popIn 0.2s ease; }
+    .msg.self { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+    .msg.other { align-self: flex-start; background: var(--bg-alt); border: 1px solid var(--card-border); border-bottom-left-radius: 4px; }
+    .msg-meta { font-size: 11px; opacity: 0.7; margin-top: 4px; text-align: right; }
+    .chat-input-row { display: flex; padding: 12px; background: var(--bg); border-top: 1px solid var(--card-border); gap: 8px; }
+    .typing-indicator { font-size: 12px; color: var(--text-muted); padding: 0 12px 4px; display: none; }
+    .typing-indicator span { animation: blink 1.4s infinite both; }
+
+    /* ===== CALLS ===== */
+    .call-ui { background: var(--bg-alt); border-radius: var(--radius); overflow: hidden; margin-top: 16px; }
+    .call-video { position: relative; width: 100%; height: 300px; background: #000; display: flex; align-items: center; justify-content: center; }
+    .call-video video { width: 100%; height: 100%; object-fit: cover; }
+    .call-self { position: absolute; bottom: 16px; right: 16px; width: 120px; height: 90px; border-radius: 10px; overflow: hidden; border: 2px solid var(--accent); box-shadow: var(--shadow); }
+    .call-controls { display: flex; justify-content: center; gap: 16px; padding: 16px; background: var(--card); border-top: 1px solid var(--card-border); }
+    .call-btn { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--card-border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: 0.2s; }
+    .call-btn:hover { background: var(--bg-alt); }
+    .call-btn.danger { background: #ef4444; border-color: #ef4444; color: #fff; }
+
+    /* ===== CANVAS PAINTER ===== */
+    .painter { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+    .painter-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+    .color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+    .color-btn.active { border-color: var(--text); transform: scale(1.1); }
+    #paint-canvas { width: 100%; height: 120px; background: var(--bg); border-radius: 10px; cursor: crosshair; touch-action: none; }
+
+    /* ===== GAMES ===== */
+    .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .game-card { padding: 16px; text-align: center; cursor: pointer; background: var(--bg-alt); border-radius: 12px; border: 1px solid var(--card-border); transition: var(--transition); }
+    .game-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .game-modal { position: fixed; inset: 0; background: var(--bg); z-index: 850; display: none; flex-direction: column; align-items: center; }
+    .game-canvas-wrap { position: relative; width: 100%; max-width: 600px; flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    #game-canvas { background: #0a0a0a; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); max-width: 100%; max-height: 80vh; touch-action: none; }
+    .game-ui { width: 100%; max-width: 600px; padding: 16px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-top: 1px solid var(--card-border); }
+    .game-btn { background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+    .close-game { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 8px; }
+
+    /* ===== NOTIFICATIONS ===== */
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { background: var(--card); border: 1px solid var(--card-border); padding: 14px 18px; border-radius: 12px; box-shadow: var(--shadow); display: flex; align-items: flex-start; gap: 10px; max-width: 320px; animation: slideInRight 0.35s cubic-bezier(0.16,1,0.3,1) forwards; pointer-events: auto; }
+    .toast-icon { font-size: 20px; margin-top: 2px; }
+    .toast-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .toast-content p { font-size: 13px; color: var(--text-muted); margin: 0; }
+    .toast-progress { height: 3px; background: var(--accent-glow); width: 100%; border-radius: 2px; overflow: hidden; margin-top: 8px; }
+    .toast-bar { height: 100%; background: var(--accent); width: 0%; animation: progress 4s linear forwards; }
+
+    /* ===== SETTINGS ===== */
+    .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--card-border); }
+    .slider { flex: 1; margin: 0 12px; accent-color: var(--accent); }
+
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes slideInRight { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+    @keyframes popIn { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
+    @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+    @keyframes progress { from{width:100%} to{width:0%} }
   </style>
 </head>
 <body>
   <!-- AUTH -->
-  <div id="auth-screen" class="container auth-box">
-    <h1 class="logo" style="margin-bottom:16px">Zap!</h1>
-    <input type="text" id="username" placeholder="Никнейм" maxlength="12">
-    <input type="color" id="avatar-color" value="#888" style="height:36px;padding:2px;cursor:pointer">
-    <button class="btn" style="width:100%;margin-top:8px;padding:10px" onclick="Auth.login()">Войти</button>
-    <p style="font-size:11px;color:var(--muted);margin-top:10px">Данные сохраняются локально в браузере</p>
-  </div>
-
-  <!-- APP -->
-  <div id="app" class="container hidden">
-    <header>
-      <div class="logo">Zap!</div>
-      <button class="btn" onclick="App.toggleTheme()">◑ Тема</button>
-    </header>
-    <nav>
-      <button class="active" onclick="App.nav('feed')">Лента</button>
-      <button onclick="App.nav('friends')">Друзья</button>
-      <button onclick="App.nav('chats')">Чаты</button>
-      <button onclick="App.nav('games')">Игры</button>
-      <button onclick="App.nav('profile')">Профиль</button>
-    </nav>
-
-    <section id="feed" class="active">
-      <div class="post"><div class="post-header"><div class="avatar"></div>Новки • 2ч</div>Запустил Zap! 🐍 Змейка уже ждёт. Кто готов?</div>
-      <div class="post"><div class="post-header"><div class="avatar"></div>Дизайн-блог • 5ч</div>Минимализм — это пространство для контента. Как вам тема? ⚫⚪</div>
-    </section>
-
-    <section id="friends"><div class="grid" id="friends-list"></div></section>
-    <section id="chats"><div class="grid" id="chats-list"></div></section>
-
-    <section id="games">
-      <div class="grid" id="games-list"></div>
-    </section>
-
-    <section id="profile" class="profile">
-      <div id="profile-avatar" class="avatar" style="width:64px;height:64px;margin:0 auto 10px"></div>
-      <h2 id="profile-name">Гость</h2>
-      <p id="profile-joined">Участник с сегодня</p>
-      <div class="stats">
-        <div><strong id="stat-wins">0</strong>побед</div>
-        <div><strong id="stat-games">0</strong>игр</div>
-        <div><strong id="stat-hours">0ч</strong>в игре</div>
-      </div>
-      <button class="btn" style="margin-top:16px" onclick="App.editProfile()">Редактировать профиль</button>
-      <button class="btn" style="margin-top:8px;background:var(--bg);border:1px solid var(--muted);color:var(--muted)" onclick="Auth.logout()">Выйти</button>
-    </section>
-  </div>
-
-  <!-- GAME MODAL -->
-  <div id="game-modal">
-    <button class="close-btn" onclick="Game.close()">✕</button>
-    <canvas id="game-canvas" width="400" height="400"></canvas>
-    <div class="game-ui">
-      <div id="game-score" style="font-weight:700;margin-bottom:4px">Счёт: 0</div>
-      <div id="game-status" style="font-size:12px;color:var(--muted)">Нажмите Старт</div>
-      <div class="controls" id="game-controls"></div>
-      <button class="btn" style="margin-top:8px" onclick="Game.start()">▶ Старт</button>
+  <div id="auth-overlay">
+    <div class="auth-box">
+      <div class="auth-title">Zap!</div>
+      <div style="color:var(--text-muted);margin-bottom:16px;font-size:14px">Выбери постоянный аватар и никнейм</div>
+      <div class="avatar-picker" id="avatar-picker"></div>
+      <input type="text" id="auth-name" placeholder="Твой никнейм" maxlength="14">
+      <button class="btn" id="auth-btn" disabled>Войти в систему</button>
     </div>
   </div>
 
+  <!-- APP -->
+  <div id="app">
+    <aside class="sidebar">
+      <button class="nav-btn active" data-target="feed"><span class="theme-icon sun"></span><div class="tooltip">Лента</div></button>
+      <button class="nav-btn" data-target="friends"><span style="font-size:18px">👥</span><div class="tooltip">Друзья</div></button>
+      <button class="nav-btn" data-target="chats"><span style="font-size:18px">💬</span><div class="tooltip">Чаты</div></button>
+      <button class="nav-btn" data-target="games"><span style="font-size:18px">🎮</span><div class="tooltip">Игры</div></button>
+      <button class="nav-btn" data-target="profile"><span style="font-size:18px">👤</span><div class="tooltip">Профиль</div></button>
+      <button class="nav-btn" data-target="settings"><span style="font-size:18px">⚙️</span><div class="tooltip">Настройки</div></button>
+    </aside>
+
+    <main class="main">
+      <header class="header">
+        <div class="logo">Zap!</div>
+        <button class="logout-btn" title="Выйти" id="logout-btn">🚪</button>
+      </header>
+
+      <section id="feed" class="section active">
+        <div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:50%;background:#f472b6;display:flex;align-items:center;justify-content:center">✨</div><strong>Добро пожаловать в Zap!</strong></div><p>Минималистичная платформа с играми, чатами и голосовой связью. Нажми на левое меню, чтобы исследовать.</p></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:50%;background:#60a5fa;display:flex;align-items:center;justify-content:center">📢</div><strong>Обновление системы</strong></div><p>Добавлены: рисование фона профиля, плавные анимации, синтезированные звуки и кросс-таб чат.</p></div>
+      </section>
+
+      <section id="friends" class="section">
+        <div class="friend-grid" id="friends-list"></div>
+      </section>
+
+      <section id="chats" class="section">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px" id="chat-tabs"></div>
+        <div class="chat-container">
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="typing-indicator" id="typing-ind">Печатает<span>.</span><span>.</span><span>.</span></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Написать сообщение..." style="flex:1;margin:0;border-radius:20px;padding:8px 14px">
+            <button class="btn" id="chat-send" style="width:auto;padding:8px 16px;border-radius:20px">➤</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="games" class="section">
+        <div class="game-grid">
+          <div class="game-card" data-game="snake">🐍<br>Змейка</div>
+          <div class="game-card" data-game="rocket">🚀<br>Ракета</div>
+          <div class="game-card" data-game="pong">🏓<br>Пинг-Понг</div>
+          <div class="game-card" data-game="potato">🔥<br>Картошка</div>
+          <div class="game-card" data-game="reflex">⚡<br>Рефлекс</div>
+        </div>
+      </section>
+
+      <section id="profile" class="section">
+        <div class="card" style="padding:20px">
+          <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px">
+            <div id="my-avatar" style="width:64px;height:64px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-size:32px;border:2px solid var(--card-border)"></div>
+            <div><h2 id="my-name" style="margin-bottom:4px"></h2><span style="font-size:12px;color:var(--text-muted)">Нажми на друзей, чтобы увидеть их профиль</span></div>
+          </div>
+          <div class="painter">
+            <div class="painter-tools" id="color-palette"></div>
+            <canvas id="paint-canvas"></canvas>
+            <button class="btn" id="save-bg" style="width:auto;padding:8px 14px;font-size:13px">Сохранить фон профиля</button>
+          </div>
+          <div id="my-wall" style="margin-top:12px;max-height:200px;overflow-y:auto"></div>
+        </div>
+      </section>
+
+      <section id="settings" class="section">
+        <div class="card">
+          <h3 style="margin-bottom:16px">Настройки</h3>
+          <div class="settings-row">
+            <span>Тема оформления</span>
+            <button class="btn" id="theme-toggle" style="width:auto;padding:8px 12px;font-size:13px">Переключить</button>
+          </div>
+          <div class="settings-row">
+            <span>Громкость интерфейса</span>
+            <input type="range" class="slider" id="vol-slider" min="0" max="100" value="30">
+          </div>
+          <div class="settings-row">
+            <span>Громкость уведомлений</span>
+            <input type="range" class="slider" id="vol-notify" min="0" max="100" value="50">
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- PROFILE OVERLAY -->
+  <div class="profile-overlay" id="profile-overlay">
+    <div class="profile-modal">
+      <div class="profile-header" id="p-header"></div>
+      <button class="profile-close" id="p-close">✕</button>
+      <div class="profile-body">
+        <div class="profile-info">
+          <div class="profile-pic" id="p-pic"></div>
+          <div><h2 id="p-name"></h2><span style="font-size:12px;color:var(--text-muted)">В сети • Уровень <span id="p-lvl">1</span></span></div>
+        </div>
+        <div id="p-wall"></div>
+        <textarea class="wall-input" id="wall-input" placeholder="Написать на стену..."></textarea>
+        <button class="btn" id="wall-post-btn" style="width:auto;margin-top:8px;padding:8px 14px;font-size:13px">Опубликовать</button>
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="p-chat-btn" style="flex:1;padding:10px">💬 Открыть чат</button>
+          <button class="btn" id="p-call-btn" style="flex:1;padding:10px;background:var(--text-muted)">📞 Позвонить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALL UI -->
+  <div class="call-ui" id="call-ui" style="display:none;margin-top:16px">
+    <div class="call-video">
+      <video id="call-remote" autoplay playsinline muted></video>
+      <div class="call-self"><video id="call-self" autoplay playsinline muted></video></div>
+      <div id="call-placeholder" style="color:#fff;font-size:14px">Ожидание подключения...</div>
+    </div>
+    <div class="call-controls">
+      <button class="call-btn" id="call-mic">🎙️</button>
+      <button class="call-btn" id="call-cam">📷</button>
+      <button class="call-btn" id="call-screen">🖥️</button>
+      <button class="call-btn danger" id="call-end">📞</button>
+    </div>
+  </div>
+
+  <!-- GAME MODAL -->
+  <div class="game-modal" id="game-modal">
+    <button class="close-game" id="close-game">✕</button>
+    <div class="game-canvas-wrap"><canvas id="game-canvas" width="600" height="400"></canvas></div>
+    <div class="game-ui">
+      <div><span id="g-score" style="font-weight:700">0</span> очков</div>
+      <div style="display:flex;gap:8px">
+        <button class="game-btn" id="g-start">▶ Старт</button>
+        <button class="game-btn" id="g-pause" style="background:var(--bg);color:var(--text);border:1px solid var(--card-border)">⏸ Пауза</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div id="toast-container"></div>
+
   <script>
-    // ========== AUTH & PROFILE ==========
-    const Auth = {
-      data: JSON.parse(localStorage.getItem('zap_user')) || null,
-      login() {
-        const name = document.getElementById('username').value.trim() || 'Игрок' + Math.floor(Math.random()*99);
-        const color = document.getElementById('avatar-color').value;
-        Auth.data = { name, color, joined: new Date().toLocaleDateString(), wins: 0, games: 0, hours: 0 };
-        localStorage.setItem('zap_user', JSON.stringify(Auth.data));
-        App.init();
+    // ===== CORE STATE & STORAGE =====
+    const DB = {
+      get: k => JSON.parse(localStorage.getItem(`zap_${k}`) || 'null'),
+      set: (k, v) => localStorage.setItem(`zap_${k}`, JSON.stringify(v)),
+      users: JSON.parse(localStorage.getItem('zap_users') || '{}'),
+      chats: JSON.parse(localStorage.getItem('zap_chats') || '{}'),
+      walls: JSON.parse(localStorage.getItem('zap_walls') || '{}')
+    };
+    let currentUser = null;
+    let activeChat = 'system';
+    let isCallActive = false;
+    let localStream = null, displayStream = null;
+
+    // ===== SOUND ENGINE (Web Audio API) =====
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx, uiGain, notifyGain;
+    const Sound = {
+      init() {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        uiGain = audioCtx.createGain(); uiGain.gain.value = (DB.get('vol_ui') || 30) / 100; uiGain.connect(audioCtx.destination);
+        notifyGain = audioCtx.createGain(); notifyGain.gain.value = (DB.get('vol_notify') || 50) / 100; notifyGain.connect(audioCtx.destination);
       },
-      logout() {
-        localStorage.removeItem('zap_user'); location.reload();
+      play(type, gain = uiGain) {
+        if (!audioCtx) this.init();
+        const osc = audioCtx.createOscillator();
+        const env = audioCtx.createGain();
+        osc.connect(env); env.connect(gain);
+        const now = audioCtx.currentTime;
+        if (type === 'click') { osc.frequency.setValueAtTime(800, now); osc.type='triangle'; env.gain.setValueAtTime(0.2, now); env.gain.exponentialRampToValueAtTime(0.01, now+0.05); }
+        else if (type === 'notify') { osc.frequency.setValueAtTime(520, now); osc.type='sine'; env.gain.setValueAtTime(0.3, now); osc.frequency.exponentialRampToValueAtTime(650, now+0.1); env.gain.exponentialRampToValueAtTime(0.01, now+0.25); }
+        else if (type === 'game') { osc.frequency.setValueAtTime(400, now); osc.type='square'; env.gain.setValueAtTime(0.15, now); osc.frequency.exponentialRampToValueAtTime(600, now+0.1); env.gain.exponentialRampToValueAtTime(0.01, now+0.15); }
+        osc.start(now); osc.stop(now + 0.2);
       },
-      save() { localStorage.setItem('zap_user', JSON.stringify(Auth.data)); }
+      setVol(type, val) {
+        const target = type === 'ui' ? uiGain : notifyGain;
+        target.gain.setTargetAtTime(val/100, audioCtx.currentTime, 0.1);
+      }
     };
 
-    // ========== APP ==========
-    const App = {
+    // ===== AUTH & REGISTRATION =====
+    const Auth = {
+      avatars: ['🦊','🐼','🦉','🐸','🦄','🐉','🦋','🐢','🐙','🦖','🐺','🦈'],
       init() {
-        if (!Auth.data) return;
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        this.renderProfile();
-        this.renderFriends();
-        this.renderChats();
-        this.renderGames();
-        const theme = localStorage.getItem('zap_theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
+        const picker = document.getElementById('avatar-picker');
+        this.avatars.forEach((a,i) => {
+          const el = document.createElement('div'); el.className='avatar-opt'; el.dataset.idx=i; el.textContent=a;
+          el.onclick = () => { document.querySelectorAll('.avatar-opt').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); this.selected=i; Sound.play('click'); };
+          picker.appendChild(el);
+        });
+        document.getElementById('auth-name').oninput = e => document.getElementById('auth-btn').disabled = !(e.target.value.trim().length > 1 && this.selected!==undefined);
+        document.getElementById('auth-btn').onclick = () => this.register();
+        if (DB.get('user')) this.login();
       },
-      nav(id) {
-        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-        document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelector(`nav button:nth-child(${['feed','friends','chats','games','profile'].indexOf(id)+1})`).classList.add('active');
+      register() {
+        const name = document.getElementById('auth-name').value.trim();
+        const id = 'u_' + Date.now().toString(36);
+        const user = { id, name, avatar: this.avatars[this.selected], bg: null, lvl: 1, joined: Date.now() };
+        DB.users[id] = user; localStorage.setItem('zap_users', JSON.stringify(DB.users));
+        DB.set('user', user);
+        Sound.play('click');
+        document.getElementById('auth-overlay').style.opacity='0'; setTimeout(()=>{ document.getElementById('auth-overlay').style.display='none'; App.show(); }, 300);
       },
-      toggleTheme() {
-        const cur = document.documentElement.getAttribute('data-theme');
-        const next = cur === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('zap_theme', next);
+      login() {
+        currentUser = DB.get('user');
+        document.getElementById('auth-overlay').style.display='none';
+        App.show();
+      },
+      logout() { Sound.play('click'); currentUser=null; location.reload(); }
+    };
+
+    // ===== APP CONTROLLER =====
+    const App = {
+      show() {
+        document.getElementById('app').classList.add('visible');
+        this.renderProfile(); this.renderFriends(); this.setupChat(); this.setupPainter(); this.setupSettings();
+        this.setupNav(); this.setupCalls();
+        this.notify('Добро пожаловать, ' + currentUser.name + '!', 'Вы успешно вошли в систему');
       },
       renderProfile() {
-        document.getElementById('profile-name').textContent = Auth.data.name;
-        document.getElementById('profile-avatar').style.background = Auth.data.color;
-        document.getElementById('profile-joined').textContent = 'Участник с ' + Auth.data.joined;
-        document.getElementById('stat-wins').textContent = Auth.data.wins;
-        document.getElementById('stat-games').textContent = Auth.data.games;
-        document.getElementById('stat-hours').textContent = Auth.data.hours + 'ч';
+        document.getElementById('my-name').textContent = currentUser.name;
+        document.getElementById('my-avatar').textContent = currentUser.avatar;
+        if(currentUser.bg) document.querySelector('#profile .card').style.backgroundImage = `url(${currentUser.bg})`;
+        this.renderWall('my-wall', currentUser.id);
       },
-      editProfile() {
-        const newName = prompt('Новый никнейм:', Auth.data.name);
-        if (newName) { Auth.data.name = newName; Auth.save(); this.renderProfile(); }
-      },
-      renderFriends() {
-        const list = document.getElementById('friends-list');
-        list.innerHTML = ['Алексей','Мария','Дима','Катя','Иван'].map((n,i)=>`<div class="card"><div class="card-icon">👤</div><div class="card-title">${n}</div><div class="card-sub">${i%2?'Онлайн':'Был(а) недавно'}</div></div>`).join('');
-      },
-      renderChats() {
-        document.getElementById('chats-list').innerHTML = `
-          <div class="card"><div class="card-icon">💬</div><div class="card-title">Алексей</div><div class="card-sub">Го змейку?</div></div>
-          <div class="card"><div class="card-icon">👥</div><div class="card-title">Команда</div><div class="card-sub">Мария: Я за ракету</div></div>
-        `;
-      },
-      renderGames() {
-        const games = [
-          {id:'snake', icon:'🐍', name:'Змейка', sub:'1P/2P/3P'},
-          {id:'rocket', icon:'🚀', name:'Ракета', sub:'Уклонение'},
-          {id:'pong', icon:'🏓', name:'Пинг-Понг', sub:'Классика'},
-          {id:'potato', icon:'🔥', name:'Картошка', sub:'На реакцию'},
-          {id:'reflex', icon:'⚡', name:'Рефлекс', sub:'Скорость'}
-        ];
-        document.getElementById('games-list').innerHTML = games.map(g=>`<div class="card" onclick="Game.open('${g.id}')"><div class="card-icon">${g.icon}</div><div class="card-title">${g.name}</div><div class="card-sub">${g.sub}</div></div>`).join('');
-      }
-    };
-
-    // ========== GAME ENGINE ==========
-    const Game = {
-      active: null, canvas: document.getElementById('game-canvas'), ctx: null,
-      loopId: null, players: 1, score: 0, running: false,
-      state: {}, input: {},
-      open(id) {
-        this.active = id;
-        document.getElementById('game-modal').classList.add('active');
-        this.ctx = this.canvas.getContext('2d');
-        document.getElementById('game-score').textContent = 'Счёт: 0';
-        document.getElementById('game-status').textContent = 'Выберите режим';
-        this.showControls(id);
-      },
-      close() {
-        document.getElementById('game-modal').classList.remove('active');
-        this.stop();
-      },
-      showControls(id) {
-        const c = document.getElementById('game-controls');
-        c.innerHTML = `
-          <button class="ctrl-btn" onclick="Game.setMode(1)">1 Игрок</button>
-          <button class="ctrl-btn" onclick="Game.setMode(2)">2 Игрока</button>
-          <button class="ctrl-btn" onclick="Game.setMode(3)">3 Игрока</button>
-        `;
-      },
-      setMode(n) {
-        this.players = n;
-        document.getElementById('game-status').textContent = `Режим: ${n} игрок(а). Нажмите Старт.`;
-      },
-      start() {
-        if (!this.active) return;
-        this.stop(); this.running = true; this.score = 0; this.state = {};
-        document.getElementById('game-status').textContent = 'Игра началась!';
-        switch(this.active) {
-          case 'snake': this.initSnake(); break;
-          case 'rocket': this.initRocket(); break;
-          case 'pong': this.initPong(); break;
-          case 'potato': this.initPotato(); break;
-          case 'reflex': this.initReflex(); break;
-        }
-        this.loop();
-      },
-      stop() {
-        this.running = false; cancelAnimationFrame(this.loopId);
-      },
-      loop() {
-        if (!this.running) return;
-        this.update(); this.draw();
-        document.getElementById('game-score').textContent = `Счёт: ${this.score}`;
-        this.loopId = requestAnimationFrame(() => this.loop());
-      },
-      update() { this.active === 'snake' ? this.updateSnake() : this.active === 'rocket' ? this.updateRocket() : this.active === 'pong' ? this.updatePong() : this.active === 'potato' ? this.updatePotato() : this.updateReflex(); },
-      draw() { this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg'); this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height); this.active === 'snake' ? this.drawSnake() : this.active === 'rocket' ? this.drawRocket() : this.active === 'pong' ? this.drawPong() : this.active === 'potato' ? this.drawPotato() : this.drawReflex(); },
-      
-      // ===== SNAKE =====
-      initSnake() {
-        this.state.snakes = [];
-        const colors = ['#0f0','#f0f','#0ff'];
-        for(let i=0;i<this.players;i++) this.state.snakes.push({x:10+i*5, y:10, dir:{x:1,y:0}, body:[{x:10+i*5,y:10}], color:colors[i]});
-        this.state.food = {x:15, y:15}; this.state.keys = {};
-      },
-      updateSnake() {
-        const {snakes, keys, food} = this.state;
-        if(keys['a'] && snakes[0].dir.x===0) snakes[0].dir={x:-1,y:0};
-        if(keys['d'] && snakes[0].dir.x===0) snakes[0].dir={x:1,y:0};
-        if(keys['w'] && snakes[0].dir.y===0) snakes[0].dir={x:0,y:-1};
-        if(keys['s'] && snakes[0].dir.y===0) snakes[0].dir={x:0,y:1};
-        if(this.players>1){
-          if(keys['arrowleft'] && snakes[1].dir.x===0) snakes[1].dir={x:-1,y:0};
-          if(keys['arrowright'] && snakes[1].dir.x===0) snakes[1].dir={x:1,y:0};
-          if(keys['arrowup'] && snakes[1].dir.y===0) snakes[1].dir={x:0,y:-1};
-          if(keys['arrowdown'] && snakes[1].dir.y===0) snakes[1].dir={x:0,y:1};
-        }
-        if(this.players>2){
-          if(keys['j'] && snakes[2].dir.x===0) snakes[2].dir={x:-1,y:0};
-          if(keys['l'] && snakes[2].dir.x===0) snakes[2].dir={x:1,y:0};
-          if(keys['i'] && snakes[2].dir.y===0) snakes[2].dir={x:0,y:-1};
-          if(keys['k'] && snakes[2].dir.y===0) snakes[2].dir={x:0,y:1};
-        }
-        snakes.forEach((s,i)=>{
-          if(Math.random()<0.15){ // throttle
-            s.body.unshift({x:s.body[0].x+s.dir.x, y:s.body[0].y+s.dir.y});
-            if(s.body[0].x===food.x && s.body[0].y===food.y){this.score+=10; this.state.food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}
-            else s.body.pop();
+      setupNav() {
+        document.querySelectorAll('.nav-btn').forEach(b => {
+          b.onclick = () => {
+            document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+            document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+            document.getElementById(b.dataset.target).classList.add('active');
+            Sound.play('click');
           }
         });
+        document.getElementById('logout-btn').onclick = () => Auth.logout();
       },
-      drawSnake() {
-        const ctx=this.ctx, g=20, w=20;
-        this.state.snakes.forEach(s=>{
-          ctx.fillStyle=s.color;
-          s.body.forEach(b=>ctx.fillRect(b.x*w,b.y*w,w-2,w-2));
-        });
-        ctx.fillStyle='#ff3333'; ctx.fillRect(this.state.food.x*g,this.state.food.y*g,g-2,g-2);
+      setupSettings() {
+        document.getElementById('theme-toggle').onclick = () => {
+          const cur = document.documentElement.getAttribute('data-theme');
+          const next = cur==='light'?'dark':'light';
+          document.documentElement.setAttribute('data-theme', next);
+          DB.set('theme', next); Sound.play('click');
+        };
+        if(DB.get('theme')) document.documentElement.setAttribute('data-theme', DB.get('theme'));
+        document.getElementById('vol-slider').value = DB.get('vol_ui')||30;
+        document.getElementById('vol-notify').value = DB.get('vol_notify')||50;
+        document.getElementById('vol-slider').oninput = e => { DB.set('vol_ui', +e.target.value); Sound.setVol('ui', +e.target.value); };
+        document.getElementById('vol-notify').oninput = e => { DB.set('vol_notify', +e.target.value); Sound.setVol('notify', +e.target.value); };
       },
-
-      // ===== ROCKET =====
-      initRocket() { this.state.rocks=[]; this.state.playerY=350; this.state.speed=2; this.state.frame=0; },
-      updateRocket() {
-        const st=this.state; st.frame++;
-        if(st.frame%20===0) st.rocks.push({x:Math.random()*380, y:-20, w:20+Math.random()*30, h:20+Math.random()*30});
-        st.rocks.forEach(r=>r.y+=st.speed);
-        st.rocks=st.rocks.filter(r=>r.y<420);
-        if(st.playerY<250 && this.input['up']) st.playerY-=4;
-        if(st.playerY>380 && this.input['down']) st.playerY+=4;
-        st.rocks.forEach(r=>{ if(st.playerY>r.y && st.playerY<r.y+r.h) { this.score=Math.max(0,this.score-5); this.state.playerY=350; }});
-        this.score++;
-      },
-      drawRocket() {
-        const ctx=this.ctx;
-        ctx.fillStyle='#444'; this.state.rocks.forEach(r=>ctx.fillRect(r.x,r.y,r.w,r.h));
-        ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(200,this.state.playerY,12,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#aaa'; ctx.fillRect(196,this.state.playerY+10,8,15);
-      },
-
-      // ===== PONG =====
-      initPong() { this.state.ball={x:200,y:200,vx:3,vy:2}; this.state.p1=360; this.state.p2=360; this.state.aiTimer=0; },
-      updatePong() {
-        const st=this.state, b=st.ball; b.x+=b.vx; b.y+=b.vy;
-        if(b.y<0||b.y>400) b.vy*=-1;
-        if(b.x<20 && b.y>st.p1 && b.y<st.p1+60) b.vx*=-1;
-        if(b.x>380 && b.y>st.p2 && b.y<st.p2+60) b.vx*=-1;
-        if(b.x<0) { this.score--; b.x=200; b.vx=3; }
-        if(b.x>400) { this.score++; b.x=200; b.vx=-3; }
-        st.p1 = Math.max(0, Math.min(340, st.p1 + (this.input['w']?-4:0) + (this.input['s']?4:0)));
-        if(this.players>1) { st.p2 = Math.max(0, Math.min(340, st.p2 + (this.input['arrowup']?-4:0) + (this.input['arrowdown']?4:0))); }
-        else { st.aiTimer++; if(st.aiTimer%10===0){ st.p2 += (b.y>st.p2+30)?3:-3; st.p2=Math.max(0,Math.min(340,st.p2)); } }
-      },
-      drawPong() {
-        const ctx=this.ctx;
-        ctx.fillStyle='#555'; ctx.fillRect(10,this.state.p1,10,60); ctx.fillRect(380,this.state.p2,10,60);
-        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(this.state.ball.x,this.state.ball.y,6,0,Math.PI*2); ctx.fill();
-        ctx.setLineDash([4,4]); ctx.strokeStyle='#333'; ctx.beginPath(); ctx.moveTo(200,0); ctx.lineTo(200,400); ctx.stroke(); ctx.setLineDash([]);
-      },
-
-      // ===== HOT POTATO =====
-      initPotato() { this.state.timer=100; this.state.holder=0; this.state.passed=0; this.state.shake=0; this.state.colors=['#f00','#0f0','#00f']; },
-      updatePotato() {
-        const st=this.state; st.timer--; st.shake=Math.random()*st.timer*0.05;
-        if(this.input['space'] && st.timer<90 && st.timer>10) {
-          st.holder = (st.holder+1)%this.players; st.passed++; st.timer = Math.max(20, st.timer - Math.random()*15);
-        }
-        if(st.timer<=0) { this.score = st.passed*10; this.running=false; document.getElementById('game-status').textContent=`Игрок ${st.holder+1} проиграл! Счёт: ${this.score}`; Auth.data.games++; Auth.save(); App.renderProfile(); }
-      },
-      drawPotato() {
-        const ctx=this.ctx, cx=200+this.state.shake, cy=200+this.state.shake;
-        ctx.fillStyle=this.state.colors[this.state.holder];
-        ctx.beginPath(); ctx.arc(cx,cy,40,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(`🔥 Игрок ${this.state.holder+1}`,cx,cy+5);
-        ctx.fillStyle='#888'; ctx.fillText(`Осталось: ${Math.ceil(this.state.timer/10)}с`,200,260);
-      },
-
-      // ===== REFLEX =====
-      initReflex() { this.state.target={x:100,y:100}; this.state.timeLeft=300; this.state.clicks=0; },
-      updateReflex() {
-        this.state.timeLeft--;
-        if(this.input['click']) {
-          const d = Math.hypot(this.state.target.x-this.clickX, this.state.target.y-this.clickY);
-          if(d<20) { this.score+=10; this.state.clicks++; this.state.target={x:20+Math.random()*360, y:20+Math.random()*360}; this.input.click=false; }
-        }
-        if(this.state.timeLeft<=0) { this.running=false; document.getElementById('game-status').textContent=`Время вышло! Счёт: ${this.score}`; Auth.data.games++; Auth.save(); App.renderProfile(); }
-      },
-      drawReflex() {
-        const ctx=this.ctx;
-        ctx.fillStyle='#0f0'; ctx.beginPath(); ctx.arc(this.state.target.x,this.state.target.y,20,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle='#888'; ctx.textAlign='center'; ctx.fillText(`Нажимай в круг! ${Math.ceil(this.state.timeLeft/60)}с`,200,380);
+      notify(title, msg, sound=true) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div'); t.className='toast';
+        t.innerHTML = `<div class="toast-icon">🔔</div><div class="toast-content"><h4>${title}</h4><p>${msg}</p><div class="toast-progress"><div class="toast-bar"></div></div></div>`;
+        c.appendChild(t); setTimeout(()=>t.remove(), 4000);
+        if(sound) Sound.play('notify', notifyGain);
       }
     };
 
-    // Input Handling
-    window.addEventListener('keydown', e => { Game.input[e.key.toLowerCase()] = true; Game.input[e.key] = true; });
-    window.addEventListener('keyup', e => { Game.input[e.key.toLowerCase()] = false; Game.input[e.key] = false; });
-    document.getElementById('game-canvas').addEventListener('mousedown', e => { Game.input.click=true; const rect=e.target.getBoundingClientRect(); Game.clickX=e.clientX-rect.left; Game.clickY=e.clientY-rect.top; });
-    document.getElementById('game-canvas').addEventListener('mouseup', () => Game.input.click=false);
-
-    // Touch Controls for Mobile
-    const addTouchBtn = (label, key, parent) => {
-      const b=document.createElement('button'); b.className='ctrl-btn'; b.textContent=label;
-      b.addEventListener('touchstart', e=>{e.preventDefault(); Game.input[key.toLowerCase()]=true; Game.input[key]=true;});
-      b.addEventListener('touchend', e=>{e.preventDefault(); Game.input[key.toLowerCase()]=false; Game.input[key]=false;});
-      parent.appendChild(b);
+    // ===== FRIENDS & PROFILES =====
+    const Friends = {
+      list: [
+        {id:'f1',name:'Алексей',avatar:'🦊',lvl:4}, {id:'f2',name:'Мария',avatar:'🦋',lvl:7},
+        {id:'f3',name:'Дима',avatar:'🐢',lvl:2}, {id:'f4',name:'Катя',avatar:'🦄',lvl:12}, {id:'f5',name:'Иван',avatar:'🐼',lvl:9}
+      ],
+      init() { this.render(); },
+      render() {
+        const grid = document.getElementById('friends-list');
+        grid.innerHTML = this.list.map(f=>`<div class="card friend-card" data-id="${f.id}"><div class="friend-avatar">${f.avatar}</div><div class="friend-name">${f.name}</div><div class="friend-status">В сети</div></div>`).join('');
+        grid.querySelectorAll('.friend-card').forEach(el=>{
+          el.onclick = () => this.openProfile(el.dataset.id);
+          el.onmouseenter = () => Sound.play('click');
+        });
+      },
+      openProfile(id) {
+        const f = this.list.find(x=>x.id===id) || currentUser;
+        const overlay = document.getElementById('profile-overlay');
+        document.getElementById('p-name').textContent = f.name;
+        document.getElementById('p-pic').textContent = f.avatar;
+        document.getElementById('p-lvl').textContent = f.lvl;
+        this.renderWall('p-wall', f.id);
+        overlay.style.display='flex'; overlay.style.opacity='0'; setTimeout(()=>overlay.style.opacity='1',10);
+        document.getElementById('p-chat-btn').onclick = () => { App.notify('Чат открыт', `Переход к переписке с ${f.name}`); App.show(); document.querySelector('[data-target="chats"]').click(); activeChat=f.id; this.loadChat(f.id); };
+        document.getElementById('p-close').onclick = () => { overlay.style.opacity='0'; setTimeout(()=>overlay.style.display='none',300); };
+      }
     };
-    const ctrlBox = document.getElementById('game-controls');
-    addTouchBtn('⬆','ArrowUp',ctrlBox); addTouchBtn('⬇','ArrowDown',ctrlBox);
-    addTouchBtn('⬅','ArrowLeft',ctrlBox); addTouchBtn('➡','ArrowRight',ctrlBox);
-    addTouchBtn('W','w',ctrlBox); addTouchBtn('S','s',ctrlBox); addTouchBtn('Пробел','space',ctrlBox);
 
-    // Init
-    App.init();
+    // ===== WALL SYSTEM =====
+    App.renderWall = (containerId, uid) => {
+      const c = document.getElementById(containerId); c.innerHTML = '';
+      const posts = (DB.walls[uid]||[]).slice().reverse().slice(0,10);
+      posts.forEach(p => c.innerHTML += `<div class="wall-post"><strong>${p.author}</strong> <span style="font-size:10px;color:var(--text-muted)">${new Date(p.t).toLocaleString()}</span><p>${p.text}</p></div>`);
+    };
+    document.getElementById('wall-post-btn').onclick = () => {
+      const txt = document.getElementById('wall-input').value.trim();
+      if(!txt) return;
+      if(!DB.walls[currentUser.id]) DB.walls[currentUser.id]=[];
+      DB.walls[currentUser.id].push({author:currentUser.name, text:txt, t:Date.now()});
+      localStorage.setItem('zap_walls', JSON.stringify(DB.walls));
+      document.getElementById('wall-input').value='';
+      App.renderWall('my-wall', currentUser.id);
+      Sound.play('click');
+    };
+    // Cross-tab wall sync
+    window.addEventListener('storage', e => { if(e.key==='zap_walls') { App.renderWall('my-wall', currentUser.id); App.notify('Новая запись', 'Кто-то написал на стене', false); } });
+
+    // ===== CHAT SYSTEM =====
+    const Chat = {
+      tabs: document.getElementById('chat-tabs'), msgBox: document.getElementById('chat-messages'), input: document.getElementById('chat-input'), sendBtn: document.getElementById('chat-send'), typing: document.getElementById('typing-ind'),
+      init() {
+        this.tabs.innerHTML = `<button class="btn" style="width:auto;padding:6px 12px;border-radius:20px;font-size:12px;background:${activeChat==='system'?'var(--accent)':'var(--bg-alt)'};color:${activeChat==='system'?'#fff':'var(--text)'}">📢 Система</button>` + Friends.list.map(f=>`<button class="btn" style="width:auto;padding:6px 12px;border-radius:20px;font-size:12px;background:${activeChat===f.id?'var(--accent)':'var(--bg-alt)'};color:${activeChat===f.id?'#fff':'var(--text)'}">${f.avatar} ${f.name}</button>`).join('');
+        this.tabs.querySelectorAll('button').forEach((b,i)=>{
+          const id = i===0?'system':Friends.list[i-1].id;
+          b.onclick = () => { activeChat=id; Chat.loadChat(id); this.tabs.querySelectorAll('button').forEach(x=>{x.style.background='var(--bg-alt)';x.style.color='var(--text)'}); b.style.background='var(--accent)';b.style.color='#fff'; Sound.play('click'); };
+        });
+        this.loadChat(activeChat);
+        this.sendBtn.onclick = () => this.send();
+        this.input.onkeydown = e => { if(e.key==='Enter') this.send(); };
+      },
+      loadChat(id) {
+        if(!DB.chats[id]) DB.chats[id]=[];
+        this.msgBox.innerHTML = DB.chats[id].map(m=>`<div class="msg ${m.self?'self':'other'}"><div>${m.text}</div><div class="msg-meta">${m.self?'Вы':m.name} • ${new Date(m.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
+        this.msgBox.scrollTop = this.msgBox.scrollHeight;
+      },
+      send() {
+        const txt = this.input.value.trim(); if(!txt) return;
+        const msg = {self:true, text:txt, t:Date.now(), name:currentUser.name};
+        if(!DB.chats[activeChat]) DB.chats[activeChat]=[];
+        DB.chats[activeChat].push(msg); localStorage.setItem('zap_chats', JSON.stringify(DB.chats));
+        this.input.value=''; this.loadChat(activeChat); Sound.play('click');
+        if(activeChat!=='system') this.simReply();
+      },
+      simReply() {
+        this.typing.style.display='block';
+        setTimeout(()=>{
+          this.typing.style.display='none';
+          const rep = {self:false, text:['Круто!','Давай играть?','Я скоро буду','Согласен','🔥','Окей'][Math.floor(Math.random()*6)], t:Date.now(), name:Friends.list.find(f=>f.id===activeChat)?.name||'Друг'};
+          DB.chats[activeChat].push(rep); localStorage.setItem('zap_chats', JSON.stringify(DB.chats));
+          this.loadChat(activeChat); Sound.play('notify', notifyGain);
+        }, 1500 + Math.random()*2000);
+      }
+    };
+    App.setupChat = () => Chat.init();
+
+    // ===== CALLS (WebRTC Simulation + Real Streams) =====
+    const Calls = {
+      ui: document.getElementById('call-ui'), self: document.getElementById('call-self'), remote: document.getElementById('call-remote'), placeholder: document.getElementById('call-placeholder'),
+      init() {
+        document.getElementById('p-call-btn').onclick = () => this.start();
+        document.getElementById('call-end').onclick = () => this.end();
+        document.getElementById('call-mic').onclick = () => this.toggleTrack('mic');
+        document.getElementById('call-cam').onclick = () => this.toggleTrack('cam');
+        document.getElementById('call-screen').onclick = () => this.shareScreen();
+      },
+      async start() {
+        this.ui.style.display='block'; this.placeholder.style.display='none';
+        try {
+          localStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+          this.self.srcObject = localStream;
+          // Simulated remote (in real app: addTrack -> signaling -> remoteStream)
+          setTimeout(()=>{ this.placeholder.style.display='none'; this.remote.style.display='block'; this.remote.srcObject = localStream; this.remote.style.transform='scaleX(-1)'; App.notify('Звонок', 'Подключение установлено'); }, 1000);
+          isCallActive = true;
+        } catch(e) { this.placeholder.textContent='Нет доступа к камере/микрофону'; }
+      },
+      end() {
+        if(localStream) localStream.getTracks().forEach(t=>t.stop());
+        if(displayStream) displayStream.getTracks().forEach(t=>t.stop());
+        this.self.srcObject=null; this.remote.srcObject=null;
+        this.ui.style.display='none'; isCallActive=false;
+      },
+      toggleTrack(type) {
+        if(!localStream) return;
+        const t = type==='mic' ? localStream.getAudioTracks()[0] : localStream.getVideoTracks()[0];
+        if(t) t.enabled = !t.enabled;
+      },
+      async shareScreen() {
+        try {
+          displayStream = await navigator.mediaDevices.getDisplayMedia({video:true});
+          this.remote.srcObject = displayStream; displayStream.getVideoTracks()[0].onended = () => this.remote.srcObject = localStream;
+        } catch(e) { App.notify('Экран', 'Демонстрация отменена'); }
+      }
+    };
+    App.setupCalls = () => Calls.init();
+
+    // ===== PAINTER =====
+    App.setupPainter = () => {
+      const cvs = document.getElementById('paint-canvas'); const ctx = cvs.getContext('2d');
+      cvs.width = cvs.clientWidth; cvs.height = cvs.clientHeight;
+      let drawing=false, color='#2563eb', size=3;
+      const palette = document.getElementById('color-palette');
+      ['#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#8b5cf6','#ec4899','#000000'].forEach(c=>{
+        const b=document.createElement('div'); b.className='color-btn'; b.style.background=c;
+        if(c===color) b.classList.add('active');
+        b.onclick = () => { color=c; palette.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); Sound.play('click'); };
+        palette.appendChild(b);
+      });
+      const draw = (x,y) => { ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,size,0,Math.PI*2); ctx.fill(); };
+      cvs.onpointerdown = e => { drawing=true; const r=cvs.getBoundingClientRect(); draw(e.clientX-r.left, e.clientY-r.top); };
+      cvs.onpointermove = e => { if(!drawing) return; const r=cvs.getBoundingClientRect(); draw(e.clientX-r.left, e.clientY-r.top); };
+      cvs.onpointerup = () => drawing=false;
+      document.getElementById('save-bg').onclick = () => {
+        const data = cvs.toDataURL(); currentUser.bg = data; DB.set('user', currentUser); document.querySelector('#profile .card').style.backgroundImage=`url(${data})`;
+        App.notify('Фон', 'Фон профиля обновлён'); Sound.play('click');
+      };
+    };
+
+    // ===== GAME ENGINE (Polished) =====
+    const Game = {
+      active: null, canvas: document.getElementById('game-canvas'), ctx: null, loopId: null, running: false, score: 0, input: {}, particles: [],
+      open(id) {
+        this.active=id; this.score=0; this.running=false; document.getElementById('game-modal').style.display='flex'; this.ctx=this.canvas.getContext('2d');
+        document.getElementById('g-score').textContent='0'; document.getElementById('g-start').textContent='▶ Старт';
+      },
+      close() { this.stop(); document.getElementById('game-modal').style.display='none'; },
+      toggle() { if(this.running) this.stop(); else this.start(); },
+      start() { if(this.running) return; this.running=true; this.score=0; this.particles=[]; this.state={}; document.getElementById('g-start').textContent='⏸ Пауза'; this.initGame(); this.loop(); },
+      stop() { this.running=false; cancelAnimationFrame(this.loopId); document.getElementById('g-start').textContent='▶ Старт'; },
+      loop() {
+        if(!this.running) return;
+        this.update(); this.draw(); this.drawParticles();
+        document.getElementById('g-score').textContent = this.score;
+        this.loopId = requestAnimationFrame(()=>this.loop());
+      },
+      drawParticles() {
+        const ctx=this.ctx;
+        this.particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life-=0.02; ctx.globalAlpha=p.life; ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y,p.s,0,Math.PI*2); ctx.fill(); if(p.life<=0) this.particles.splice(i,1); });
+        ctx.globalAlpha=1;
+      },
+      addParticle(x,y,c='#fff') { for(let i=0;i<8;i++) this.particles.push({x,y,vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,life:1,s:2+Math.random()*3,c}); },
+      
+      initGame() {
+        const s = this.state;
+        if(this.active==='snake') {
+          s.snakes=[{x:5,y:5,vx:1,vy:0,body:[{x:5,y:5}],c:'#22c55e'},{x:25,y:5,vx:0,vy:1,body:[{x:25,y:5}],c:'#3b82f6'}];
+          s.food={x:15,y:15}; s.grid=20; s.frame=0;
+        } else if(this.active==='rocket') {
+          s.p={x:300,y:340,w:20,h:30}; s.rocks=[]; s.frame=0; s.speed=3;
+        } else if(this.active==='pong') {
+          s.p1={y:180}; s.p2={y:180}; s.ball={x:300,y:200,vx:4,vy:3,r:6}; s.ai=0;
+        } else if(this.active==='potato') {
+          s.timer=120; s.holder=0; s.passed=0; s.colors=['#ef4444','#3b82f6','#22c55e','#eab308'];
+        } else if(this.active==='reflex') {
+          s.targets=[]; s.spawnT=0; s.hits=0; s.misses=0; s.time=600;
+        }
+      },
+      update() {
+        const s=this.state, inp=this.input;
+        if(this.active==='snake') {
+          s.frame++; if(s.frame%8!==0) return;
+          const keys=['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'];
+          if(inp.a && s.snakes[0].vx===0) s.snakes[0].vx=-1,s.snakes[0].vy=0;
+          if(inp.d && s.snakes[0].vx===0) s.snakes[0].vx=1,s.snakes[0].vy=0;
+          if(inp.w && s.snakes[0].vy===0) s.snakes[0].vx=0,s.snakes[0].vy=-1;
+          if(inp.s && s.snakes[0].vy===0) s.snakes[0].vx=0,s.snakes[0].vy=1;
+          // P2
+          if(inp.arrowleft && s.snakes[1].vx===0) s.snakes[1].vx=-1,s.snakes[1].vy=0;
+          if(inp.arrowright && s.snakes[1].vx===0) s.snakes[1].vx=1,s.snakes[1].vy=0;
+          if(inp.arrowup && s.snakes[1].vy===0) s.snakes[1].vx=0,s.snakes[1].vy=-1;
+          if(inp.arrowdown && s.snakes[1].vy===0) s.snakes[1].vx=0,s.snakes[1].vy=1;
+          s.snakes.forEach(sn=>{
+            const nx=sn.x+sn.vx, ny=sn.y+sn.vy; sn.x=nx; sn.y=ny; sn.body.unshift({x:nx,y:ny});
+            if(sn.x===s.food.x && sn.y===s.food.y){this.score+=10; s.food={x:Math.floor(Math.random()*30),y:Math.floor(Math.random()*20)}; this.addParticle(sn.x*20+10,sn.y*20+10,'#eab308');} else sn.body.pop();
+          });
+        } else if(this.active==='rocket') {
+          s.frame++; s.speed+=0.005;
+          if(s.frame%25===0) s.rocks.push({x:Math.random()*560,y:-20,w:25+Math.random()*20,h:25+Math.random()*20});
+          s.rocks.forEach(r=>r.y+=s.speed);
+          s.rocks=s.rocks.filter(r=>r.y<420);
+          s.p.x+= (inp.a?-5:0)+(inp.d?5:0); s.p.x=Math.max(0,Math.min(580,s.p.x));
+          s.rocks.forEach(r=>{ if(s.p.x<r.x+r.w && s.p.x+s.p.w>r.x && s.p.y<r.y+r.h && s.p.y+s.p.h>r.y){this.score-=5; this.addParticle(s.p.x+10,s.p.y+15,'#ef4444');} });
+          this.score++;
+        } else if(this.active==='pong') {
+          s.ball.x+=s.ball.vx; s.ball.y+=s.ball.vy;
+          if(s.ball.y<10||s.ball.y>390) s.ball.vy*=-1;
+          if(s.ball.x<20 && s.ball.y>s.p1.y && s.ball.y<s.p1.y+60) s.ball.vx*=-1;
+          if(s.ball.x>580 && s.ball.y>s.p2.y && s.ball.y<s.p2.y+60) s.ball.vx*=-1;
+          s.p1.y+=(inp.w?-6:0)+(inp.s?6:0); s.p1.y=Math.max(0,Math.min(340,s.p1.y));
+          s.ai++; if(s.ai%12===0){ s.p2.y+=(s.ball.y>s.p2.y+30)?5:-5; s.p2.y=Math.max(0,Math.min(340,s.p2.y)); }
+          if(s.ball.x<0) {this.score--; this.addParticle(s.ball.x,s.ball.y,'#ef4444'); s.ball.x=300; s.ball.vx=4;}
+          if(s.ball.x>600) {this.score++; this.addParticle(s.ball.x,s.ball.y,'#22c55e'); s.ball.x=300; s.ball.vx=-4;}
+        } else if(this.active==='potato') {
+          s.timer--; if(inp[' '] && s.timer<110 && s.timer>20){s.holder=(s.holder+1)%4; s.passed++; s.timer=Math.max(30, s.timer-10); Sound.play('game');}
+          if(s.timer<=0){this.running=false; document.getElementById('g-start').textContent='Рестарт'; App.notify('Картошка','Игрок '+(s.holder+1)+' проиграл! Счёт: '+this.passed*10);}
+        } else if(this.active==='reflex') {
+          s.time--; s.spawnT++;
+          if(s.spawnT%60===0 && s.targets.length<5) s.targets.push({x:40+Math.random()*520,y:40+Math.random()*320,r:25+Math.random()*15,hit:false});
+          s.targets.forEach(t=>{ if(!t.hit && this._click && Math.hypot(this._click.x-t.x,this._click.y-t.y)<t.r){t.hit=true; this.score+=10; s.hits++; this.addParticle(t.x,t.y,'#22c55e');} });
+          s.targets=s.targets.filter(t=>!t.hit);
+          if(s.time<=0){this.running=false; document.getElementById('g-start').textContent='Рестарт';}
+        }
+        if(this.input.click && this.active==='reflex') { const rect=this.canvas.getBoundingClientRect(); this._click={x:(this.input.cx-rect.left)*(600/rect.width), y:(this.input.cy-rect.top)*(400/rect.height)}; this.input.click=false; }
+      },
+      draw() {
+        const ctx=this.ctx; ctx.clearRect(0,0,600,400);
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg'); ctx.fillRect(0,0,600,400);
+        const s=this.state;
+        if(this.active==='snake') {
+          ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--card-border'); ctx.lineWidth=1;
+          for(let x=0;x<=600;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,400);ctx.stroke();}
+          for(let y=0;y<=400;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(600,y);ctx.stroke();}
+          s.snakes.forEach(sn=>{ctx.fillStyle=sn.c; sn.body.forEach(b=>ctx.fillRect(b.x*20+1,b.y*20+1,18,18));});
+          ctx.fillStyle='#eab308'; ctx.fillRect(s.food.x*20,s.food.y*20,20,20);
+        } else if(this.active==='rocket') {
+          s.rocks.forEach(r=>{ctx.fillStyle='#6b7280'; ctx.fillRect(r.x,r.y,r.w,r.h);});
+          ctx.fillStyle='#3b82f6'; ctx.beginPath(); ctx.arc(s.p.x+10,s.p.y+15,12,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#93c5fd'; ctx.fillRect(s.p.x+6,s.p.y+25,8,15);
+        } else if(this.active==='pong') {
+          ctx.fillStyle='#f8fafc'; ctx.fillRect(10,s.p1.y,12,60); ctx.fillRect(578,s.p2.y,12,60);
+          ctx.fillStyle='#2563eb'; ctx.beginPath(); ctx.arc(s.ball.x,s.ball.y,s.ball.r,0,Math.PI*2); ctx.fill();
+          ctx.setLineDash([4,4]); ctx.strokeStyle='#cbd5e1'; ctx.beginPath(); ctx.moveTo(300,0); ctx.lineTo(300,400); ctx.stroke(); ctx.setLineDash([]);
+        } else if(this.active==='potato') {
+          ctx.fillStyle='#111'; ctx.fillRect(0,0,600,400);
+          for(let i=0;i<4;i++){
+            ctx.fillStyle=s.colors[i]; ctx.globalAlpha = i===s.holder?1:0.4; ctx.beginPath(); ctx.arc(120+i*120, 200, 40,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; ctx.fillStyle='#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(`P${i+1}`,120+i*120,205);
+          }
+          ctx.fillStyle='#ef4444'; ctx.beginPath(); ctx.arc(120+s.holder*120, 200, 40,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText('🔥',120+s.holder*120,205);
+          ctx.fillStyle='#94a3b8'; ctx.fillText(`Осталось: ${Math.ceil(s.timer/60)}с`, 300, 360);
+        } else if(this.active==='reflex') {
+          ctx.fillStyle='#0f172a'; ctx.fillRect(0,0,600,400);
+          s.targets.forEach(t=>{ ctx.fillStyle=t.hit?'#22c55e':'#fbbf24'; ctx.beginPath(); ctx.arc(t.x,t.y,t.r,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); });
+          ctx.fillStyle='#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(`Нажимай в круги! ${Math.ceil(s.time/60)}с`,300,380);
+        }
+      }
+    };
+    window.addEventListener('keydown', e => Game.input[e.key.toLowerCase()]=true);
+    window.addEventListener('keyup', e => Game.input[e.key.toLowerCase()]=false);
+    document.querySelectorAll('.game-card').forEach(c=>{ c.onclick=()=>Game.open(c.dataset.game); c.onmouseenter=()=>Sound.play('click'); });
+    document.getElementById('close-game').onclick=()=>Game.close();
+    document.getElementById('g-start').onclick=()=>Game.toggle();
+    document.getElementById('game-canvas').addEventListener('mousedown', e=>{Game.input.click=true; Game.input.cx=e.clientX; Game.input.cy=e.clientY;});
+
+    // ===== INIT =====
+    window.addEventListener('DOMContentLoaded', () => {
+      Auth.init();
+      if(currentUser) { App.show(); Friends.init(); }
+      Sound.init();
+    });
   </script>
 </body>
 </html>
