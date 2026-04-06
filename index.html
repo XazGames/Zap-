@@ -1,792 +1,806 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Zap! — Минималистичная платформа для общения, игр и звонков.">
-  <title>Zap!</title>
-  <style>
-    /* ================= VARIABLES & RESET ================= */
-    :root {
-      --bg: #f5f5f7; --bg-alt: #ffffff; --surface: #f0f0f2;
-      --text: #111111; --text-muted: #666666; --text-subtle: #999999;
-      --card: #ffffff; --card-border: #e2e2e6;
-      --accent: #0a84ff; --accent-hover: #0071e3; --accent-soft: rgba(10,132,255,0.1);
-      --danger: #ff3b30; --success: #34c759; --warning: #ffcc00;
-      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-full: 999px;
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-      --shadow-md: 0 6px 24px rgba(0,0,0,0.08);
-      --shadow-lg: 0 12px 48px rgba(0,0,0,0.12);
-      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      --font: system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    [data-theme="dark"] {
-      --bg: #0a0a0c; --bg-alt: #111113; --surface: #1a1a1d;
-      --text: #f5f5f7; --text-muted: #a1a1a6; --text-subtle: #6e6e73;
-      --card: #1c1c1e; --card-border: #2c2c2e;
-      --accent: #0a84ff; --accent-hover: #409cff; --accent-soft: rgba(10,132,255,0.15);
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.2); --shadow-md: 0 6px 24px rgba(0,0,0,0.3);
-      --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font); background: var(--bg); color: var(--text);
-      line-height: 1.5; min-height: 100vh; overflow-x: hidden;
-      transition: background var(--transition), color var(--transition);
-      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-    }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: var(--radius-full); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zap!</title>
+    <style>
+        /* ================= ПЕРЕМЕННЫЕ И ТЕМЫ ================= */
+        :root {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --accent: #000000;
+            --accent-hover: #333333;
+            --accent-text: #ffffff;
+            --border: #e9ecef;
+            --radius: 30px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.05);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-    /* ================= ANIMATIONS ================= */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes scaleIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
-    @keyframes slideLeft { from{transform:translateX(-100%)} to{transform:translateX(0)} }
-    @keyframes slideRight { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    @keyframes toastProgress { from{width:100%} to{width:0%} }
-    @keyframes morphSunMoon {
-      0% { clip-path: circle(45% at 50% 50%); }
-      50% { clip-path: circle(40% at 50% 50%); }
-      100% { clip-path: circle(45% at 50% 50%); }
-    }
-    @keyframes blink { 0%,100%{opacity:.4} 50%{opacity:1} }
+        body.dark {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --text: #f8f9fa;
+            --text-muted: #a0a0a0;
+            --accent: #ffffff;
+            --accent-hover: #cccccc;
+            --accent-text: #000000;
+            --border: #2a2a2a;
+            --shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
 
-    /* ================= LAYOUT ================= */
-    .app-shell { display: flex; min-height: 100vh; }
-    .sidebar {
-      width: 72px; background: var(--bg-alt); border-right: 1px solid var(--card-border);
-      display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 16px;
-      position: sticky; top: 0; height: 100vh; z-index: 100;
-    }
-    .nav-btn {
-      width: 48px; height: 48px; border-radius: var(--radius-full); background: transparent;
-      border: 1px solid var(--card-border); color: var(--text-muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: var(--transition);
-      position: relative; overflow: hidden;
-    }
-    .nav-btn:hover { background: var(--surface); transform: scale(1.08); color: var(--text); }
-    .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: var(--shadow-md); }
-    .nav-btn .icon { width: 22px; height: 22px; transition: var(--transition); }
-    .nav-btn .tooltip {
-      position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%) translateX(6px);
-      background: var(--card); padding: 6px 10px; border-radius: var(--radius-sm); font-size: 12px;
-      white-space: nowrap; opacity: 0; pointer-events: none; transition: var(--transition);
-      border: 1px solid var(--card-border); box-shadow: var(--shadow-sm); z-index: 110;
-    }
-    .nav-btn:hover .tooltip { opacity: 1; transform: translateY(-50%) translateX(0); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: var(--transition);
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+        }
 
-    .main-content { flex: 1; padding: 24px 32px; max-width: 900px; margin: 0 auto; width: 100%; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
-    .logo { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-    .logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
-    .logout-btn {
-      background: none; border: 1px solid var(--card-border); color: var(--text-muted);
-      width: 36px; height: 36px; border-radius: var(--radius-md); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: var(--transition);
-    }
-    .logout-btn:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+        /* ================= СКРЫТИЕ СКРОЛЛБАРА ================= */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-    /* ================= SECTIONS ================= */
-    .view { display: none; animation: fadeUp 0.3s ease; }
-    .view.active { display: block; }
-    .card {
-      background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg);
-      padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow-sm); transition: var(--transition);
-    }
-    .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        /* ================= ЭКРАН РЕГИСТРАЦИИ ================= */
+        #auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s;
+        }
+        .auth-box {
+            background: var(--surface); padding: 40px; border-radius: var(--radius);
+            box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border);
+            max-width: 400px; width: 90%;
+            animation: slideUp 0.6s ease;
+        }
+        .emoji-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0;
+        }
+        .emoji-btn {
+            font-size: 30px; background: transparent; border: 2px solid transparent;
+            cursor: pointer; border-radius: 15px; padding: 10px; transition: var(--transition);
+        }
+        .emoji-btn:hover { transform: scale(1.2); }
+        .emoji-btn.selected { border-color: var(--accent); background: var(--border); }
+        .btn {
+            background: var(--accent); color: var(--accent-text); border: none;
+            padding: 15px 30px; border-radius: 50px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: var(--transition); width: 100%; margin-top: 10px;
+        }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
 
-    /* ================= FEED (ITD Style) ================= */
-    .feed-item { padding: 18px 20px; border-bottom: 1px solid var(--card-border); }
-    .feed-item:last-child { border-bottom: none; }
-    .feed-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .feed-avatar {
-      width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--surface);
-      display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid var(--card-border);
-    }
-    .feed-meta h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .feed-meta span { font-size: 12px; color: var(--text-subtle); }
-    .feed-body { font-size: 15px; line-height: 1.6; color: var(--text); margin-bottom: 12px; }
-    .feed-actions { display: flex; gap: 16px; }
-    .action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
-    .action-btn:hover { color: var(--accent); transform: scale(1.05); }
+        /* ================= ОСНОВНОЙ ЛЕЙАУТ ================= */
+        #app { display: none; width: 100%; height: 100%; }
+        
+        /* SIDEBAR (Левое меню) */
+        .sidebar {
+            width: 260px; height: 100%; background: var(--surface);
+            border-right: 1px solid var(--border); padding: 30px 20px;
+            display: flex; flex-direction: column; gap: 15px;
+            transition: var(--transition); z-index: 10;
+        }
+        .logo { font-size: 32px; font-weight: 900; margin-bottom: 30px; text-align: center; letter-spacing: -1px; }
+        .nav-btn {
+            background: transparent; color: var(--text); border: none;
+            padding: 15px 25px; border-radius: 50px; font-size: 18px; font-weight: 600;
+            text-align: left; cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; gap: 15px;
+        }
+        .nav-btn:hover { background: var(--border); padding-left: 30px; }
+        .nav-btn.active { background: var(--accent); color: var(--accent-text); }
+        .user-mini { margin-top: auto; display: flex; align-items: center; gap: 15px; padding: 10px; border-top: 1px solid var(--border); }
+        .user-mini-avatar { font-size: 30px; }
 
-    /* ================= FRIENDS ================= */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
-    .friend-card {
-      background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-md);
-      padding: 16px; text-align: center; cursor: pointer; transition: var(--transition); position: relative;
-    }
-    .friend-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .friend-avatar-lg { width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 10px; border: 2px solid var(--card-border); }
-    .friend-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
-    .friend-status { font-size: 12px; color: var(--success); display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .friend-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1; height: 100%; overflow-y: auto; position: relative;
+        }
+        .view { display: none; padding: 40px; max-width: 900px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
 
-    /* ================= CHAT ================= */
-    .chat-layout { display: flex; height: 65vh; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
-    .chat-sidebar { width: 220px; background: var(--bg-alt); border-right: 1px solid var(--card-border); padding: 12px; overflow-y: auto; }
-    .chat-tab { padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; color: var(--text-muted); transition: 0.15s; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-    .chat-tab:hover, .chat-tab.active { background: var(--accent-soft); color: var(--accent); }
-    .chat-tab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); display: none; }
-    .chat-tab.has-notify .dot { display: block; }
-    .chat-main { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
-    .chat-header { padding: 14px 18px; border-bottom: 1px solid var(--card-border); font-weight: 600; display: flex; align-items: center; gap: 8px; }
-    .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .msg { max-width: 70%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; animation: scaleIn 0.15s ease; position: relative; }
-    .msg.self { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
-    .msg.other { align-self: flex-start; background: var(--surface); border: 1px solid var(--card-border); border-bottom-left-radius: 4px; }
-    .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; text-align: right; }
-    .chat-input-wrap { padding: 12px; border-top: 1px solid var(--card-border); display: flex; gap: 10px; background: var(--card); }
-    .chat-input { flex: 1; background: var(--bg); border: 1px solid var(--card-border); border-radius: var(--radius-full); padding: 10px 16px; font-size: 14px; color: var(--text); transition: 0.2s; }
-    .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-    .send-btn { background: var(--accent); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-    .send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+        /* ================= КОМПОНЕНТЫ ================= */
+        /* Посты (Лента) */
+        .post {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 25px; margin-bottom: 20px;
+            box-shadow: var(--shadow); transition: var(--transition);
+        }
+        .post:hover { transform: translateY(-5px); }
+        .post-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .post-avatar { font-size: 40px; }
+        .post-input-area { margin-bottom: 30px; display: flex; gap: 10px; }
+        .input-text { flex: 1; padding: 15px 20px; border-radius: 50px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: var(--transition); }
+        .input-text:focus { border-color: var(--accent); }
 
-    /* ================= CALLS ================= */
-    .call-container { display: none; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg); overflow: hidden; margin-top: 16px; box-shadow: var(--shadow-md); }
-    .call-video { position: relative; width: 100%; height: 320px; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .call-video video { width: 100%; height: 100%; object-fit: cover; }
-    .call-self { position: absolute; bottom: 16px; right: 16px; width: 140px; height: 105px; border-radius: var(--radius-md); overflow: hidden; border: 2px solid var(--accent); box-shadow: var(--shadow-lg); background: #222; }
-    .call-status { position: absolute; top: 16px; left: 16px; background: rgba(0,0,0,0.6); color: #fff; padding: 6px 12px; border-radius: var(--radius-full); font-size: 12px; backdrop-filter: blur(4px); }
-    .call-controls { display: flex; justify-content: center; gap: 16px; padding: 18px; background: var(--bg-alt); border-top: 1px solid var(--card-border); }
-    .call-btn { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--card-border); background: var(--card); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 18px; }
-    .call-btn:hover { background: var(--surface); }
-    .call-btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+        /* Профиль */
+        .profile-header { position: relative; margin-bottom: 30px; }
+        #profile-canvas { 
+            width: 100%; height: 200px; background: var(--border); 
+            border-radius: var(--radius); cursor: crosshair; touch-action: none;
+        }
+        .profile-info { display: flex; align-items: flex-end; gap: 20px; margin-top: -50px; padding: 0 30px; position: relative; z-index: 2; }
+        .profile-avatar { font-size: 80px; background: var(--surface); border-radius: 50%; padding: 10px; border: 4px solid var(--bg); }
+        .profile-actions { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; }
+        .icon-btn { background: var(--surface); border: none; font-size: 24px; padding: 10px; border-radius: 50%; cursor: pointer; box-shadow: var(--shadow); transition: var(--transition); }
+        .icon-btn:hover { transform: scale(1.1) rotate(10deg); }
+        .color-picker { position: absolute; top: 20px; left: 20px; display: flex; gap: 5px; background: var(--surface); padding: 10px; border-radius: 50px; }
+        .color-btn { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: none; }
 
-    /* ================= PROFILE & PAINTER ================= */
-    .profile-header { position: relative; height: 140px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--surface); background-size: cover; background-position: center; overflow: hidden; }
-    .profile-avatar { position: absolute; bottom: -30px; left: 24px; width: 72px; height: 72px; border-radius: 50%; background: var(--card); border: 4px solid var(--card); display: flex; align-items: center; justify-content: center; font-size: 34px; box-shadow: var(--shadow-md); }
-    .profile-body { padding: 40px 24px 24px; }
-    .profile-info h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-    .profile-info p { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
-    .wall-input { width: 100%; padding: 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); resize: vertical; min-height: 80px; font-size: 14px; transition: 0.2s; margin-bottom: 12px; }
-    .wall-input:focus { border-color: var(--accent); }
-    .wall-posts { max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    .wall-post { background: var(--bg-alt); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); font-size: 14px; line-height: 1.4; }
-    .wall-post strong { color: var(--accent); }
+        /* Чаты и Друзья */
+        .friend-card {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 15px 20px; background: var(--surface); border-radius: var(--radius);
+            margin-bottom: 10px; border: 1px solid var(--border); transition: var(--transition);
+        }
+        .friend-card:hover { border-color: var(--accent); }
+        .friend-info { display: flex; align-items: center; gap: 15px; cursor: pointer;}
+        .chat-window { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); height: 60vh; display: flex; flex-direction: column; }
+        .chat-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;}
+        .msg { padding: 10px 15px; border-radius: 20px; max-width: 70%; width: fit-content; }
+        .msg.my { background: var(--accent); color: var(--accent-text); align-self: flex-end; border-bottom-right-radius: 5px; }
+        .msg.other { background: var(--border); align-self: flex-start; border-bottom-left-radius: 5px; }
+        .chat-controls { display: flex; gap: 10px; }
 
-    /* Painter */
-    .painter { margin-top: 20px; border-top: 1px dashed var(--card-border); padding-top: 16px; }
-    .painter-tools { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-    .color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; position: relative; }
-    .color-btn.active { border-color: var(--text); transform: scale(1.15); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    #paint-canvas { width: 100%; height: 130px; background: var(--bg); border-radius: var(--radius-md); cursor: crosshair; touch-action: none; border: 1px solid var(--card-border); }
-    .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: var(--radius-full); border: 1px solid var(--card-border); background: var(--card); color: var(--text); cursor: pointer; transition: 0.2s; }
-    .btn-sm:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        /* Игры */
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .game-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 30px; text-align: center; cursor: pointer; transition: var(--transition); }
+        .game-card:hover { transform: translateY(-10px); box-shadow: var(--shadow); }
+        .game-icon { font-size: 50px; margin-bottom: 15px; }
+        .game-container { display: none; flex-direction: column; align-items: center; background: var(--surface); padding: 20px; border-radius: var(--radius); }
+        canvas.game-canvas { background: var(--bg); border: 2px solid var(--border); border-radius: 15px; margin: 20px 0; max-width: 100%; }
 
-    /* ================= GAMES ================= */
-    .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-    .game-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 20px; text-align: center; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
-    .game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent); }
-    .game-icon { font-size: 32px; margin-bottom: 10px; display: block; }
-    .game-title { font-weight: 700; margin-bottom: 4px; }
-    .game-desc { font-size: 12px; color: var(--text-muted); }
-    .game-modal { position: fixed; inset: 0; background: var(--bg); z-index: 900; display: none; flex-direction: column; align-items: center; }
-    .game-canvas-wrap { position: relative; width: 100%; max-width: 700px; flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px; }
-    #game-canvas { background: #0a0a0c; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); max-width: 100%; max-height: 75vh; touch-action: none; border: 1px solid var(--card-border); }
-    .game-hud { width: 100%; max-width: 700px; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--card); border-top: 1px solid var(--card-border); }
-    .hud-score { font-weight: 800; font-size: 18px; font-variant-numeric: tabular-nums; }
-    .hud-btns { display: flex; gap: 8px; }
-    .close-game { position: absolute; top: 16px; right: 16px; background: var(--surface); border: 1px solid var(--card-border); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 18px; z-index: 10; }
-    .close-game:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+        /* Настройки */
+        .settings-group { background: var(--surface); padding: 25px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        input[type="range"] { accent-color: var(--accent); width: 150px; }
 
-    /* ================= SETTINGS ================= */
-    .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--card-border); }
-    .setting-row:last-child { border-bottom: none; }
-    .setting-label { font-weight: 500; }
-    input[type="range"] { flex: 1; margin: 0 12px; accent-color: var(--accent); height: 6px; background: var(--surface); border-radius: 3px; appearance: none; }
-    input[type="range"]::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        /* Кастомные Уведомления */
+        #notif-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; }
+        .notification {
+            background: var(--surface); color: var(--text); border: 1px solid var(--border);
+            padding: 15px 25px; border-radius: 50px; box-shadow: var(--shadow);
+            display: flex; align-items: center; gap: 15px; font-weight: 500;
+            animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-    /* ================= THEME TOGGLE ================= */
-    .theme-toggle { width: 48px; height: 48px; border-radius: var(--radius-full); background: var(--surface); border: 1px solid var(--card-border); cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: var(--transition); overflow: hidden; }
-    .theme-toggle:hover { background: var(--accent-soft); border-color: var(--accent); }
-    .sun-moon { width: 24px; height: 24px; position: relative; transition: var(--transition); }
-    .sun-moon::before { content: ''; position: absolute; width: 20px; height: 20px; background: #fbbf24; border-radius: 50%; top: 2px; left: 2px; box-shadow: 0 0 8px #fbbf24; transition: var(--transition); }
-    .sun-moon::after { content: ''; position: absolute; width: 18px; height: 18px; background: var(--bg-alt); border-radius: 50%; top: 3px; left: 5px; opacity: 0; transition: var(--transition); }
-    [data-theme="dark"] .sun-moon::before { background: #e2e8f0; box-shadow: 0 0 6px #e2e8f0; }
-    [data-theme="dark"] .sun-moon::after { opacity: 1; transform: translateX(8px); }
-    .theme-toggle span { display: block; width: 100%; height: 100%; }
+        /* Анимации */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { to { opacity: 0; transform: translateX(100px); } }
 
-    /* ================= TOASTS ================= */
-    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: 340px; }
-    .toast { background: var(--card); border: 1px solid var(--card-border); padding: 14px 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; align-items: flex-start; gap: 12px; animation: slideRight 0.35s cubic-bezier(0.16,1,0.3,1) forwards; pointer-events: auto; position: relative; overflow: hidden; }
-    .toast-icon { font-size: 20px; margin-top: 2px; color: var(--accent); }
-    .toast-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .toast-content p { font-size: 13px; color: var(--text-muted); margin: 0; }
-    .toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--accent); width: 100%; animation: toastProgress 4s linear forwards; }
-    .toast-close { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 4px; }
-    .toast-close:hover { color: var(--text); }
-
-    /* ================= AUTH ================= */
-    #auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .auth-box { background: var(--card); border: 1px solid var(--card-border); padding: 32px; border-radius: var(--radius-lg); width: 100%; max-width: 380px; text-align: center; box-shadow: var(--shadow-lg); animation: scaleIn 0.4s ease; }
-    .auth-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
-    .auth-sub { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
-    .avatar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 20px; }
-    .avatar-opt { width: 48px; height: 48px; border-radius: 50%; background: var(--bg-alt); border: 2px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: 0.2s; margin: 0 auto; }
-    .avatar-opt:hover { transform: scale(1.1); background: var(--surface); }
-    .avatar-opt.selected { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); transform: scale(1.05); }
-    .btn-primary { background: var(--accent); color: #fff; border: none; padding: 12px 0; border-radius: var(--radius-full); font-weight: 600; cursor: pointer; width: 100%; font-size: 15px; transition: 0.2s; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* ================= OVERLAYS ================= */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 800; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); transition: opacity 0.25s; }
-    .overlay.active { display: flex; opacity: 1; }
-    .modal { background: var(--card); border-radius: var(--radius-lg); width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: var(--shadow-lg); }
-    .modal-close { position: absolute; top: 14px; right: 14px; background: var(--surface); border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 16px; z-index: 10; }
-    .modal-close:hover { background: var(--danger); color: #fff; }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 60px; padding: 16px 0; }
-      .main-content { padding: 16px; }
-      .chat-layout { height: 60vh; }
-      .chat-sidebar { width: 60px; padding: 8px 4px; }
-      .chat-tab span { display: none; }
-    }
-  </style>
+    </style>
 </head>
-<body>
-  <!-- AUTH -->
-  <div id="auth-overlay">
-    <div class="auth-box">
-      <div class="auth-title">Zap!</div>
-      <div class="auth-sub">Выбери аватар. Его нельзя будет изменить.</div>
-      <div class="avatar-grid" id="avatar-grid"></div>
-      <input type="text" id="auth-name" placeholder="Твой никнейм" maxlength="14" style="width:100%;padding:12px 16px;margin-bottom:12px;background:var(--bg);border:1px solid var(--card-border);border-radius:var(--radius-full);color:var(--text);font-size:15px;text-align:center;">
-      <button class="btn-primary" id="auth-btn" disabled>Продолжить</button>
-    </div>
-  </div>
+<body class="light">
 
-  <!-- APP SHELL -->
-  <div class="app-shell" id="app" style="display:none;opacity:0;transition:opacity 0.4s ease;">
-    <aside class="sidebar">
-      <button class="nav-btn active" data-target="feed"><span class="icon">📰</span><span class="tooltip">Лента</span></button>
-      <button class="nav-btn" data-target="friends"><span class="icon">👥</span><span class="tooltip">Друзья</span></button>
-      <button class="nav-btn" data-target="chats"><span class="icon">💬</span><span class="tooltip">Чаты</span></button>
-      <button class="nav-btn" data-target="games"><span class="icon">🎮</span><span class="tooltip">Игры</span></button>
-      <button class="nav-btn" data-target="profile"><span class="icon">👤</span><span class="tooltip">Профиль</span></button>
-      <button class="nav-btn" data-target="settings"><span class="icon">⚙️</span><span class="tooltip">Настройки</span></button>
-    </aside>
-
-    <main class="main-content">
-      <header class="top-bar">
-        <div class="logo"><span class="dot"></span> Zap!</div>
-        <button class="logout-btn" id="logout-btn" title="Выйти">🚪</button>
-      </header>
-
-      <section id="feed" class="view active">
-        <div class="card feed-item">
-          <div class="feed-header"><div class="feed-avatar">👨‍💻</div><div class="feed-meta"><h4>Разработчик</h4><span>Только что</span></div></div>
-          <div class="feed-body">Добро пожаловать в Zap! Минимализм, скорость и никаких лишних элементов. Попробуй левое меню.</div>
-          <div class="feed-actions"><button class="action-btn">❤️ 14</button><button class="action-btn">💬 2</button><button class="action-btn">🔗 Поделиться</button></div>
-        </div>
-        <div class="card feed-item">
-          <div class="feed-header"><div class="feed-avatar">🎨</div><div class="feed-meta"><h4>Дизайн-команда</h4><span>2 часа назад</span></div></div>
-          <div class="feed-body">Фон профиля теперь можно нарисовать самому. Зайди в настройки профиля и открой палитру.</div>
-          <div class="feed-actions"><button class="action-btn">❤️ 32</button><button class="action-btn">💬 5</button><button class="action-btn">🔗 Поделиться</button></div>
-        </div>
-      </section>
-
-      <section id="friends" class="view">
-        <div class="grid" id="friends-grid"></div>
-      </section>
-
-      <section id="chats" class="view">
-        <div class="chat-layout">
-          <div class="chat-sidebar" id="chat-sidebar"></div>
-          <div class="chat-main">
-            <div class="chat-header" id="chat-header">🌐 Общий чат</div>
-            <div class="messages" id="chat-messages"></div>
-            <div class="chat-input-wrap">
-              <input type="text" id="chat-input" class="chat-input" placeholder="Написать сообщение...">
-              <button class="send-btn" id="chat-send">➤</button>
+    <!-- ЭКРАН РЕГИСТРАЦИИ -->
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h1>Zap! ⚡</h1>
+            <p style="margin-top: 10px; color: var(--text-muted);">Выбери свой аватар навсегда</p>
+            <div class="emoji-grid" id="emoji-picker">
+                <!-- Генерируется через JS -->
             </div>
-          </div>
+            <input type="text" id="username-input" class="input-text" placeholder="Твое имя..." style="width: 100%; margin-top: 10px;">
+            <button class="btn" onclick="register()">Войти в Zap!</button>
         </div>
-      </section>
+    </div>
 
-      <section id="games" class="view">
-        <div class="game-grid">
-          <div class="game-card" data-id="snake"><span class="game-icon">🐍</span><div class="game-title">Змейка</div><div class="game-desc">Классика на 1-3 игроков</div></div>
-          <div class="game-card" data-id="rocket"><span class="game-icon">🚀</span><div class="game-title">Ракета</div><div class="game-desc">Уклонение от астероидов</div></div>
-          <div class="game-card" data-id="pong"><span class="game-icon">🏓</span><div class="game-title">Пинг-Понг</div><div class="game-desc">Против ИИ или друга</div></div>
-          <div class="game-card" data-id="potato"><span class="game-icon">🔥</span><div class="game-title">Картошка</div><div class="game-desc">На реакцию и нервы</div></div>
-          <div class="game-card" data-id="reflex"><span class="game-icon">⚡</span><div class="game-title">Рефлекс</div><div class="game-desc">Скорость клика</div></div>
-        </div>
-      </section>
-
-      <section id="profile" class="view">
-        <div class="card">
-          <div class="profile-header" id="profile-bg"></div>
-          <div class="profile-avatar" id="profile-avatar"></div>
-          <div class="profile-body">
-            <div class="profile-info"><h2 id="profile-name">Гость</h2><p id="profile-joined">Присоединился только что</p></div>
-            <textarea class="wall-input" id="wall-input" placeholder="Написать на стену профиля..."></textarea>
-            <button class="btn-sm" id="wall-save" style="margin-bottom:16px">Опубликовать</button>
-            <div class="wall-posts" id="wall-posts"></div>
-            <div class="painter">
-              <h3 style="font-size:16px;margin-bottom:10px">🎨 Редактор фона</h3>
-              <div class="painter-tools" id="painter-tools"></div>
-              <canvas id="paint-canvas"></canvas>
-              <button class="btn-sm" id="paint-save" style="margin-top:8px">💾 Применить как фон</button>
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+    <div id="app">
+        <!-- БОКОВОЕ МЕНЮ -->
+        <nav class="sidebar">
+            <div class="logo">Zap! ⚡</div>
+            <button class="nav-btn active" data-target="feed" onclick="switchView('feed')"><span>📜</span> Лента</button>
+            <button class="nav-btn" data-target="friends" onclick="switchView('friends')"><span>👥</span> Друзья</button>
+            <button class="nav-btn" data-target="chats" onclick="switchView('chats')"><span>💬</span> Чаты</button>
+            <button class="nav-btn" data-target="games" onclick="switchView('games')"><span>🎮</span> Игры</button>
+            <button class="nav-btn" data-target="profile" onclick="switchView('profile')"><span>👤</span> Профиль</button>
+            <button class="nav-btn" data-target="settings" onclick="switchView('settings')"><span>⚙️</span> Настройки</button>
+            
+            <div class="user-mini">
+                <span class="user-mini-avatar" id="mini-avatar">😀</span>
+                <span style="font-weight: bold;" id="mini-name">User</span>
             </div>
-          </div>
-        </div>
-      </section>
+        </nav>
 
-      <section id="settings" class="view">
-        <div class="card">
-          <div class="setting-row">
-            <span class="setting-label">🌗 Тема оформления</span>
-            <button class="theme-toggle" id="theme-toggle" title="Переключить тему"><span class="sun-moon"></span></button>
-          </div>
-          <div class="setting-row">
-            <span class="setting-label">🔊 Громкость интерфейса</span>
-            <input type="range" id="vol-ui" min="0" max="100" value="35">
-          </div>
-          <div class="setting-row">
-            <span class="setting-label">🔔 Громкость уведомлений</span>
-            <input type="range" id="vol-notify" min="0" max="100" value="60">
-          </div>
-          <div class="setting-row">
-            <span class="setting-label">🗑 Очистить данные</span>
-            <button class="btn-sm" id="clear-data" style="background:var(--danger);color:#fff;border:none">Сброс</button>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+        <!-- ГЛАВНЫЙ КОНТЕНТ -->
+        <main class="main-content">
+            
+            <!-- ЛЕНТА -->
+            <div id="view-feed" class="view active">
+                <h2>Лента новостей</h2><br>
+                <div class="post-input-area">
+                    <input type="text" id="new-post-text" class="input-text" placeholder="Что нового?">
+                    <button class="btn" style="width: auto; margin:0;" onclick="createPost()">Запостить</button>
+                </div>
+                <div id="feed-container">
+                    <!-- Посты -->
+                </div>
+            </div>
 
-  <!-- OVERLAYS -->
-  <div class="overlay" id="profile-overlay">
-    <div class="modal">
-      <button class="modal-close" id="p-close">✕</button>
-      <div class="profile-header" id="p-bg"></div>
-      <div class="profile-avatar" id="p-avatar"></div>
-      <div class="profile-body">
-        <div class="profile-info"><h2 id="p-name"></h2><p>В сети • Уровень <span id="p-lvl">1</span></p></div>
-        <div class="wall-posts" id="p-wall-posts"></div>
-        <button class="btn-sm" id="p-chat" style="margin-top:12px;width:100%">💬 Открыть чат</button>
-        <button class="btn-sm" id="p-call" style="margin-top:8px;width:100%;background:var(--accent);color:#fff;border:none">📞 Позвонить</button>
-      </div>
+            <!-- ДРУЗЬЯ -->
+            <div id="view-friends" class="view">
+                <h2>Мои друзья</h2><br>
+                <div id="friends-list"></div>
+            </div>
+
+            <!-- ЧАТЫ -->
+            <div id="view-chats" class="view">
+                <h2>Чаты</h2><br>
+                <div class="chat-window">
+                    <div class="chat-header">
+                        <strong id="chat-active-name">💬 Выберите чат</strong>
+                        <div class="chat-controls">
+                            <button class="icon-btn" onclick="fakeCall('📞 Звонок')">📞</button>
+                            <button class="icon-btn" onclick="fakeCall('📹 Видео')">📹</button>
+                            <button class="icon-btn" onclick="fakeCall('🖥 Демонстрация экрана')">🖥</button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chat-box">
+                        <div style="text-align:center; color: var(--text-muted); margin-top: auto;">Здесь пока пусто...</div>
+                    </div>
+                    <div class="post-input-area" style="margin: 20px;">
+                        <input type="text" id="chat-input" class="input-text" placeholder="Написать сообщение...">
+                        <button class="btn" style="width: auto; margin:0;" onclick="sendChat()">Отправить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ИГРЫ -->
+            <div id="view-games" class="view">
+                <h2>Игровой центр</h2><br>
+                <div class="games-grid" id="games-menu">
+                    <div class="game-card" onclick="startGame('snake')">
+                        <div class="game-icon">🐍</div><h3>Змейка</h3><p>Классика</p>
+                    </div>
+                    <div class="game-card" onclick="startGame('rocket')">
+                        <div class="game-icon">🚀</div><h3>Полет Ракеты</h3><p>Уклоняйся от пуль</p>
+                    </div>
+                    <div class="game-card" onclick="notify('Игра в разработке!')">
+                        <div class="game-icon">🏓</div><h3>Пинг-Понг</h3><p>Скоро</p>
+                    </div>
+                    <div class="game-card" onclick="notify('Игра в разработке!')">
+                        <div class="game-icon">🧩</div><h3>Тетрис</h3><p>Скоро</p>
+                    </div>
+                    <div class="game-card" onclick="notify('Игра в разработке!')">
+                        <div class="game-icon">⚔️</div><h3>Арена</h3><p>Скоро</p>
+                    </div>
+                </div>
+
+                <!-- Контейнер для Змейки -->
+                <div id="game-snake" class="game-container">
+                    <button class="btn" style="width: 200px; margin-bottom: 10px;" onclick="stopGames()">🔙 Назад к играм</button>
+                    <h3>Счет: <span id="snake-score">0</span></h3>
+                    <canvas id="snakeCanvas" width="400" height="400" class="game-canvas"></canvas>
+                    <p style="color:var(--text-muted)">Используй стрелочки для управления</p>
+                </div>
+
+                <!-- Контейнер для Ракеты -->
+                <div id="game-rocket" class="game-container">
+                    <button class="btn" style="width: 200px; margin-bottom: 10px;" onclick="stopGames()">🔙 Назад к играм</button>
+                    <h3>Очки: <span id="rocket-score">0</span></h3>
+                    <canvas id="rocketCanvas" width="400" height="500" class="game-canvas"></canvas>
+                    <p style="color:var(--text-muted)">Кликай/нажимай на стороны для движения</p>
+                </div>
+            </div>
+
+            <!-- ПРОФИЛЬ -->
+            <div id="view-profile" class="view">
+                <div class="profile-header">
+                    <div class="color-picker">
+                        <button class="color-btn" style="background: #ff4757" onclick="ctxProfile.strokeStyle='#ff4757'"></button>
+                        <button class="color-btn" style="background: #1e90ff" onclick="ctxProfile.strokeStyle='#1e90ff'"></button>
+                        <button class="color-btn" style="background: #2ed573" onclick="ctxProfile.strokeStyle='#2ed573'"></button>
+                        <button class="color-btn" style="background: #ffffff" onclick="ctxProfile.strokeStyle='#ffffff'"></button>
+                        <button class="color-btn" style="background: #000000" onclick="ctxProfile.strokeStyle='#000000'"></button>
+                        <button class="icon-btn" style="font-size: 14px; padding: 2px 8px;" onclick="clearCanvas()">🧹</button>
+                    </div>
+                    <canvas id="profile-canvas"></canvas>
+                    <div class="profile-actions">
+                        <button class="icon-btn" onclick="logout()" title="Выйти">🚪</button>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-avatar" id="prof-avatar">😀</div>
+                    <div>
+                        <h1 id="prof-name">User</h1>
+                        <p style="color: var(--text-muted)">В сети 🟢</p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 40px; margin-bottom: 20px;">Стена (Публичные сообщения)</h3>
+                <div class="post-input-area">
+                    <input type="text" id="wall-input" class="input-text" placeholder="Написать на стене...">
+                    <button class="btn" style="width: auto; margin:0;" onclick="postWall()">Отправить</button>
+                </div>
+                <div id="wall-container"></div>
+            </div>
+
+            <!-- НАСТРОЙКИ -->
+            <div id="view-settings" class="view">
+                <h2>Настройки</h2><br>
+                <div class="settings-group">
+                    <div class="setting-row">
+                        <strong>Тема оформления</strong>
+                        <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" style="font-size: 30px;">☀️</button>
+                    </div>
+                    <div class="setting-row">
+                        <strong>Громкость звуков</strong>
+                        <input type="range" id="vol-slider" min="0" max="100" value="50" oninput="changeVolume(this.value)">
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
-  </div>
 
-  <div class="call-container" id="call-ui">
-    <div class="call-video">
-      <video id="call-remote" autoplay playsinline muted></video>
-      <div class="call-self"><video id="call-local" autoplay playsinline muted></video></div>
-      <div class="call-status" id="call-status">Подключение...</div>
-    </div>
-    <div class="call-controls">
-      <button class="call-btn" id="call-mic">🎙️</button>
-      <button class="call-btn" id="call-cam">📷</button>
-      <button class="call-btn" id="call-screen">🖥️</button>
-      <button class="call-btn danger" id="call-end">📞</button>
-    </div>
-  </div>
+    <!-- Уведомления -->
+    <div id="notif-container"></div>
 
-  <div class="game-modal" id="game-modal">
-    <button class="close-game" id="game-close">✕</button>
-    <div class="game-canvas-wrap"><canvas id="game-canvas" width="700" height="450"></canvas></div>
-    <div class="game-hud">
-      <div class="hud-score" id="hud-score">0</div>
-      <div class="hud-btns">
-        <button class="btn-sm" id="game-pause">⏸ Пауза</button>
-        <button class="btn-sm" id="game-start" style="background:var(--accent);color:#fff;border:none">▶ Старт</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="toast-container"></div>
-
-  <script>
-    // ================= CORE STATE & STORAGE =================
-    const Store = {
-      get(k, def=null) { try{const v=localStorage.getItem('zap_'+k); return v?JSON.parse(v):def}catch(e){return def} },
-      set(k,v) { localStorage.setItem('zap_'+k, JSON.stringify(v)); },
-      users: Store.get('users', {}),
-      chats: Store.get('chats', { global: [{t:Date.now(), self:false, name:'Система', text:'Добро пожаловать в Zap!'}] }),
-      walls: Store.get('walls', {}),
-      user: Store.get('user', null),
-      sync(k) { window.dispatchEvent(new StorageEvent('storage', {key:'zap_'+k})); }
-    };
-
-    // ================= AUDIO ENGINE =================
-    const AudioEngine = {
-      ctx: null, uiGain: null, notifGain: null,
-      init() {
-        if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        this.uiGain = this.ctx.createGain(); this.uiGain.connect(this.ctx.destination);
-        this.notifGain = this.ctx.createGain(); this.notifGain.connect(this.ctx.destination);
-        this.updateVol();
-      },
-      play(type, vol='ui') {
-        if(!this.ctx) this.init();
-        const g = vol==='ui' ? this.uiGain : this.notifGain;
-        const o = this.ctx.createOscillator(); const e = this.ctx.createGain();
-        o.connect(e); e.connect(g);
-        const n = this.ctx.currentTime;
-        if(type==='click'){ o.frequency.setValueAtTime(600,n); o.type='sine'; e.gain.setValueAtTime(0.25,n); e.gain.exponentialRampToValueAtTime(0.01,n+0.06); }
-        else if(type==='notify'){ o.frequency.setValueAtTime(520,n); o.type='triangle'; e.gain.setValueAtTime(0.3,n); o.frequency.linearRampToValueAtTime(780,n+0.12); e.gain.exponentialRampToValueAtTime(0.01,n+0.25); }
-        else if(type==='game'){ o.frequency.setValueAtTime(300,n); o.type='square'; e.gain.setValueAtTime(0.15,n); o.frequency.linearRampToValueAtTime(450,n+0.08); e.gain.exponentialRampToValueAtTime(0.01,n+0.1); }
-        o.start(n); o.stop(n+0.25);
-      },
-      updateVol() {
-        if(this.uiGain) this.uiGain.gain.setTargetAtTime((Store.get('vol_ui',35)/100), this.ctx.currentTime, 0.1);
-        if(this.notifGain) this.notifGain.gain.setTargetAtTime((Store.get('vol_notify',60)/100), this.ctx.currentTime, 0.1);
-      }
-    };
-
-    // ================= NOTIFICATIONS =================
-    const Notif = {
-      container: document.getElementById('toast-container'),
-      channel: new BroadcastChannel('zap_notif'),
-      show(title, msg, icon='🔔') {
-        const t = document.createElement('div'); t.className='toast';
-        t.innerHTML = `<div class="toast-icon">${icon}</div><div class="toast-content"><h4>${title}</h4><p>${msg}</p></div><button class="toast-close">✕</button><div class="toast-progress"></div>`;
-        this.container.appendChild(t); setTimeout(()=>t.remove(), 4500);
-        t.querySelector('.toast-close').onclick = () => t.remove();
-        AudioEngine.play('notify', 'notif');
-      },
-      init() {
-        this.channel.onmessage = e => { if(e.data.type==='toast') this.show(e.data.title, e.data.msg, e.data.icon); };
-        window.addEventListener('storage', e => {
-          if(e.key==='zap_walls') this.show('Новая запись', 'Кто-то написал на стене', '📝');
-          if(e.key==='zap_chats') this.show('Сообщение', 'Вам написали', '💬');
-        });
-      }
-    };
-
-    // ================= AUTH =================
-    const Auth = {
-      avatars: ['🦊','🐼','🦉','🐸','🦄','🐉','🦋','🐢','🐙','🦖','🐺','🦈'],
-      selected: null,
-      init() {
-        const g = document.getElementById('avatar-grid');
-        this.avatars.forEach((a,i) => {
-          const d = document.createElement('div'); d.className='avatar-opt'; d.textContent=a;
-          d.onclick = () => { g.querySelectorAll('.avatar-opt').forEach(x=>x.classList.remove('selected')); d.classList.add('selected'); this.selected=i; AudioEngine.play('click'); };
-          g.appendChild(d);
-        });
-        const nameIn = document.getElementById('auth-name');
-        const btn = document.getElementById('auth-btn');
-        const check = () => btn.disabled = !(nameIn.value.trim().length>1 && this.selected!==null);
-        nameIn.oninput = check;
-        btn.onclick = () => {
-          const id = 'u_'+Date.now().toString(36);
-          const u = { id, name:nameIn.value.trim(), avatar:this.avatars[this.selected], bg:null, joined:new Date().toLocaleString() };
-          Store.users[id]=u; Store.set('users', Store.users);
-          Store.user = u; Store.set('user', u);
-          AudioEngine.play('click'); Notif.show('Успех', 'Аккаунт создан', '✅');
-          setTimeout(()=>this.enter(), 300);
-        };
-        if(Store.user) this.enter();
-      },
-      enter() {
-        document.getElementById('auth-overlay').style.opacity='0'; setTimeout(()=>document.getElementById('auth-overlay').style.display='none',300);
-        const app = document.getElementById('app'); app.style.display='flex'; setTimeout(()=>app.style.opacity='1',50);
-        UI.init();
-      },
-      logout() { AudioEngine.play('click'); Store.user=null; location.reload(); }
-    };
-
-    // ================= UI CONTROLLER =================
-    const UI = {
-      init() {
-        this.setupNav(); this.setupSettings(); this.renderFriends(); this.renderProfile();
-        this.setupChat(); this.setupCalls(); this.setupPainter(); this.setupGames();
-        document.getElementById('logout-btn').onclick = () => Auth.logout();
-        const theme = Store.get('theme','light'); document.documentElement.setAttribute('data-theme', theme);
-        document.getElementById('vol-ui').value = Store.get('vol_ui',35);
-        document.getElementById('vol-notify').value = Store.get('vol_notify',60);
-        AudioEngine.updateVol();
-      },
-      setupNav() {
-        document.querySelectorAll('.nav-btn').forEach(b=>{
-          b.onclick = ()=>{
-            document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-            document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-            document.getElementById(b.dataset.target).classList.add('active');
-            AudioEngine.play('click');
-          }
-        });
-      },
-      setupSettings() {
-        document.getElementById('theme-toggle').onclick = ()=>{
-          const c = document.documentElement.getAttribute('data-theme');
-          const n = c==='light'?'dark':'light';
-          document.documentElement.setAttribute('data-theme', n); Store.set('theme', n); AudioEngine.play('click');
-        };
-        const volSet = (id, key) => { const i=document.getElementById(id); i.oninput=()=>{ Store.set(key, +i.value); AudioEngine.updateVol(); }; };
-        volSet('vol-ui','vol_ui'); volSet('vol-notify','vol_notify');
-        document.getElementById('clear-data').onclick = ()=>{ localStorage.clear(); location.reload(); };
-      },
-      renderFriends() {
-        const g = document.getElementById('friends-grid');
-        const fs = [
-          {id:'f1',name:'Алексей',avatar:'🦊',lvl:4},{id:'f2',name:'Мария',avatar:'🦋',lvl:7},
-          {id:'f3',name:'Дима',avatar:'🐢',lvl:2},{id:'f4',name:'Катя',avatar:'🦄',lvl:12},{id:'f5',name:'Иван',avatar:'🐼',lvl:9}
+    <script>
+        /* ================= ДАННЫЕ И СОСТОЯНИЕ ================= */
+        const emojis = ['👽','👻','🤖','🐱','🐶','🦊','🦁','🐸','🐼','🦄','🦖','🐙','🔥','⭐','🥑'];
+        const friendsDB = [
+            { id: 1, name: "Иван ITD", avatar: "👨‍💻", status: "Пишет код..." },
+            { id: 2, name: "Алиса", avatar: "🦊", status: "Играет в змейку" },
+            { id: 3, name: "Кирилл", avatar: "👽", status: "Спит" }
         ];
-        g.innerHTML = fs.map(f=>`<div class="friend-card" data-id="${f.id}"><div class="friend-avatar-lg">${f.avatar}</div><div class="friend-name">${f.name}</div><div class="friend-status">В сети</div></div>`).join('');
-        g.querySelectorAll('.friend-card').forEach(el=>{
-          el.onclick = () => this.openProfile(el.dataset.id, fs.find(x=>x.id===el.dataset.id));
-        });
-      },
-      openProfile(id, data) {
-        const ov = document.getElementById('profile-overlay');
-        document.getElementById('p-name').textContent = data.name;
-        document.getElementById('p-avatar').textContent = data.avatar;
-        document.getElementById('p-lvl').textContent = data.lvl;
-        if(data.bg) document.getElementById('p-bg').style.backgroundImage=`url(${data.bg})`;
-        this.renderWall('p-wall-posts', data.id);
-        ov.classList.add('active');
-        document.getElementById('p-close').onclick = ()=>ov.classList.remove('active');
-        document.getElementById('p-chat').onclick = ()=>{ ov.classList.remove('active'); document.querySelector('[data-target="chats"]').click(); Chat.switch(data.id, data.name); };
-      },
-      renderProfile() {
-        const u = Store.user;
-        document.getElementById('profile-name').textContent = u.name;
-        document.getElementById('profile-avatar').textContent = u.avatar;
-        if(u.bg) document.getElementById('profile-bg').style.backgroundImage=`url(${u.bg})`;
-        document.getElementById('profile-joined').textContent = 'Участник с ' + u.joined;
-        this.renderWall('wall-posts', u.id);
-      },
-      renderWall(id, uid) {
-        const c = document.getElementById(id); c.innerHTML='';
-        (Store.walls[uid]||[]).slice().reverse().slice(0,10).forEach(p=>{
-          c.innerHTML += `<div class="wall-post"><strong>${p.a}</strong> <span style="float:right;font-size:11px;color:var(--text-subtle)">${new Date(p.t).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><div style="margin-top:4px">${p.t}</div></div>`;
-        });
-      },
-      setupChat() { Chat.init(); },
-      setupCalls() { Calls.init(); },
-      setupPainter() { Painter.init(); },
-      setupGames() { Game.init(); }
-    };
+        let currentUser = { name: "", avatar: "" };
+        let volume = 0.5;
+        let isDark = false;
 
-    // ================= CHAT =================
-    const Chat = {
-      active: 'global', activeName: 'Общий чат',
-      sidebar: document.getElementById('chat-sidebar'), msgBox: document.getElementById('chat-messages'), input: document.getElementById('chat-input'),
-      init() {
-        this.renderTabs(); this.load('global');
-        document.getElementById('chat-send').onclick = ()=>this.send();
-        this.input.onkeydown = e=>{ if(e.key==='Enter') this.send(); };
-      },
-      renderTabs() {
-        const fs = Store.get('users',{});
-        let html = `<div class="chat-tab ${this.active==='global'?'active':''}" data-id="global"><span>🌐 Общий</span></div>`;
-        for(let id in fs) if(id!==Store.user.id) html+=`<div class="chat-tab" data-id="${id}"><span>${fs[id].avatar} ${fs[id].name}</span></div>`;
-        this.sidebar.innerHTML = html;
-        this.sidebar.querySelectorAll('.chat-tab').forEach(t=>{
-          t.onclick = ()=>this.switch(t.dataset.id, t.textContent.replace(/[^а-яА-Яa-zA-Z0-9 ]/g,'').trim());
-        });
-      },
-      switch(id, name) {
-        this.active = id; this.activeName = name;
-        this.sidebar.querySelectorAll('.chat-tab').forEach(t=>t.classList.toggle('active', t.dataset.id===id));
-        document.getElementById('chat-header').textContent = name;
-        this.load(id);
-      },
-      load(id) {
-        if(!Store.chats[id]) Store.chats[id]=[];
-        this.msgBox.innerHTML = Store.chats[id].map(m=>`<div class="msg ${m.s?'self':'other'}"><div>${m.t}</div><div class="msg-time">${m.n} • ${new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
-        this.msgBox.scrollTop = this.msgBox.scrollHeight;
-      },
-      send() {
-        const txt = this.input.value.trim(); if(!txt) return;
-        const m = {ts:Date.now(), self:true, n:Store.user.name, t:txt};
-        if(!Store.chats[this.active]) Store.chats[this.active]=[];
-        Store.chats[this.active].push(m); Store.set('chats', Store.chats); Store.sync('chats');
-        this.input.value=''; this.load(this.active); AudioEngine.play('click');
-        if(this.active!=='global') setTimeout(()=>this.reply(), 1200+Math.random()*1500);
-      },
-      reply() {
-        const fs = Object.values(Store.users).filter(u=>u.id!==Store.user.id);
-        if(!fs.length) return; const f=fs[Math.floor(Math.random()*fs.length)];
-        const rep = ['Окей','Го играть','Сейчас занят','🔥','Давай!','Понял'][Math.floor(Math.random()*6)];
-        Store.chats[this.active].push({ts:Date.now(), self:false, n:f.name, t:rep});
-        Store.set('chats', Store.chats); Store.sync('chats');
-        this.load(this.active); Notif.show(f.name, rep, f.avatar);
-      }
-    };
+        /* ================= ЗВУКОВАЯ СИСТЕМА (Web Audio API) ================= */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
 
-    // ================= CALLS =================
-    const Calls = {
-      local: document.getElementById('call-local'), remote: document.getElementById('call-remote'), status: document.getElementById('call-status'),
-      stream: null, display: null, active: false,
-      init() {
-        document.getElementById('p-call').onclick = ()=>this.start();
-        document.getElementById('call-end').onclick = ()=>this.stop();
-        document.getElementById('call-mic').onclick = ()=>this.toggle('audio');
-        document.getElementById('call-cam').onclick = ()=>this.toggle('video');
-        document.getElementById('call-screen').onclick = ()=>this.screen();
-      },
-      async start() {
-        document.getElementById('call-ui').style.display='block';
-        try {
-          this.stream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-          this.local.srcObject = this.stream;
-          this.status.textContent='Подключение...';
-          setTimeout(()=>{ this.status.textContent='Звонок активен'; this.active=true; Notif.show('Звонок','Соединение установлено','📞'); }, 1000);
-        } catch(e) { this.status.textContent='Нет доступа к камере'; }
-      },
-      stop() {
-        if(this.stream) this.stream.getTracks().forEach(t=>t.stop());
-        if(this.display) this.display.getTracks().forEach(t=>t.stop());
-        this.local.srcObject=null; this.remote.srcObject=null;
-        document.getElementById('call-ui').style.display='none'; this.active=false;
-      },
-      toggle(type) {
-        if(!this.stream) return;
-        const t = type==='audio' ? this.stream.getAudioTracks()[0] : this.stream.getVideoTracks()[0];
-        t.enabled = !t.enabled; AudioEngine.play('click');
-      },
-      async screen() {
-        try {
-          this.display = await navigator.mediaDevices.getDisplayMedia({video:true});
-          this.remote.srcObject = this.display;
-          this.display.getVideoTracks()[0].onended = ()=>this.remote.srcObject=null;
-        } catch(e){}
-      }
-    };
+        function playSound(type) {
+            if (volume === 0 || audioCtx.state === 'suspended') return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
 
-    // ================= PAINTER =================
-    const Painter = {
-      cvs: document.getElementById('paint-canvas'), ctx: null, drawing: false, color: '#0a84ff', size: 4,
-      init() {
-        this.ctx = this.cvs.getContext('2d'); this.cvs.width = this.cvs.clientWidth; this.cvs.height = this.cvs.clientHeight;
-        const tools = document.getElementById('painter-tools');
-        const colors = ['#0a84ff','#ff3b30','#34c759','#ffcc00','#af52de','#ff9500','#000000','#ffffff'];
-        colors.forEach(c=>{
-          const b=document.createElement('div'); b.className='color-btn'+(c===this.color?' active':''); b.style.background=c;
-          b.onclick=()=>{ this.color=c; tools.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); AudioEngine.play('click'); };
-          tools.appendChild(b);
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'notify') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        // Перехват всех кликов для звука
+        document.addEventListener('click', (e) => {
+            if(e.target.closest('button') || e.target.closest('.friend-info') || e.target.closest('.game-card')) {
+                playSound('click');
+            }
         });
-        this.cvs.onpointerdown = e=>{ this.drawing=true; this.draw(e); };
-        this.cvs.onpointermove = e=>{ if(this.drawing) this.draw(e); };
-        this.cvs.onpointerup = ()=>this.drawing=false;
-        document.getElementById('paint-save').onclick = ()=>{
-          const data = this.cvs.toDataURL();
-          Store.user.bg = data; Store.set('user', Store.user);
-          document.getElementById('profile-bg').style.backgroundImage=`url(${data})`;
-          Notif.show('Фон обновлён','Изменения сохранены','🎨'); AudioEngine.play('click');
+
+        /* ================= УВЕДОМЛЕНИЯ ================= */
+        function notify(text, icon = '⚡') {
+            playSound('notify');
+            const container = document.getElementById('notif-container');
+            const el = document.createElement('div');
+            el.className = 'notification';
+            el.innerHTML = `<span>${icon}</span> <div>${text}</div>`;
+            container.appendChild(el);
+            setTimeout(() => {
+                el.style.animation = 'slideOutRight 0.4s forwards';
+                setTimeout(() => el.remove(), 400);
+            }, 3000);
+        }
+
+        /* ================= ИНИЦИАЛИЗАЦИЯ И АВТОРИЗАЦИЯ ================= */
+        window.onload = () => {
+            // Аудио контекст требует жеста пользователя
+            document.body.addEventListener('click', () => { if(audioCtx.state === 'suspended') audioCtx.resume(); }, {once:true});
+            
+            // Настройка экрана выбора эмодзи
+            const picker = document.getElementById('emoji-picker');
+            emojis.forEach(e => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.innerText = e;
+                btn.onclick = () => {
+                    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                };
+                picker.appendChild(btn);
+            });
+
+            // Проверка сохраненной сессии
+            const savedUser = localStorage.getItem('zap_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                startApp();
+            }
+
+            // Загрузка темы
+            const savedTheme = localStorage.getItem('zap_theme');
+            if (savedTheme === 'dark') toggleTheme(true);
+
+            initCanvas();
+            renderFriends();
+            generateFakeFeed();
         };
-        document.getElementById('wall-save').onclick = ()=>{
-          const t = document.getElementById('wall-input').value.trim(); if(!t) return;
-          if(!Store.walls[Store.user.id]) Store.walls[Store.user.id]=[];
-          Store.walls[Store.user.id].push({t, a:Store.user.name, ts:Date.now()});
-          Store.set('walls', Store.walls); Store.sync('walls');
-          document.getElementById('wall-input').value=''; UI.renderProfile(); AudioEngine.play('click');
-        };
-      },
-      draw(e) {
-        const r=this.cvs.getBoundingClientRect(); const x=e.clientX-r.left; const y=e.clientY-r.top;
-        this.ctx.fillStyle=this.color; this.ctx.beginPath; this.ctx.arc(x,y,this.size,0,Math.PI*2); this.ctx.fill();
-      }
-    };
 
-    // ================= GAME ENGINE =================
-    const Game = {
-      id: null, canvas: document.getElementById('game-canvas'), ctx: null, loop: null, run: false, score: 0,
-      inp: {}, parts: [], state: {}, dt: 0, last: 0,
-      init() {
-        window.addEventListener('keydown', e=>this.inp[e.key.toLowerCase()]=true);
-        window.addEventListener('keyup', e=>this.inp[e.key.toLowerCase()]=false);
-        document.querySelectorAll('.game-card').forEach(c=>c.onclick=()=>this.open(c.dataset.id));
-        document.getElementById('game-close').onclick=()=>this.close();
-        document.getElementById('game-start').onclick=()=>this.toggle();
-        document.getElementById('game-pause').onclick=()=>this.toggle();
-      },
-      open(id) {
-        this.id=id; this.score=0; this.run=false; this.parts=[]; this.state={};
-        document.getElementById('game-modal').style.display='flex';
-        this.ctx=this.canvas.getContext('2d');
-        document.getElementById('hud-score').textContent='0';
-        document.getElementById('game-start').textContent='▶ Старт';
-      },
-      close() { document.getElementById('game-modal').style.display='none'; this.stop(); },
-      toggle() { this.run ? this.stop() : this.start(); },
-      start() {
-        this.run=true; this.score=0; this.state={}; this.parts=[];
-        document.getElementById('game-start').textContent='⏸ Пауза';
-        this.last=performance.now(); this.loopFn();
-      },
-      stop() { this.run=false; document.getElementById('game-start').textContent='▶ Старт'; },
-      loopFn() {
-        if(!this.run) return;
-        const now=performance.now(); this.dt=(now-this.last)/1000; this.last=now; this.update(); this.draw(); this.renderParts();
-        document.getElementById('hud-score').textContent=this.score;
-        this.loop=requestAnimationFrame(()=>this.loopFn());
-      },
-      addPart(x,y,c='#fff') { for(let i=0;i<10;i++) this.parts.push({x,y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,l:1,s:2+Math.random()*4,c}); },
-      renderParts() {
-        const c=this.ctx; c.globalAlpha=1;
-        this.parts.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.l-=0.03; c.globalAlpha=p.l; c.fillStyle=p.c; c.beginPath(); c.arc(p.x,p.y,p.s,0,Math.PI*2); c.fill(); if(p.l<=0) this.parts.splice(i,1); });
-      },
-      update() {
-        const s=this.state, i=this.inp;
-        if(this.id==='snake') this.upSnake(s,i);
-        else if(this.id==='rocket') this.upRocket(s,i);
-        else if(this.id==='pong') this.upPong(s,i);
-        else if(this.id==='potato') this.upPotato(s,i);
-        else if(this.id==='reflex') this.upReflex(s,i);
-      },
-      draw() {
-        const c=this.ctx; c.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--bg'); c.fillRect(0,0,700,450);
-        if(this.id==='snake') this.drSnake(c,this.state);
-        else if(this.id==='rocket') this.drRocket(c,this.state);
-        else if(this.id==='pong') this.drPong(c,this.state);
-        else if(this.id==='potato') this.drPotato(c,this.state);
-        else if(this.id==='reflex') this.drReflex(c,this.state);
-      },
-      // SNAKE
-      upSnake(s,i) { s.f=(s.f||0)+1; if(s.f%12>1) return; if(i.a&&s.p1.vx!==1){s.p1.vx=-1;s.p1.vy=0;} if(i.d&&s.p1.vx!==-1){s.p1.vx=1;s.p1.vy=0;} if(i.w&&s.p1.vy!==1){s.p1.vx=0;s.p1.vy=-1;} if(i.s&&s.p1.vy!==-1){s.p1.vx=0;s.p1.vy=1;}
-        [s.p1,s.p2,s.p3].forEach((p,idx)=>{ if(!p||idx>=Store.user.lvl) return; const nx=p.x+p.vx, ny=p.y+p.vy; p.x=nx; p.y=ny; p.b.unshift({x:nx,y:ny}); if(nx===s.f.x&&ny===s.f.y){this.score+=10; s.f={x:Math.floor(Math.random()*34),y:Math.floor(Math.random()*21)}; this.addPart(nx*20+10,ny*20+10,'#ffcc00'); AudioEngine.play('game');} else p.b.pop(); }); },
-      drSnake(c,s) {
-        c.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--card-border'); c.lineWidth=1;
-        for(let x=0;x<=700;x+=20){c.beginPath();c.moveTo(x,0);c.lineTo(x,450);c.stroke();}
-        for(let y=0;y<=450;y+=20){c.beginPath();c.moveTo(0,y);c.lineTo(700,y);c.stroke();}
-        [s.p1,s.p2,s.p3].forEach((p,idx)=>{ if(!p||idx>=3) return; c.fillStyle=['#0a84ff','#34c759','#ff3b30'][idx]; p.b.forEach(b=>c.fillRect(b.x*20,b.y*20,18,18)); });
-        c.fillStyle='#ffcc00'; c.fillRect(s.f.x*20,s.f.y*20,20,20);
-      },
-      // ROCKET
-      upRocket(s,i) { s.sp=(s.sp||3)+this.dt*0.5; s.f=(s.f||0)+1; if(s.f%30===0) s.r.push({x:Math.random()*640,y:-20,w:20+Math.random()*30,h:20+Math.random()*30}); s.r.forEach(r=>r.y+=s.sp); s.r=s.r.filter(r=>r.y<470);
-        s.p.x+=(i.a?-5:0)+(i.d?5:0); s.p.x=Math.max(0,Math.min(680,s.p.x)); s.r.forEach(r=>{ if(s.p.x<r.x+r.w&&s.p.x+30>r.x&&380<r.y+r.h&&380>r.y){this.score-=5; this.addPart(s.p.x+15,390,'#ff3b30');} }); this.score++; },
-      drRocket(c,s) {
-        s.r.forEach(r=>{c.fillStyle='#666';c.fillRect(r.x,r.y,r.w,r.h);});
-        c.fillStyle='#0a84ff';c.beginPath();c.arc(s.p.x+15,380,15,0,Math.PI*2);c.fill();c.fillStyle='#5ac8fa';c.fillRect(s.p.x+10,395,10,20);
-      },
-      // PONG
-      upPong(s,i) { s.b.x+=s.b.vx; s.b.y+=s.b.vy; if(s.b.y<10||s.b.y>440) s.b.vy*=-1;
-        if(s.b.x<20 && s.b.y>s.p1&&s.b.y<s.p1+70) s.b.vx*=-1; if(s.b.x>680 && s.b.y>s.p2&&s.b.y<s.p2+70) s.b.vx*=-1;
-        s.p1+=(i.w?-7:0)+(i.s?7:0); s.p1=Math.max(0,Math.min(380,s.p1));
-        s.ai=(s.ai||0)+1; if(s.ai%10===0){s.p2+=(s.b.y>s.p2+35)?6:-6; s.p2=Math.max(0,Math.min(380,s.p2));}
-        if(s.b.x<0){this.score--; s.b.x=350;s.b.vx=5;} if(s.b.x>700){this.score++; s.b.x=350;s.b.vx=-5;} },
-      drPong(c,s) {
-        c.fillStyle='#fff';c.fillRect(10,s.p1,12,70);c.fillRect(678,s.p2,12,70);c.beginPath();c.arc(s.b.x,s.b.y,s.b.r,0,Math.PI*2);c.fill();
-        c.setLineDash([5,5]);c.strokeStyle='#444';c.beginPath();c.moveTo(350,0);c.lineTo(350,450);c.stroke();c.setLineDash([]);
-      },
-      // POTATO
-      upPotato(s,i) { s.tm=(s.tm||120)-this.dt*15; if(i[' ']&&s.tm<100&&s.tm>20){s.h=(s.h||0)+1; s.p=(s.p||0)+1; s.tm=Math.max(30,s.tm-15); AudioEngine.play('game');} if(s.tm<=0){this.stop(); Notif.show('Картошка','Игрок '+(s.h%4+1)+' проиграл!','🔥');} },
-      drPotato(c,s) {
-        const cols=['#ff3b30','#0a84ff','#34c759','#ffcc00']; for(let i=0;i<4;i++){ c.fillStyle=cols[i]; c.globalAlpha=(i===s.h%4)?1:0.3; c.beginPath();c.arc(140+i*130,225,45,0,Math.PI*2);c.fill(); c.globalAlpha=1; c.fillStyle='#fff';c.textAlign='center';c.fillText(`P${i+1}`,140+i*130,232); }
-        c.fillStyle='#ef4444';c.font='24px sans-serif';c.fillText('🔥',140+(s.h%4)*130,235); c.fillStyle='#999';c.font='16px sans-serif';c.fillText(`Осталось: ${Math.ceil(s.tm/15)}с`,350,400);
-      },
-      // REFLEX
-      upReflex(s,i) { s.tm=(s.tm||300)-this.dt*60; s.sp=(s.sp||0)+this.dt; if(s.sp>1.5&&s.t.length<4){s.t.push({x:40+Math.random()*620,y:40+Math.random()*370,r:20+Math.random()*15,h:false}); s.sp=0;} if(i.click){ const r=this.canvas.getBoundingClientRect(); const x=(i.cx-r.left)*(700/r.width), y=(i.cy-r.top)*(450/r.height); s.t.forEach(t=>{if(!t.h&&Math.hypot(x-t.x,y-t.y)<t.r){t.h=true; this.score+=15; this.addPart(t.x,t.y,'#34c759'); AudioEngine.play('game');}}); s.t=s.t.filter(t=>!t.h); i.click=false;} if(s.tm<=0) this.stop(); },
-      drReflex(c,s) { c.fillStyle='#0a0a0c';c.fillRect(0,0,700,450); s.t.forEach(t=>{ c.fillStyle=t.h?'#34c759':'#ffcc00'; c.beginPath();c.arc(t.x,t.y,t.r,0,Math.PI*2);c.fill(); c.strokeStyle='#fff';c.lineWidth=2;c.stroke(); }); c.fillStyle='#fff';c.textAlign='center';c.font='14px sans-serif';c.fillText(`Нажимай! ${Math.ceil(s.tm/60)}с`,350,420); }
-    };
-    document.getElementById('game-canvas').addEventListener('mousedown', e=>{Game.inp.click=true; Game.inp.cx=e.clientX; Game.inp.cy=e.clientY;});
-    document.getElementById('game-canvas').addEventListener('mouseup', ()=>Game.inp.click=false);
+        function register() {
+            const selected = document.querySelector('.emoji-btn.selected');
+            const nameInput = document.getElementById('username-input').value.trim();
+            if (!selected || !nameInput) {
+                notify('Выбери аватар и введи имя!', '⚠️');
+                return;
+            }
+            currentUser = { avatar: selected.innerText, name: nameInput };
+            localStorage.setItem('zap_user', JSON.stringify(currentUser));
+            startApp();
+        }
 
-    // ================= INIT =================
-    window.addEventListener('DOMContentLoaded', () => { Auth.init(); Notif.init(); AudioEngine.init(); });
-  </script>
+        function startApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            document.getElementById('mini-avatar').innerText = currentUser.avatar;
+            document.getElementById('mini-name').innerText = currentUser.name;
+            document.getElementById('prof-avatar').innerText = currentUser.avatar;
+            document.getElementById('prof-name').innerText = currentUser.name;
+            notify(`Добро пожаловать, ${currentUser.name}!`, currentUser.avatar);
+            loadWall();
+        }
+
+        function logout() {
+            localStorage.removeItem('zap_user');
+            location.reload();
+        }
+
+        /* ================= НАВИГАЦИЯ ================= */
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            document.querySelector(`[data-target="${viewId}"]`).classList.add('active');
+            stopGames(); // Останавливаем игры при переходе
+        }
+
+        /* ================= НАСТРОЙКИ ================= */
+        function toggleTheme(forceDark = false) {
+            const body = document.body;
+            const btn = document.getElementById('theme-toggle');
+            if (forceDark || body.classList.contains('light')) {
+                body.classList.replace('light', 'dark');
+                btn.innerText = '🌙';
+                isDark = true;
+                localStorage.setItem('zap_theme', 'dark');
+            } else {
+                body.classList.replace('dark', 'light');
+                btn.innerText = '☀️';
+                isDark = false;
+                localStorage.setItem('zap_theme', 'light');
+            }
+        }
+
+        function changeVolume(val) {
+            volume = val / 100;
+        }
+
+        /* ================= ЛЕНТА ================= */
+        function createPost(text = null, author = currentUser, isWall = false) {
+            const input = document.getElementById(isWall ? 'wall-input' : 'new-post-text');
+            const content = text || input.value.trim();
+            if (!content) return;
+            
+            const postHTML = `
+                <div class="post">
+                    <div class="post-header">
+                        <div class="post-avatar">${author.avatar}</div>
+                        <div>
+                            <strong>${author.name}</strong>
+                            <div style="font-size: 12px; color: var(--text-muted)">Только что</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${content}</div>
+                </div>
+            `;
+            const container = document.getElementById(isWall ? 'wall-container' : 'feed-container');
+            container.insertAdjacentHTML('afterbegin', postHTML);
+            if(!text) input.value = '';
+        }
+
+        function generateFakeFeed() {
+            setTimeout(() => createPost('Всем привет! Создал крутой дизайн.', friendsDB[0]), 1000);
+            setTimeout(() => createPost('Кто со мной в змейку?', friendsDB[1]), 2000);
+        }
+
+        /* ================= ПРОФИЛЬ (РИСОВАЛКА) ================= */
+        const canvas = document.getElementById('profile-canvas');
+        const ctxProfile = canvas.getContext('2d');
+        let painting = false;
+
+        function initCanvas() {
+            // Установка реального размера
+            const rect = canvas.parentNode.getBoundingClientRect();
+            canvas.width = rect.width || 800;
+            canvas.height = 200;
+            ctxProfile.lineWidth = 5;
+            ctxProfile.lineCap = 'round';
+            ctxProfile.strokeStyle = '#ff4757';
+
+            // Загрузка сохранения
+            const savedImg = localStorage.getItem('zap_bg');
+            if (savedImg) {
+                const img = new Image();
+                img.onload = () => ctxProfile.drawImage(img, 0, 0);
+                img.src = savedImg;
+            }
+
+            const startPos = (e) => { painting = true; draw(e); };
+            const endPos = () => { painting = false; ctxProfile.beginPath(); saveCanvas(); };
+            const draw = (e) => {
+                if (!painting) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+                ctxProfile.lineTo(x, y);
+                ctxProfile.stroke();
+                ctxProfile.beginPath();
+                ctxProfile.moveTo(x, y);
+            };
+
+            canvas.addEventListener('mousedown', startPos);
+            canvas.addEventListener('mouseup', endPos);
+            canvas.addEventListener('mousemove', draw);
+            // Touch events
+            canvas.addEventListener('touchstart', startPos, {passive: true});
+            canvas.addEventListener('touchend', endPos);
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive: false});
+        }
+
+        function saveCanvas() {
+            localStorage.setItem('zap_bg', canvas.toDataURL());
+        }
+
+        function clearCanvas() {
+            ctxProfile.clearRect(0, 0, canvas.width, canvas.height);
+            saveCanvas();
+        }
+
+        /* СТЕНА ПРОФИЛЯ */
+        function postWall() {
+            createPost(null, currentUser, true);
+            saveWall();
+        }
+        function saveWall() {
+            localStorage.setItem('zap_wall', document.getElementById('wall-container').innerHTML);
+        }
+        function loadWall() {
+            const saved = localStorage.getItem('zap_wall');
+            if(saved) document.getElementById('wall-container').innerHTML = saved;
+        }
+
+        /* ================= ДРУЗЬЯ И ЧАТЫ ================= */
+        function renderFriends() {
+            const list = document.getElementById('friends-list');
+            list.innerHTML = '';
+            friendsDB.forEach(f => {
+                list.innerHTML += `
+                    <div class="friend-card">
+                        <div class="friend-info" onclick="openChat('${f.name}')">
+                            <div class="post-avatar">${f.avatar}</div>
+                            <div>
+                                <strong>${f.name}</strong>
+                                <div style="font-size: 13px; color: var(--text-muted)">${f.status}</div>
+                            </div>
+                        </div>
+                        <button class="icon-btn" onclick="openChat('${f.name}')">💬</button>
+                    </div>
+                `;
+            });
+        }
+
+        let activeChat = null;
+        function openChat(name) {
+            activeChat = name;
+            document.getElementById('chat-active-name').innerText = `💬 Чат с ${name}`;
+            document.getElementById('chat-box').innerHTML = ''; // очистка
+            switchView('chats');
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chat-input');
+            if(!input.value || !activeChat) return;
+            const box = document.getElementById('chat-box');
+            box.innerHTML += `<div class="msg my">${input.value}</div>`;
+            
+            // Имитация ответа
+            setTimeout(() => {
+                box.innerHTML += `<div class="msg other">Привет! Я сейчас оффлайн, но это имитация ответа крутого чата! ✨</div>`;
+                box.scrollTop = box.scrollHeight;
+                if(document.getElementById('view-chats').classList.contains('active') === false) {
+                    notify(`Новое сообщение от ${activeChat}`, '💬');
+                }
+            }, 1000);
+            
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function fakeCall(type) {
+            if(!activeChat) { notify('Сначала выбери чат!', '⚠️'); return; }
+            notify(`Запуск: ${type} с ${activeChat}...`, '⏳');
+            setTimeout(() => notify(`${activeChat} не отвечает.`, '❌'), 4000);
+        }
+
+
+        /* ================= ИГРЫ ================= */
+        let gameLoop;
+        
+        function stopGames() {
+            cancelAnimationFrame(gameLoop);
+            document.getElementById('games-menu').style.display = 'grid';
+            document.getElementById('game-snake').style.display = 'none';
+            document.getElementById('game-rocket').style.display = 'none';
+        }
+
+        function startGame(game) {
+            document.getElementById('games-menu').style.display = 'none';
+            if (game === 'snake') {
+                document.getElementById('game-snake').style.display = 'flex';
+                initSnake();
+            } else if (game === 'rocket') {
+                document.getElementById('game-rocket').style.display = 'flex';
+                initRocket();
+            }
+        }
+
+        /* --- ЗМЕЙКА --- */
+        function initSnake() {
+            const cvs = document.getElementById("snakeCanvas");
+            const ctx = cvs.getContext("2d");
+            const box = 20;
+            let snake = [];
+            snake[0] = { x: 9 * box, y: 10 * box };
+            let food = { x: Math.floor(Math.random()*19+1)*box, y: Math.floor(Math.random()*19+1)*box };
+            let score = 0;
+            let d;
+            document.getElementById('snake-score').innerText = score;
+
+            // Обработчик клавиш
+            const keyHandler = (event) => {
+                let key = event.keyCode;
+                if( key == 37 && d != "RIGHT") d = "LEFT";
+                else if(key == 38 && d != "DOWN") d = "UP";
+                else if(key == 39 && d != "LEFT") d = "RIGHT";
+                else if(key == 40 && d != "UP") d = "DOWN";
+            };
+            document.addEventListener("keydown", keyHandler);
+
+            function draw() {
+                // Очистка
+                ctx.fillStyle = isDark ? "#141414" : "#f8f9fa";
+                ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+                for(let i = 0; i < snake.length; i++){
+                    ctx.fillStyle = (i == 0) ? "var(--accent)" : "gray";
+                    ctx.beginPath();
+                    ctx.roundRect(snake[i].x, snake[i].y, box, box, 5);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = "#ff4757";
+                ctx.beginPath();
+                ctx.roundRect(food.x, food.y, box, box, 5);
+                ctx.fill();
+
+                let snakeX = snake[0].x;
+                let snakeY = snake[0].y;
+
+                if(d == "LEFT") snakeX -= box;
+                if(d == "UP") snakeY -= box;
+                if(d == "RIGHT") snakeX += box;
+                if(d == "DOWN") snakeY += box;
+
+                if(snakeX == food.x && snakeY == food.y){
+                    score++;
+                    document.getElementById('snake-score').innerText = score;
+                    food = { x: Math.floor(Math.random()*19+1)*box, y: Math.floor(Math.random()*19+1)*box };
+                } else {
+                    snake.pop();
+                }
+
+                let newHead = {x: snakeX, y: snakeY};
+
+                // Столкновения без алертов (просто перезапуск молча)
+                if(snakeX < 0 || snakeX >= cvs.width || snakeY < 0 || snakeY >= cvs.height || collision(newHead, snake)){
+                    document.removeEventListener("keydown", keyHandler);
+                    initSnake(); // Авторестарт
+                    return;
+                }
+
+                snake.unshift(newHead);
+                gameLoop = requestAnimationFrame(() => setTimeout(draw, 100)); // Скорость
+            }
+            
+            function collision(head, array){
+                for(let i = 0; i < array.length; i++){
+                    if(head.x == array[i].x && head.y == array[i].y) return true;
+                }
+                return false;
+            }
+            draw();
+        }
+
+        /* --- ПОЛЕТ РАКЕТЫ --- */
+        function initRocket() {
+            const cvs = document.getElementById("rocketCanvas");
+            const ctx = cvs.getContext("2d");
+            let player = { x: 180, y: 400, w: 40, h: 60 };
+            let bullets = [];
+            let score = 0;
+            let frame = 0;
+            document.getElementById('rocket-score').innerText = score;
+
+            const moveHandler = (e) => {
+                const rect = cvs.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                player.x = x - player.w/2;
+            };
+            cvs.addEventListener("mousemove", moveHandler);
+            cvs.addEventListener("touchmove", moveHandler, {passive: true});
+
+            function draw() {
+                ctx.fillStyle = isDark ? "#141414" : "#f8f9fa";
+                ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+                // Игрок (Ракета)
+                ctx.font = "40px Arial";
+                ctx.fillText("🚀", player.x, player.y + 40);
+
+                // Пули
+                if(frame % 20 === 0) {
+                    bullets.push({ x: Math.random() * (cvs.width - 20), y: -20, w: 20, h: 20, speed: 5 + Math.random()*5 });
+                }
+
+                for(let i = 0; i < bullets.length; i++) {
+                    let b = bullets[i];
+                    b.y += b.speed;
+                    ctx.fillText("☄️", b.x, b.y + 20);
+
+                    // Столкновение
+                    if (player.x < b.x + b.w && player.x + player.w > b.x && player.y < b.y + b.h && player.y + player.h > b.y) {
+                        cvs.removeEventListener("mousemove", moveHandler);
+                        initRocket(); // Авторестарт
+                        return;
+                    }
+
+                    if(b.y > cvs.height) {
+                        bullets.splice(i, 1);
+                        score++;
+                        document.getElementById('rocket-score').innerText = score;
+                    }
+                }
+                frame++;
+                gameLoop = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+    </script>
 </body>
 </html>
