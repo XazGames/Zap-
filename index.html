@@ -1,186 +1,372 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Zap!</title>
   <style>
-    :root {
-      --bg: #ffffff;
-      --text: #000000;
-      --card: #f4f4f5;
-      --border: #e4e4e7;
-      --accent: #000000;
-      --muted: #71717a;
-    }
-    [data-theme="dark"] {
-      --bg: #0a0a0a;
-      --text: #fafafa;
-      --card: #18181b;
-      --border: #27272a;
-      --accent: #ffffff;
-      --muted: #a1a1aa;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.25s ease, color 0.25s ease;
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    .container { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
-    
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
-    }
-    .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-    .theme-btn {
-      background: var(--card); border: 1px solid var(--border); color: var(--text);
-      padding: 6px 10px; border-radius: 99px; cursor: pointer; font-size: 16px;
-      transition: 0.2s;
-    }
-    .theme-btn:hover { opacity: 0.8; }
-
-    nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; }
-    nav button {
-      background: none; border: none; color: var(--muted); font-size: 14px; font-weight: 500;
-      padding: 8px 14px; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: 0.2s;
-    }
-    nav button.active, nav button:hover { background: var(--card); color: var(--text); font-weight: 600; }
-
-    .section { display: none; animation: fade 0.2s ease; }
-    .section.active { display: block; }
-    @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Feed */
-    .post {
-      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-      padding: 16px; margin-bottom: 12px;
-    }
-    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--border); }
-    .post-meta { font-size: 13px; color: var(--muted); }
-    .post-text { margin-bottom: 10px; }
-    .post-actions { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
-    .post-actions span { cursor: pointer; }
-    .post-actions span:hover { color: var(--text); }
-
-    /* Grids (Friends, Chats, Games) */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-    .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px; text-align: center; cursor: pointer; transition: 0.15s;
-    }
-    .card:hover { transform: translateY(-2px); border-color: var(--text); }
-    .card-icon { font-size: 24px; margin-bottom: 6px; }
-    .card-title { font-weight: 600; margin-bottom: 4px; }
-    .card-sub { font-size: 12px; color: var(--muted); }
-
-    /* Profile */
-    .profile { text-align: center; padding: 20px 0; }
-    .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--border); margin: 0 auto 12px; }
-    .profile h2 { margin-bottom: 4px; }
-    .profile p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
-    .stats { display: flex; justify-content: center; gap: 24px; font-size: 14px; }
-    .stats div { text-align: center; }
-    .stats strong { display: block; font-size: 18px; }
-
-    @media (max-width: 500px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      nav button { padding: 6px 10px; font-size: 13px; }
-    }
+    :root { --bg:#fff; --text:#000; --card:#f4f4f5; --border:#e4e4e7; --accent:#000; --muted:#71717a; }
+    [data-theme="dark"] { --bg:#0a0a0a; --text:#fafafa; --card:#18181b; --border:#27272a; --accent:#fff; --muted:#a1a1aa; }
+    *{box-sizing:border-box;margin:0;padding:0} body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:.2s}
+    .container{max-width:720px;margin:0 auto;padding:16px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:12px}
+    .logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+    .btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:99px;cursor:pointer;font-size:13px;transition:.15s}
+    .btn:hover,.btn.active{background:var(--accent);color:var(--bg)}
+    nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px}
+    nav button{background:none;border:none;color:var(--muted);font-size:13px;font-weight:500;padding:6px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+    nav button.active{background:var(--card);color:var(--text);font-weight:600}
+    section{display:none;animation:fade .2s ease} section.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .post{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px}
+    .post-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px;color:var(--muted)}
+    .avatar{width:24px;height:24px;border-radius:50%;background:var(--border)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:.15s}
+    .card:hover{transform:translateY(-2px);border-color:var(--text)}
+    .card-icon{font-size:20px;margin-bottom:4px} .card-title{font-weight:600;font-size:14px} .card-sub{font-size:11px;color:var(--muted)}
+    .auth-box{max-width:300px;margin:15vh auto;text-align:center}
+    input{width:100%;padding:8px 10px;margin:6px 0;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)}
+    .profile{text-align:center;padding:16px 0} .profile h2{margin-bottom:4px} .profile p{color:var(--muted);font-size:13px}
+    .stats{display:flex;justify-content:center;gap:20px;font-size:13px;margin-top:12px} .stats div strong{display:block;font-size:16px}
+    #game-modal{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:100}
+    #game-modal.active{display:flex}
+    #game-canvas{background:#111;border:1px solid var(--border);border-radius:8px;max-width:95vw;max-height:60vh;touch-action:none}
+    .game-ui{margin-top:8px;text-align:center}
+    .controls{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+    .ctrl-btn{padding:10px 14px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer}
+    .close-btn{position:absolute;top:12px;right:12px;font-size:20px;background:none;border:none;cursor:pointer;color:var(--text)}
+    .hidden{display:none!important}
+    @media(max-width:500px){.grid{grid-template-columns:repeat(2,1fr)} nav button{padding:5px 8px;font-size:12px}}
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- AUTH -->
+  <div id="auth-screen" class="container auth-box">
+    <h1 class="logo" style="margin-bottom:16px">Zap!</h1>
+    <input type="text" id="username" placeholder="Никнейм" maxlength="12">
+    <input type="color" id="avatar-color" value="#888" style="height:36px;padding:2px;cursor:pointer">
+    <button class="btn" style="width:100%;margin-top:8px;padding:10px" onclick="Auth.login()">Войти</button>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">Данные сохраняются локально в браузере</p>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="container hidden">
     <header>
       <div class="logo">Zap!</div>
-      <button class="theme-btn" onclick="toggleTheme()" title="Сменить тему">◑</button>
+      <button class="btn" onclick="App.toggleTheme()">◑ Тема</button>
     </header>
-
     <nav>
-      <button class="active" onclick="show('feed', this)">Лента</button>
-      <button onclick="show('friends', this)">Друзья</button>
-      <button onclick="show('chats', this)">Чаты</button>
-      <button onclick="show('games', this)">Игры</button>
-      <button onclick="show('profile', this)">Профиль</button>
+      <button class="active" onclick="App.nav('feed')">Лента</button>
+      <button onclick="App.nav('friends')">Друзья</button>
+      <button onclick="App.nav('chats')">Чаты</button>
+      <button onclick="App.nav('games')">Игры</button>
+      <button onclick="App.nav('profile')">Профиль</button>
     </nav>
 
-    <!-- ЛЕНТА -->
-    <div id="feed" class="section active">
-      <div class="post">
-        <div class="post-header"><div class="avatar"></div><div class="post-meta">Новки • 2ч назад</div></div>
-        <div class="post-text">Запустил новую мини-игру на Zap! 🐍 Змейка уже ждёт противников. Кто готов?</div>
-        <div class="post-actions"><span>❤️ 24</span><span>💬 3</span><span>↗️ Поделиться</span></div>
-      </div>
-      <div class="post">
-        <div class="post-header"><div class="avatar"></div><div class="post-meta">Дизайн-блог • 5ч назад</div></div>
-        <div class="post-text">Минимализм в вебе — это не пустота. Это пространство для контента. Как вам новая тема Zap? ⚫⚪</div>
-        <div class="post-actions"><span>❤️ 89</span><span>💬 12</span><span>↗️ Поделиться</span></div>
-      </div>
-    </div>
+    <section id="feed" class="active">
+      <div class="post"><div class="post-header"><div class="avatar"></div>Новки • 2ч</div>Запустил Zap! 🐍 Змейка уже ждёт. Кто готов?</div>
+      <div class="post"><div class="post-header"><div class="avatar"></div>Дизайн-блог • 5ч</div>Минимализм — это пространство для контента. Как вам тема? ⚫⚪</div>
+    </section>
 
-    <!-- ДРУЗЬЯ -->
-    <div id="friends" class="section">
-      <div class="grid">
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Алексей</div><div class="card-sub">Онлайн</div></div>
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Мария</div><div class="card-sub">Был(а) 5м назад</div></div>
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Дима</div><div class="card-sub">Онлайн</div></div>
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Катя</div><div class="card-sub">Был(а) 2ч назад</div></div>
-      </div>
-    </div>
+    <section id="friends"><div class="grid" id="friends-list"></div></section>
+    <section id="chats"><div class="grid" id="chats-list"></div></section>
 
-    <!-- ЧАТЫ -->
-    <div id="chats" class="section">
-      <div class="grid">
-        <div class="card"><div class="card-icon">💬</div><div class="card-title">Алексей</div><div class="card-sub">Привет, заходи в змейку!</div></div>
-        <div class="card"><div class="card-icon">💬</div><div class="card-title">Мария</div><div class="card-sub">Кто на ракету?</div></div>
-        <div class="card"><div class="card-icon">👥</div><div class="card-title">Групповой чат</div><div class="card-sub">Дима: Го турнир</div></div>
-      </div>
-    </div>
+    <section id="games">
+      <div class="grid" id="games-list"></div>
+    </section>
 
-    <!-- ИГРЫ -->
-    <div id="games" class="section">
-      <div class="grid">
-        <div class="card"><div class="card-icon">🐍</div><div class="card-title">Змейка</div><div class="card-sub">2–3 игрока</div></div>
-        <div class="card"><div class="card-icon">🚀</div><div class="card-title">Ракета</div><div class="card-sub">Уклонение</div></div>
-        <div class="card"><div class="card-icon">🏓</div><div class="card-title">Пинг-Понг</div><div class="card-sub">Классика</div></div>
-        <div class="card"><div class="card-icon">🔥</div><div class="card-title">Картошка</div><div class="card-sub">На реакцию</div></div>
+    <section id="profile" class="profile">
+      <div id="profile-avatar" class="avatar" style="width:64px;height:64px;margin:0 auto 10px"></div>
+      <h2 id="profile-name">Гость</h2>
+      <p id="profile-joined">Участник с сегодня</p>
+      <div class="stats">
+        <div><strong id="stat-wins">0</strong>побед</div>
+        <div><strong id="stat-games">0</strong>игр</div>
+        <div><strong id="stat-hours">0ч</strong>в игре</div>
       </div>
-    </div>
+      <button class="btn" style="margin-top:16px" onclick="App.editProfile()">Редактировать профиль</button>
+      <button class="btn" style="margin-top:8px;background:var(--bg);border:1px solid var(--muted);color:var(--muted)" onclick="Auth.logout()">Выйти</button>
+    </section>
+  </div>
 
-    <!-- ПРОФИЛЬ -->
-    <div id="profile" class="section">
-      <div class="profile">
-        <div class="profile-avatar"></div>
-        <h2>Ваш Ник</h2>
-        <p>Уровень 12 • 🏆 3 победы</p>
-        <div class="stats">
-          <div><strong>24</strong>друзей</div>
-          <div><strong>142</strong>игр</div>
-          <div><strong>8ч</strong>в игре</div>
-        </div>
-      </div>
+  <!-- GAME MODAL -->
+  <div id="game-modal">
+    <button class="close-btn" onclick="Game.close()">✕</button>
+    <canvas id="game-canvas" width="400" height="400"></canvas>
+    <div class="game-ui">
+      <div id="game-score" style="font-weight:700;margin-bottom:4px">Счёт: 0</div>
+      <div id="game-status" style="font-size:12px;color:var(--muted)">Нажмите Старт</div>
+      <div class="controls" id="game-controls"></div>
+      <button class="btn" style="margin-top:8px" onclick="Game.start()">▶ Старт</button>
     </div>
   </div>
 
   <script>
-    function show(id, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      btn.classList.add('active');
-    }
+    // ========== AUTH & PROFILE ==========
+    const Auth = {
+      data: JSON.parse(localStorage.getItem('zap_user')) || null,
+      login() {
+        const name = document.getElementById('username').value.trim() || 'Игрок' + Math.floor(Math.random()*99);
+        const color = document.getElementById('avatar-color').value;
+        Auth.data = { name, color, joined: new Date().toLocaleDateString(), wins: 0, games: 0, hours: 0 };
+        localStorage.setItem('zap_user', JSON.stringify(Auth.data));
+        App.init();
+      },
+      logout() {
+        localStorage.removeItem('zap_user'); location.reload();
+      },
+      save() { localStorage.setItem('zap_user', JSON.stringify(Auth.data)); }
+    };
 
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-    }
+    // ========== APP ==========
+    const App = {
+      init() {
+        if (!Auth.data) return;
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        this.renderProfile();
+        this.renderFriends();
+        this.renderChats();
+        this.renderGames();
+        const theme = localStorage.getItem('zap_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      },
+      nav(id) {
+        document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelector(`nav button:nth-child(${['feed','friends','chats','games','profile'].indexOf(id)+1})`).classList.add('active');
+      },
+      toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('zap_theme', next);
+      },
+      renderProfile() {
+        document.getElementById('profile-name').textContent = Auth.data.name;
+        document.getElementById('profile-avatar').style.background = Auth.data.color;
+        document.getElementById('profile-joined').textContent = 'Участник с ' + Auth.data.joined;
+        document.getElementById('stat-wins').textContent = Auth.data.wins;
+        document.getElementById('stat-games').textContent = Auth.data.games;
+        document.getElementById('stat-hours').textContent = Auth.data.hours + 'ч';
+      },
+      editProfile() {
+        const newName = prompt('Новый никнейм:', Auth.data.name);
+        if (newName) { Auth.data.name = newName; Auth.save(); this.renderProfile(); }
+      },
+      renderFriends() {
+        const list = document.getElementById('friends-list');
+        list.innerHTML = ['Алексей','Мария','Дима','Катя','Иван'].map((n,i)=>`<div class="card"><div class="card-icon">👤</div><div class="card-title">${n}</div><div class="card-sub">${i%2?'Онлайн':'Был(а) недавно'}</div></div>`).join('');
+      },
+      renderChats() {
+        document.getElementById('chats-list').innerHTML = `
+          <div class="card"><div class="card-icon">💬</div><div class="card-title">Алексей</div><div class="card-sub">Го змейку?</div></div>
+          <div class="card"><div class="card-icon">👥</div><div class="card-title">Команда</div><div class="card-sub">Мария: Я за ракету</div></div>
+        `;
+      },
+      renderGames() {
+        const games = [
+          {id:'snake', icon:'🐍', name:'Змейка', sub:'1P/2P/3P'},
+          {id:'rocket', icon:'🚀', name:'Ракета', sub:'Уклонение'},
+          {id:'pong', icon:'🏓', name:'Пинг-Понг', sub:'Классика'},
+          {id:'potato', icon:'🔥', name:'Картошка', sub:'На реакцию'},
+          {id:'reflex', icon:'⚡', name:'Рефлекс', sub:'Скорость'}
+        ];
+        document.getElementById('games-list').innerHTML = games.map(g=>`<div class="card" onclick="Game.open('${g.id}')"><div class="card-icon">${g.icon}</div><div class="card-title">${g.name}</div><div class="card-sub">${g.sub}</div></div>`).join('');
+      }
+    };
+
+    // ========== GAME ENGINE ==========
+    const Game = {
+      active: null, canvas: document.getElementById('game-canvas'), ctx: null,
+      loopId: null, players: 1, score: 0, running: false,
+      state: {}, input: {},
+      open(id) {
+        this.active = id;
+        document.getElementById('game-modal').classList.add('active');
+        this.ctx = this.canvas.getContext('2d');
+        document.getElementById('game-score').textContent = 'Счёт: 0';
+        document.getElementById('game-status').textContent = 'Выберите режим';
+        this.showControls(id);
+      },
+      close() {
+        document.getElementById('game-modal').classList.remove('active');
+        this.stop();
+      },
+      showControls(id) {
+        const c = document.getElementById('game-controls');
+        c.innerHTML = `
+          <button class="ctrl-btn" onclick="Game.setMode(1)">1 Игрок</button>
+          <button class="ctrl-btn" onclick="Game.setMode(2)">2 Игрока</button>
+          <button class="ctrl-btn" onclick="Game.setMode(3)">3 Игрока</button>
+        `;
+      },
+      setMode(n) {
+        this.players = n;
+        document.getElementById('game-status').textContent = `Режим: ${n} игрок(а). Нажмите Старт.`;
+      },
+      start() {
+        if (!this.active) return;
+        this.stop(); this.running = true; this.score = 0; this.state = {};
+        document.getElementById('game-status').textContent = 'Игра началась!';
+        switch(this.active) {
+          case 'snake': this.initSnake(); break;
+          case 'rocket': this.initRocket(); break;
+          case 'pong': this.initPong(); break;
+          case 'potato': this.initPotato(); break;
+          case 'reflex': this.initReflex(); break;
+        }
+        this.loop();
+      },
+      stop() {
+        this.running = false; cancelAnimationFrame(this.loopId);
+      },
+      loop() {
+        if (!this.running) return;
+        this.update(); this.draw();
+        document.getElementById('game-score').textContent = `Счёт: ${this.score}`;
+        this.loopId = requestAnimationFrame(() => this.loop());
+      },
+      update() { this.active === 'snake' ? this.updateSnake() : this.active === 'rocket' ? this.updateRocket() : this.active === 'pong' ? this.updatePong() : this.active === 'potato' ? this.updatePotato() : this.updateReflex(); },
+      draw() { this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg'); this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height); this.active === 'snake' ? this.drawSnake() : this.active === 'rocket' ? this.drawRocket() : this.active === 'pong' ? this.drawPong() : this.active === 'potato' ? this.drawPotato() : this.drawReflex(); },
+      
+      // ===== SNAKE =====
+      initSnake() {
+        this.state.snakes = [];
+        const colors = ['#0f0','#f0f','#0ff'];
+        for(let i=0;i<this.players;i++) this.state.snakes.push({x:10+i*5, y:10, dir:{x:1,y:0}, body:[{x:10+i*5,y:10}], color:colors[i]});
+        this.state.food = {x:15, y:15}; this.state.keys = {};
+      },
+      updateSnake() {
+        const {snakes, keys, food} = this.state;
+        if(keys['a'] && snakes[0].dir.x===0) snakes[0].dir={x:-1,y:0};
+        if(keys['d'] && snakes[0].dir.x===0) snakes[0].dir={x:1,y:0};
+        if(keys['w'] && snakes[0].dir.y===0) snakes[0].dir={x:0,y:-1};
+        if(keys['s'] && snakes[0].dir.y===0) snakes[0].dir={x:0,y:1};
+        if(this.players>1){
+          if(keys['arrowleft'] && snakes[1].dir.x===0) snakes[1].dir={x:-1,y:0};
+          if(keys['arrowright'] && snakes[1].dir.x===0) snakes[1].dir={x:1,y:0};
+          if(keys['arrowup'] && snakes[1].dir.y===0) snakes[1].dir={x:0,y:-1};
+          if(keys['arrowdown'] && snakes[1].dir.y===0) snakes[1].dir={x:0,y:1};
+        }
+        if(this.players>2){
+          if(keys['j'] && snakes[2].dir.x===0) snakes[2].dir={x:-1,y:0};
+          if(keys['l'] && snakes[2].dir.x===0) snakes[2].dir={x:1,y:0};
+          if(keys['i'] && snakes[2].dir.y===0) snakes[2].dir={x:0,y:-1};
+          if(keys['k'] && snakes[2].dir.y===0) snakes[2].dir={x:0,y:1};
+        }
+        snakes.forEach((s,i)=>{
+          if(Math.random()<0.15){ // throttle
+            s.body.unshift({x:s.body[0].x+s.dir.x, y:s.body[0].y+s.dir.y});
+            if(s.body[0].x===food.x && s.body[0].y===food.y){this.score+=10; this.state.food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}
+            else s.body.pop();
+          }
+        });
+      },
+      drawSnake() {
+        const ctx=this.ctx, g=20, w=20;
+        this.state.snakes.forEach(s=>{
+          ctx.fillStyle=s.color;
+          s.body.forEach(b=>ctx.fillRect(b.x*w,b.y*w,w-2,w-2));
+        });
+        ctx.fillStyle='#ff3333'; ctx.fillRect(this.state.food.x*g,this.state.food.y*g,g-2,g-2);
+      },
+
+      // ===== ROCKET =====
+      initRocket() { this.state.rocks=[]; this.state.playerY=350; this.state.speed=2; this.state.frame=0; },
+      updateRocket() {
+        const st=this.state; st.frame++;
+        if(st.frame%20===0) st.rocks.push({x:Math.random()*380, y:-20, w:20+Math.random()*30, h:20+Math.random()*30});
+        st.rocks.forEach(r=>r.y+=st.speed);
+        st.rocks=st.rocks.filter(r=>r.y<420);
+        if(st.playerY<250 && this.input['up']) st.playerY-=4;
+        if(st.playerY>380 && this.input['down']) st.playerY+=4;
+        st.rocks.forEach(r=>{ if(st.playerY>r.y && st.playerY<r.y+r.h) { this.score=Math.max(0,this.score-5); this.state.playerY=350; }});
+        this.score++;
+      },
+      drawRocket() {
+        const ctx=this.ctx;
+        ctx.fillStyle='#444'; this.state.rocks.forEach(r=>ctx.fillRect(r.x,r.y,r.w,r.h));
+        ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(200,this.state.playerY,12,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#aaa'; ctx.fillRect(196,this.state.playerY+10,8,15);
+      },
+
+      // ===== PONG =====
+      initPong() { this.state.ball={x:200,y:200,vx:3,vy:2}; this.state.p1=360; this.state.p2=360; this.state.aiTimer=0; },
+      updatePong() {
+        const st=this.state, b=st.ball; b.x+=b.vx; b.y+=b.vy;
+        if(b.y<0||b.y>400) b.vy*=-1;
+        if(b.x<20 && b.y>st.p1 && b.y<st.p1+60) b.vx*=-1;
+        if(b.x>380 && b.y>st.p2 && b.y<st.p2+60) b.vx*=-1;
+        if(b.x<0) { this.score--; b.x=200; b.vx=3; }
+        if(b.x>400) { this.score++; b.x=200; b.vx=-3; }
+        st.p1 = Math.max(0, Math.min(340, st.p1 + (this.input['w']?-4:0) + (this.input['s']?4:0)));
+        if(this.players>1) { st.p2 = Math.max(0, Math.min(340, st.p2 + (this.input['arrowup']?-4:0) + (this.input['arrowdown']?4:0))); }
+        else { st.aiTimer++; if(st.aiTimer%10===0){ st.p2 += (b.y>st.p2+30)?3:-3; st.p2=Math.max(0,Math.min(340,st.p2)); } }
+      },
+      drawPong() {
+        const ctx=this.ctx;
+        ctx.fillStyle='#555'; ctx.fillRect(10,this.state.p1,10,60); ctx.fillRect(380,this.state.p2,10,60);
+        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(this.state.ball.x,this.state.ball.y,6,0,Math.PI*2); ctx.fill();
+        ctx.setLineDash([4,4]); ctx.strokeStyle='#333'; ctx.beginPath(); ctx.moveTo(200,0); ctx.lineTo(200,400); ctx.stroke(); ctx.setLineDash([]);
+      },
+
+      // ===== HOT POTATO =====
+      initPotato() { this.state.timer=100; this.state.holder=0; this.state.passed=0; this.state.shake=0; this.state.colors=['#f00','#0f0','#00f']; },
+      updatePotato() {
+        const st=this.state; st.timer--; st.shake=Math.random()*st.timer*0.05;
+        if(this.input['space'] && st.timer<90 && st.timer>10) {
+          st.holder = (st.holder+1)%this.players; st.passed++; st.timer = Math.max(20, st.timer - Math.random()*15);
+        }
+        if(st.timer<=0) { this.score = st.passed*10; this.running=false; document.getElementById('game-status').textContent=`Игрок ${st.holder+1} проиграл! Счёт: ${this.score}`; Auth.data.games++; Auth.save(); App.renderProfile(); }
+      },
+      drawPotato() {
+        const ctx=this.ctx, cx=200+this.state.shake, cy=200+this.state.shake;
+        ctx.fillStyle=this.state.colors[this.state.holder];
+        ctx.beginPath(); ctx.arc(cx,cy,40,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#fff'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText(`🔥 Игрок ${this.state.holder+1}`,cx,cy+5);
+        ctx.fillStyle='#888'; ctx.fillText(`Осталось: ${Math.ceil(this.state.timer/10)}с`,200,260);
+      },
+
+      // ===== REFLEX =====
+      initReflex() { this.state.target={x:100,y:100}; this.state.timeLeft=300; this.state.clicks=0; },
+      updateReflex() {
+        this.state.timeLeft--;
+        if(this.input['click']) {
+          const d = Math.hypot(this.state.target.x-this.clickX, this.state.target.y-this.clickY);
+          if(d<20) { this.score+=10; this.state.clicks++; this.state.target={x:20+Math.random()*360, y:20+Math.random()*360}; this.input.click=false; }
+        }
+        if(this.state.timeLeft<=0) { this.running=false; document.getElementById('game-status').textContent=`Время вышло! Счёт: ${this.score}`; Auth.data.games++; Auth.save(); App.renderProfile(); }
+      },
+      drawReflex() {
+        const ctx=this.ctx;
+        ctx.fillStyle='#0f0'; ctx.beginPath(); ctx.arc(this.state.target.x,this.state.target.y,20,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#888'; ctx.textAlign='center'; ctx.fillText(`Нажимай в круг! ${Math.ceil(this.state.timeLeft/60)}с`,200,380);
+      }
+    };
+
+    // Input Handling
+    window.addEventListener('keydown', e => { Game.input[e.key.toLowerCase()] = true; Game.input[e.key] = true; });
+    window.addEventListener('keyup', e => { Game.input[e.key.toLowerCase()] = false; Game.input[e.key] = false; });
+    document.getElementById('game-canvas').addEventListener('mousedown', e => { Game.input.click=true; const rect=e.target.getBoundingClientRect(); Game.clickX=e.clientX-rect.left; Game.clickY=e.clientY-rect.top; });
+    document.getElementById('game-canvas').addEventListener('mouseup', () => Game.input.click=false);
+
+    // Touch Controls for Mobile
+    const addTouchBtn = (label, key, parent) => {
+      const b=document.createElement('button'); b.className='ctrl-btn'; b.textContent=label;
+      b.addEventListener('touchstart', e=>{e.preventDefault(); Game.input[key.toLowerCase()]=true; Game.input[key]=true;});
+      b.addEventListener('touchend', e=>{e.preventDefault(); Game.input[key.toLowerCase()]=false; Game.input[key]=false;});
+      parent.appendChild(b);
+    };
+    const ctrlBox = document.getElementById('game-controls');
+    addTouchBtn('⬆','ArrowUp',ctrlBox); addTouchBtn('⬇','ArrowDown',ctrlBox);
+    addTouchBtn('⬅','ArrowLeft',ctrlBox); addTouchBtn('➡','ArrowRight',ctrlBox);
+    addTouchBtn('W','w',ctrlBox); addTouchBtn('S','s',ctrlBox); addTouchBtn('Пробел','space',ctrlBox);
+
+    // Init
+    App.init();
   </script>
 </body>
 </html>
