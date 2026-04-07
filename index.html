@@ -3,479 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zap! v1.0.1</title>
-    <!-- Подключение EmailJS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <title>ИТД v1.0.2 - Zap!</title>
     <style>
-        /* ================= ПЕРЕМЕННЫЕ И ТЕМЫ (Стиль скриншотов) ================= */
+        /* ================= ТОЧНЫЙ ДИЗАЙН ИТД ================= */
         :root {
-            /* Темная тема (основная) */
-            --bg: #0f0f11;
-            --surface: #1e1e24;
-            --surface-hover: #2a2a32;
-            --text: #ffffff;
+            --bg-main: #0f0f11;
+            --bg-card: #1c1c21;
+            --bg-hover: #26262d;
+            --text-main: #ffffff;
             --text-muted: #8a8a93;
-            --accent: #ffffff;
-            --accent-hover: #e0e0e0;
-            --accent-text: #000000;
-            --border: #2d2d35;
-            --danger: #ff2a5f;
-            --radius: 20px;
-            --transition: all 0.3s ease;
+            --accent-blue: #1d9bf0;
+            --border-color: #2f3336;
             --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body.light {
-            /* Светлая тема */
-            --bg: #f5f5f7;
-            --surface: #ffffff;
-            --surface-hover: #ececf1;
-            --text: #1a1a1c;
-            --text-muted: #6e6e73;
-            --accent: #000000;
-            --accent-hover: #333333;
-            --accent-text: #ffffff;
-            --border: #d2d2d7;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; }
         
-        body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; }
-
-        ::-webkit-scrollbar { width: 8px; }
+        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-        /* ================= ЭКРАН РЕГИСТРАЦИИ (ВХОДА) ================= */
+        /* --- ИКОНКИ SVG --- */
+        .svg-icon { width: 22px; height: 22px; fill: currentColor; }
+
+        /* ================= ЭКРАН ВХОДА (КОПИЯ СКРИНШОТА 1) ================= */
         #auth-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); z-index: 10000; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
+            background: var(--bg-main); z-index: 10000; display: flex;
+            flex-direction: column; align-items: center; padding-top: 10vh;
         }
-        .auth-logo { font-size: 36px; font-weight: 900; margin-bottom: 50px; letter-spacing: -1px; }
-        .auth-container { max-width: 400px; width: 90%; }
-        .auth-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
-        .auth-subtitle { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; }
+        .auth-logo { font-size: 24px; font-weight: 900; margin-bottom: 40px; letter-spacing: 1px; }
+        .auth-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; }
+        .auth-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .auth-sub { color: var(--text-muted); font-size: 14px; margin-bottom: 30px; }
+        .auth-label { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; }
         
-        .auth-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; margin-top: 20px; }
-        .auth-input-group { position: relative; display: flex; align-items: center; gap: 15px; }
-        .auth-input {
-            width: 100%; padding: 18px 20px; border-radius: 15px; border: none;
-            background: #e8f0fe; color: #1a1a1c; font-size: 16px; font-weight: 500;
-        }
-        .auth-input::placeholder { color: #888; }
+        .auth-input-wrapper { display: flex; align-items: center; background: #e8f0fe; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+        .auth-input { flex: 1; padding: 16px; border: none; background: transparent; color: #000; font-size: 15px; font-weight: 500; }
         
-        .emoji-selector-btn {
-            background: var(--surface); border: 1px solid var(--border); border-radius: 15px;
-            font-size: 28px; padding: 10px; cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;
-        }
-        .emoji-selector-btn:hover { background: var(--surface-hover); }
+        .emoji-btn-auth { background: transparent; border: none; font-size: 24px; padding: 0 15px; cursor: pointer; border-right: 1px solid #ccc; }
+        
+        .auth-btn-white { background: #fff; color: #000; border: none; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.2s; }
+        .auth-btn-white:hover { opacity: 0.9; }
+        .auth-link { color: var(--accent-blue); text-decoration: none; cursor: pointer; }
+        .auth-link:hover { text-decoration: underline; }
 
-        .auth-btn {
-            width: 100%; padding: 18px; border-radius: 30px; border: none;
-            background: var(--accent); color: var(--accent-text); font-size: 16px;
-            font-weight: bold; cursor: pointer; margin-top: 30px; transition: var(--transition);
+        /* Выбор всех эмодзи */
+        #massive-emoji-picker {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px;
+            width: 90%; max-width: 400px; height: 400px; padding: 15px; z-index: 10001;
+            flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        .auth-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* Выбор эмодзи (модалка) */
-        #emoji-modal {
-            display: none; position: absolute; background: var(--surface);
-            border: 1px solid var(--border); border-radius: 15px; padding: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 10001;
-            grid-template-columns: repeat(5, 1fr); gap: 10px;
-        }
-        .emoji-item { font-size: 24px; cursor: pointer; padding: 5px; text-align: center; border-radius: 10px; }
-        .emoji-item:hover { background: var(--border); }
+        .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; overflow-y: auto; margin-top: 10px; padding-right: 5px; }
+        .emoji-item { font-size: 24px; text-align: center; cursor: pointer; border-radius: 8px; padding: 5px; }
+        .emoji-item:hover { background: var(--bg-hover); }
 
         /* ================= ОСНОВНОЙ ЛЕЙАУТ ================= */
-        #app { display: none; width: 100%; height: 100%; }
+        #app { display: none; width: 100%; height: 100%; justify-content: center; }
         
-        /* SIDEBAR */
-        .sidebar {
-            width: 280px; background: var(--bg); border-right: 1px solid var(--border);
-            padding: 30px 20px; display: flex; flex-direction: column; gap: 5px;
-        }
-        .logo-area { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; padding: 0 15px; }
-        .logo { font-size: 24px; font-weight: 900; }
-        .version-badge { color: var(--text-muted); font-size: 12px; font-weight: bold; }
-        
+        /* БОКОВОЕ МЕНЮ (СЛЕВА) */
+        .sidebar { width: 275px; height: 100%; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); }
+        .logo-row { display: flex; align-items: center; gap: 10px; padding: 10px 15px; margin-bottom: 20px; }
         .nav-btn {
-            background: transparent; color: var(--text); border: none; padding: 15px 20px;
-            border-radius: 15px; font-size: 16px; font-weight: 600; text-align: left;
-            cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 15px;
+            display: flex; align-items: center; gap: 20px; padding: 12px 15px; background: transparent;
+            color: var(--text-main); border: none; border-radius: 30px; font-size: 19px; font-weight: 500;
+            cursor: pointer; transition: 0.2s; margin-bottom: 5px; text-decoration: none;
         }
-        .nav-btn:hover { background: var(--surface); }
-        .nav-btn.active { background: var(--surface); color: var(--text); }
-        .nav-icon { font-size: 20px; width: 24px; text-align: center; }
-
-        .user-mini { margin-top: auto; display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 15px; cursor: pointer; }
-        .user-mini:hover { background: var(--surface); }
-        .user-mini-avatar { font-size: 24px; background: var(--border); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-
-        /* MAIN CONTENT */
-        .main-content { flex: 1; height: 100%; overflow-y: auto; background: var(--bg); position: relative; }
-        .view { display: none; padding: 40px; max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s ease; }
-        .view.active { display: block; }
-
-        /* ================= КОМПОНЕНТЫ ================= */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; margin-bottom: 20px; }
+        .nav-btn:hover { background: var(--bg-hover); }
+        .nav-btn.active { font-weight: 700; background: var(--bg-hover); }
         
-        .input-text { 
-            width: 100%; padding: 15px 20px; border-radius: 30px; border: 1px solid var(--border); 
-            background: var(--bg); color: var(--text); font-size: 15px; transition: var(--transition); 
-        }
-        .input-text:focus { border-color: var(--text-muted); }
+        .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .nuksta-btn { color: #f5d045; font-size: 14px; font-weight: 700; padding: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .logout-btn { color: var(--text-main); font-size: 15px; padding: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+
+        /* ЦЕНТРАЛЬНАЯ ЧАСТЬ */
+        .main-content { width: 600px; height: 100%; overflow-y: auto; border-right: 1px solid var(--border-color); position: relative; }
+        .view { display: none; padding-bottom: 100px; }
+        .view.active { display: block; animation: fadeIn 0.3s; }
+
+        /* БЛОК ПУБЛИКАЦИИ ПОСТА */
+        .post-composer { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; }
+        .composer-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+        .composer-body { flex: 1; }
+        .composer-input { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 18px; resize: none; margin-bottom: 15px; margin-top: 10px; }
+        .composer-input::placeholder { color: var(--text-muted); }
+        .composer-tools { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; }
+        .tools-icons { display: flex; gap: 15px; color: var(--accent-blue); cursor: pointer; }
+        .btn-publish { background: #8a8a93; color: #000; border: none; border-radius: 20px; padding: 8px 16px; font-weight: 700; cursor: pointer; }
+        .btn-publish.ready { background: #fff; }
+
+        /* ПОСТЫ */
+        .post { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; transition: 0.2s; cursor: pointer; }
+        .post:hover { background: rgba(255,255,255,0.03); }
+        .post-header { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; font-size: 15px; }
+        .post-name { font-weight: 700; }
+        .post-handle { color: var(--text-muted); }
+        .post-text { font-size: 15px; line-height: 1.5; word-wrap: break-word; }
+
+        /* ПРОФИЛЬ (Точная копия) */
+        .profile-banner { height: 200px; background: #333; position: relative; }
+        .profile-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-actions { display: flex; justify-content: flex-end; padding: 15px; position: relative; gap: 10px; height: 60px; }
+        .profile-avatar-large { position: absolute; top: -70px; left: 20px; width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--bg-main); background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 70px; }
+        .btn-edit-profile { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; font-weight: 700; cursor: pointer; }
+        .btn-edit-profile:hover { background: var(--bg-hover); }
+        .profile-info { padding: 0 20px 20px 20px; }
+        .profile-stats { display: flex; gap: 20px; color: var(--text-muted); font-size: 14px; margin-top: 10px; margin-bottom: 15px; }
+        .profile-tabs { display: flex; border-bottom: 1px solid var(--border-color); }
+        .profile-tab { flex: 1; text-align: center; padding: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; color: var(--text-muted); }
+        .profile-tab.active { color: var(--text-main); border-bottom: 3px solid var(--accent-blue); }
+
+        /* МОДАЛЬНОЕ ОКНО РИСОВАЛКИ (Скриншот 4) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 20000; display: none; align-items: center; justify-content: center; }
+        .draw-modal { background: var(--bg-card); border-radius: 16px; width: 90%; max-width: 800px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; }
+        .draw-toolbar { padding: 15px; display: flex; gap: 10px; align-items: center; background: #1a1a1f; border-bottom: 1px solid #000; flex-wrap: wrap; }
+        .draw-tool { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 5px; border-radius: 5px; }
+        .draw-tool.active { color: #fff; background: rgba(255,255,255,0.1); }
+        .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-dot.active { border-color: #fff; transform: scale(1.2); }
+        .draw-area { background: #888; padding: 40px; display: flex; justify-content: center; overflow: auto; }
+        .draw-footer { padding: 15px; background: #1a1a1f; display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #000; }
+        #canvas-banner { background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: crosshair; touch-action: none; }
+
+        /* ЧАТЫ / ЛС */
+        .chat-list-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .chat-list-item:hover { background: var(--bg-hover); }
+        .chat-window { display: none; flex-direction: column; height: 100vh; position: absolute; top:0; left:0; width:100%; background:var(--bg-main); z-index: 10; }
+        .chat-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 15px; font-weight: bold; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 15px; }
+        .msg.my { background: var(--accent-blue); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.other { background: var(--bg-card); border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-input-area { padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; }
+
+        /* ИГРЫ И ЭКОНОМИКА */
+        .economy-header { padding: 20px; background: linear-gradient(45deg, #1d9bf0, #8a2be2); color: white; border-radius: 16px; margin: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        .game-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: 0.2s; text-align: center; }
+        .game-card:hover { border-color: var(--accent-blue); transform: translateY(-5px); }
         
-        .btn-small { background: var(--surface-hover); color: var(--text); border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
-        .btn-small:hover { background: var(--border); }
-
-        /* Профиль */
-        .profile-banner-container { position: relative; height: 200px; border-radius: var(--radius); background: var(--surface); overflow: hidden; margin-bottom: 60px; border: 1px solid var(--border); }
-        .profile-banner-img { width: 100%; height: 100%; object-fit: cover; }
-        .edit-banner-btn {
-            position: absolute; bottom: 15px; right: 15px; background: rgba(0,0,0,0.6); color: white;
-            border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; font-size: 18px; backdrop-filter: blur(5px);
-        }
-        .profile-avatar-large {
-            position: absolute; bottom: -50px; left: 30px; width: 120px; height: 120px;
-            background: var(--surface); border: 4px solid var(--bg); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 60px;
-        }
-
-        /* Модалка рисовалки */
-        .drawing-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-            z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);
-        }
-        .drawing-container { background: var(--surface); width: 90%; max-width: 900px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
-        .drawing-toolbar { padding: 15px; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
-        .tool-btn { background: transparent; border: none; color: var(--text); font-size: 20px; cursor: pointer; padding: 5px; border-radius: 5px; }
-        .tool-btn.active { background: var(--border); }
-        .color-palette { display: flex; gap: 8px; align-items: center; }
-        .color-swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-swatch.active { border-color: white; transform: scale(1.1); }
-        .custom-color { width: 30px; height: 30px; border: none; padding: 0; cursor: pointer; background: transparent; border-radius: 50%; overflow: hidden;}
-        .brush-size { display: flex; align-items: center; gap: 10px; color: var(--text-muted); }
-        #draw-canvas { background: white; width: 100%; cursor: crosshair; touch-action: none; display: block; }
-        .drawing-footer { padding: 15px; background: var(--bg); border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 15px; }
-
-        /* Посты */
-        .post { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .post-header { display: flex; gap: 15px; margin-bottom: 10px; align-items: center; }
-
-        /* Игры */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .game-card { text-align: center; cursor: pointer; transition: var(--transition); }
-        .game-card:hover { border-color: var(--text-muted); transform: translateY(-5px); }
-        .game-arena { display: none; text-align: center; }
-        canvas.game-canvas { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 100%; }
-
-        /* Чаты / Поиск */
-        .user-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .game-arena { display: none; padding: 20px; text-align: center; flex-direction: column; align-items: center; }
+        .game-canvas { background: #000; border: 2px solid var(--border-color); border-radius: 12px; margin: 15px 0; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .shop-btn { background: #ffd700; color: #000; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- ЭКРАН РЕГИСТРАЦИИ -->
+    <!-- ЭКРАН ВХОДА (КОПИЯ ШАБЛОНА) -->
     <div id="auth-screen">
-        <div class="auth-logo">Zap!</div>
-        
-        <!-- Шаг 1: Email -->
-        <div class="auth-container" id="auth-step-1">
+        <div class="auth-logo">ИТД</div>
+        <div class="auth-box">
             <div class="auth-title">Вход</div>
-            <div class="auth-subtitle">Пожалуйста, введите ваш E-Mail</div>
+            <div class="auth-sub">Пожалуйста, введите ваши данные и выберите аватар</div>
             
-            <label class="auth-label">E-Mail</label>
-            <input type="email" id="auth-email" class="auth-input" placeholder="example@mail.ru">
-            
-            <button class="auth-btn" onclick="sendAuthCode()">Продолжить</button>
-        </div>
-
-        <!-- Шаг 2: Код -->
-        <div class="auth-container" id="auth-step-2" style="display: none;">
-            <div class="auth-title">Код подтверждения</div>
-            <div class="auth-subtitle">Код отправлен на ваш E-Mail (или введите любой 4-значный для теста)</div>
-            
-            <label class="auth-label">Код из письма</label>
-            <input type="text" id="auth-code" class="auth-input" placeholder="1234" maxlength="4">
-            
-            <button class="auth-btn" onclick="verifyAuthCode()">Подтвердить</button>
-        </div>
-
-        <!-- Шаг 3: Профиль -->
-        <div class="auth-container" id="auth-step-3" style="display: none;">
-            <div class="auth-title">Создание профиля</div>
-            <div class="auth-subtitle">Настройте свой аккаунт</div>
-            
-            <label class="auth-label">Имя пользователя и Аватар</label>
-            <div class="auth-input-group">
-                <div class="emoji-selector-btn" id="current-emoji-btn" onclick="toggleEmojiModal(event)">👽</div>
-                <input type="text" id="auth-username" class="auth-input" placeholder="Твой никнейм...">
+            <label class="auth-label">E-Mail / Никнейм</label>
+            <div class="auth-input-wrapper">
+                <button class="emoji-btn-auth" id="auth-avatar-btn" onclick="openEmojiPicker()">👤</button>
+                <input type="text" id="auth-login" class="auth-input" placeholder="Твое имя...">
             </div>
-            <div style="color: var(--danger); font-size: 12px; margin-top: 10px; font-weight: 600;">Внимание: Смайлик никогда нельзя будет изменить!</div>
+            <div style="color: #ff4444; font-size: 11px; margin-top: -15px; margin-bottom: 15px;">Аватар (смайлик) изменить будет нельзя!</div>
             
-            <button class="auth-btn" onclick="finishRegistration()">Войти в Zap!</button>
-
-            <!-- Выбор эмодзи -->
-            <div id="emoji-modal"></div>
+            <label class="auth-label">Пароль (Любой для теста)</label>
+            <div class="auth-input-wrapper">
+                <input type="password" id="auth-pass" class="auth-input" placeholder="••••••••••••">
+            </div>
+            
+            <div style="text-align: right; margin-top: -10px;"><a href="#" class="auth-link" style="font-size: 12px; color: var(--text-muted);">Забыли пароль?</a></div>
+            
+            <button class="auth-btn-white" onclick="login()">Войти</button>
+            <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">
+                Еще нет аккаунта? <a href="#" class="auth-link">Создать аккаунт</a>
+            </div>
         </div>
+    </div>
+
+    <!-- ОКНО ВЫБОРА ВСЕХ ЭМОДЗИ -->
+    <div id="massive-emoji-picker">
+        <h3 style="margin-bottom: 10px;">Выберите свой аватар</h3>
+        <input type="text" id="emoji-search" class="composer-input" placeholder="Поиск (на англ)..." style="background:var(--bg-main); padding:10px; border-radius:8px; margin-bottom:10px;" oninput="filterEmojis()">
+        <div class="emoji-grid" id="emoji-grid-container"></div>
+        <button class="btn-edit-profile" style="margin-top:15px; width:100%;" onclick="closeEmojiPicker()">Закрыть</button>
     </div>
 
     <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
     <div id="app">
-        <!-- БОКОВОЕ МЕНЮ -->
+        <!-- БОКОВОЕ МЕНЮ ИТД -->
         <nav class="sidebar">
-            <div class="logo-area">
-                <div class="logo">Zap!</div>
-                <div class="version-badge">v1.0.1</div>
+            <div class="logo-row">
+                <span style="font-size: 20px; font-weight: 900;">ИТД</span>
+                <span style="color: var(--text-muted); font-size: 12px;">v1.0.2</span>
             </div>
             
-            <button class="nav-btn active" onclick="nav('feed')"><span class="nav-icon">📜</span> Лента</button>
-            <button class="nav-btn" onclick="nav('search')"><span class="nav-icon">🔍</span> Поиск</button>
-            <button class="nav-btn" onclick="nav('chats')"><span class="nav-icon">💬</span> Чаты</button>
-            <button class="nav-btn" onclick="nav('games')"><span class="nav-icon">🎮</span> Игры</button>
-            <button class="nav-btn" onclick="nav('profile')"><span class="nav-icon">👤</span> Профиль</button>
-            <button class="nav-btn" onclick="nav('updates')"><span class="nav-icon">✨</span> Обновления</button>
-            <button class="nav-btn" onclick="toggleAppTheme()"><span class="nav-icon" id="theme-icon">🌙</span> Тема</button>
-            
-            <div class="user-mini" onclick="nav('profile')">
-                <div class="user-mini-avatar" id="sidebar-avatar">👽</div>
-                <div style="font-weight: bold; overflow: hidden; text-overflow: ellipsis;" id="sidebar-name">User</div>
+            <!-- ИКОНКИ SVG ВМЕСТО ЭМОДЗИ -->
+            <button class="nav-btn active" onclick="nav('feed')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm-7 13H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                Лента
+            </button>
+            <button class="nav-btn" onclick="nav('chats')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                Сообщения
+            </button>
+            <button class="nav-btn" onclick="nav('games')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 6 18.5 6s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                Ивент (Игры)
+            </button>
+            <button class="nav-btn" onclick="nav('profile')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                Профиль
+            </button>
+
+            <div class="sidebar-bottom">
+                <div class="nuksta-btn">
+                    <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#f5d045"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    ИТД НУКСТА
+                </div>
+                <div class="logout-btn" onclick="logout()">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                    Выйти
+                </div>
             </div>
         </nav>
 
-        <!-- ГЛАВНЫЙ КОНТЕНТ -->
+        <!-- ЦЕНТРАЛЬНАЯ ЛЕНТА -->
         <main class="main-content">
             
             <!-- ЛЕНТА -->
             <div id="view-feed" class="view active">
-                <h2>Лента</h2><br>
-                <div class="card" style="display:flex; gap:10px;">
-                    <input type="text" id="feed-input" class="input-text" placeholder="Что нового?">
-                    <button class="btn-small" onclick="publishPost()">Опубликовать</button>
+                <h3 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); font-size: 20px;">Лента</h3>
+                
+                <!-- Блок создания поста -->
+                <div class="post-composer">
+                    <div class="composer-avatar" id="feed-avatar">👤</div>
+                    <div class="composer-body">
+                        <textarea id="feed-input" class="composer-input" placeholder="Что нового?" rows="2" oninput="checkInput(this, 'btn-pub-feed')"></textarea>
+                        <div class="composer-tools">
+                            <div class="tools-icons">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5a2.5 2.5 0 015 0v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5a2.5 2.5 0 005 0V5c0-3.31-2.69-6-6-6S3 1.69 3 5v12.5c0 3.86 3.14 7 7 7s7-3.14 7-7V6h-1.5z"/></svg>
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>
+                            </div>
+                            <button id="btn-pub-feed" class="btn-publish" onclick="publishPost('feed')">Опубликовать</button>
+                        </div>
+                    </div>
                 </div>
+                
                 <div id="feed-container"></div>
             </div>
 
-            <!-- ПОИСК (Заменяет старых друзей) -->
-            <div id="view-search" class="view">
-                <h2>Поиск пользователей</h2><br>
-                <input type="text" class="input-text" placeholder="Поиск по имени..." oninput="searchUsers(this.value)" style="margin-bottom: 20px;">
-                <div class="card" id="search-results"></div>
-            </div>
-
-            <!-- ПРОФИЛЬ -->
+            <!-- ПРОФИЛЬ КОПИЯ -->
             <div id="view-profile" class="view">
-                <div class="profile-banner-container">
-                    <img id="profile-banner-img" class="profile-banner-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="Banner">
-                    <button class="edit-banner-btn" onclick="openDrawingModal()">✏️</button>
-                    <div class="profile-avatar-large" id="prof-avatar">👽</div>
+                <div class="profile-banner">
+                    <img id="profile-banner-img" src="" alt="">
                 </div>
-                <div style="margin-top: 60px; padding: 0 10px;">
-                    <h1 id="prof-name" style="font-size: 32px;">User</h1>
-                    <p class="auth-subtitle">В сети • <a href="#" onclick="logout()" style="color:var(--danger)">Выйти</a></p>
+                <div class="profile-actions">
+                    <div class="profile-avatar-large" id="prof-avatar-l">👤</div>
+                    <button class="btn-edit-profile" onclick="openDrawModal()">Редактировать баннер</button>
+                    <button class="btn-edit-profile" style="color: #f5d045; border-color: #f5d045;">ИТД НУКСТА</button>
                 </div>
-                <h3 style="margin-top: 40px; margin-bottom: 20px;">Записи на стене</h3>
-                <div class="card" style="display:flex; gap:10px;">
-                    <input type="text" id="wall-input" class="input-text" placeholder="Написать на стене...">
-                    <button class="btn-small" onclick="publishPost(true)">Отправить</button>
+                <div class="profile-info">
+                    <h1 style="font-size: 20px; display:flex; align-items:center; gap:5px;" id="prof-name">Имя 
+                        <svg class="svg-icon" style="fill:var(--accent-blue); width:18px;" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: 15px;" id="prof-handle">@handle</p>
+                    
+                    <div class="profile-stats">
+                        <span><strong style="color:white">1.2K</strong> подписчиков</span>
+                        <span><strong style="color:white">34</strong> подписок</span>
+                        <span><strong style="color:#ffd700" id="prof-coins">0</strong> ZapCoins</span>
+                    </div>
                 </div>
-                <div id="wall-container"></div>
+                
+                <div class="profile-tabs">
+                    <div class="profile-tab active">Посты</div>
+                    <div class="profile-tab">Лайки</div>
+                </div>
+
+                <!-- Блок создания поста в профиле -->
+                <div class="post-composer">
+                    <div class="composer-avatar" id="prof-avatar-s">👤</div>
+                    <div class="composer-body">
+                        <textarea id="prof-input" class="composer-input" placeholder="Что нового?" rows="2" oninput="checkInput(this, 'btn-pub-prof')"></textarea>
+                        <div class="composer-tools">
+                            <div class="tools-icons">📎 😊 🎨</div>
+                            <button id="btn-pub-prof" class="btn-publish" onclick="publishPost('prof')">Опубликовать</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="prof-wall-container"></div>
             </div>
 
-            <!-- ЧАТЫ -->
+            <!-- ЧАТЫ (МУЛЬТИПЛЕЕР ЧЕРЕЗ LOCALSTORAGE) -->
             <div id="view-chats" class="view">
-                <h2>Чаты</h2><br>
-                <div class="card">
-                    <p class="auth-subtitle">Мультиплеер работает! Открой сайт в двух вкладках, зайди под разными именами и пиши в ленту/поиск.</p>
+                <h3 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); font-size: 20px;">Сообщения</h3>
+                <div style="padding: 15px; color: var(--text-muted); font-size: 14px;">Открой сайт во второй вкладке под другим именем, чтобы писать самому себе!</div>
+                <div id="users-list"></div>
+                
+                <!-- Окно переписки -->
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-header">
+                        <button style="background:transparent; border:none; color:white; font-size:20px; cursor:pointer;" onclick="closeChat()">←</button>
+                        <span id="chat-target-name">User</span>
+                    </div>
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input" class="composer-input" style="margin:0; padding:10px; background:var(--bg-card); border-radius:20px;" placeholder="Написать сообщение...">
+                        <button class="btn-publish ready" onclick="sendChatMessage()">Отправить</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- ОБНОВЛЕНИЯ -->
-            <div id="view-updates" class="view">
-                <h2>История обновлений</h2><br>
-                <div class="card">
-                    <h3 style="color:var(--text)">v1.0.1 (Текущая)</h3>
-                    <ul style="color:var(--text-muted); margin-left: 20px; margin-top: 10px; line-height: 1.6;">
-                        <li>Полностью удалены звуки из системы.</li>
-                        <li>Новый темный дизайн регистрации в стиле ИТД.</li>
-                        <li>Интеграция системы выбора уникального эмодзи-аватара.</li>
-                        <li>Система авторизации с подготовкой под EmailJS.</li>
-                        <li>Новый графический редактор профиля в модальном окне с палитрой.</li>
-                        <li>ИИ-боты удалены. Добавлена система имитации локального мультиплеера.</li>
-                        <li>Глобальное улучшение графики в мини-играх.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- ИГРЫ -->
+            <!-- ИВЕНТ (5 ИГР И МАГАЗИНЫ) -->
             <div id="view-games" class="view">
-                <h2>Игровой центр</h2><br>
-                <div id="games-menu" class="game-grid">
-                    <div class="card game-card" onclick="startSnake()">
-                        <div style="font-size: 50px; margin-bottom: 10px;">🐍</div>
-                        <h3>Snake Neon</h3>
-                        <p class="auth-subtitle">Классика в новом стиле</p>
+                <div class="economy-header">
+                    <div>
+                        <h2 style="font-size:24px;">Игровой Ивент</h2>
+                        <p>Играй, чтобы зарабатывать монеты!</p>
                     </div>
-                    <div class="card game-card" onclick="startRocket()">
-                        <div style="font-size: 50px; margin-bottom: 10px;">🚀</div>
-                        <h3>Deep Space</h3>
-                        <p class="auth-subtitle">Уклоняйся от астероидов</p>
+                    <div style="font-size: 24px; font-weight: 900;">🪙 <span id="balance-display">0</span> ZC</div>
+                </div>
+
+                <div class="games-grid" id="games-grid">
+                    <div class="game-card" onclick="openGame('snake')">
+                        <h1 style="font-size: 40px; margin-bottom:10px;">🐍</h1>
+                        <h3>Neon Snake</h3>
+                        <p style="color:var(--text-muted); font-size:13px;">+1 ZC за еду</p>
+                    </div>
+                    <div class="game-card" onclick="openGame('rocket')">
+                        <h1 style="font-size: 40px; margin-bottom:10px;">🚀</h1>
+                        <h3>Space Dodge</h3>
+                        <p style="color:var(--text-muted); font-size:13px;">+1 ZC за астероид</p>
+                    </div>
+                    <div class="game-card" onclick="openGame('flappy')">
+                        <h1 style="font-size: 40px; margin-bottom:10px;">🐦</h1>
+                        <h3>Flappy Block</h3>
+                        <p style="color:var(--text-muted); font-size:13px;">+2 ZC за трубу</p>
+                    </div>
+                    <div class="game-card" onclick="openGame('pong')">
+                        <h1 style="font-size: 40px; margin-bottom:10px;">🏓</h1>
+                        <h3>Pong AI Stakes</h3>
+                        <p style="color:var(--text-muted); font-size:13px;">Ставка 10 ZC</p>
+                    </div>
+                    <div class="game-card" style="grid-column: span 2;" onclick="openGame('clicker')">
+                        <h1 style="font-size: 40px; margin-bottom:10px;">💰</h1>
+                        <h3>Coin Catcher</h3>
+                        <p style="color:var(--text-muted); font-size:13px;">Бесплатные монеты</p>
                     </div>
                 </div>
 
-                <!-- Змейка -->
-                <div id="game-snake" class="game-arena">
-                    <button class="btn-small" onclick="stopGames()">← Назад</button>
-                    <h3>Счет: <span id="snake-score" style="color:var(--danger)">0</span></h3>
-                    <canvas id="snakeCanvas" width="500" height="500" class="game-canvas"></canvas>
+                <!-- КОНТЕЙНЕРЫ ИГР -->
+                <div id="arena-snake" class="game-arena">
+                    <button class="btn-edit-profile" onclick="closeGame()">Выйти</button>
+                    <canvas id="cvs-snake" class="game-canvas" width="400" height="400"></canvas>
+                    <div>
+                        <button class="shop-btn" onclick="buySkin('snake', 'gold', 50)">Золотая змея (50 ZC)</button>
+                        <button class="shop-btn" onclick="buySkin('snake', 'rainbow', 150)">Радужная (150 ZC)</button>
+                    </div>
                 </div>
 
-                <!-- Ракета -->
-                <div id="game-rocket" class="game-arena">
-                    <button class="btn-small" onclick="stopGames()">← Назад</button>
-                    <h3>Очки: <span id="rocket-score" style="color:var(--danger)">0</span></h3>
-                    <canvas id="rocketCanvas" width="500" height="600" class="game-canvas"></canvas>
-                    <p class="auth-subtitle">Управление мышью / пальцем</p>
+                <div id="arena-rocket" class="game-arena">
+                    <button class="btn-edit-profile" onclick="closeGame()">Выйти</button>
+                    <canvas id="cvs-rocket" class="game-canvas" width="400" height="500"></canvas>
+                    <div>
+                        <button class="shop-btn" onclick="buySkin('rocket', 'ufo', 100)">НЛО Скин (100 ZC)</button>
+                    </div>
                 </div>
+
+                <div id="arena-flappy" class="game-arena">
+                    <button class="btn-edit-profile" onclick="closeGame()">Выйти</button>
+                    <canvas id="cvs-flappy" class="game-canvas" width="400" height="500"></canvas>
+                    <p>Клик/Пробел чтобы прыгать</p>
+                </div>
+
+                <div id="arena-pong" class="game-arena">
+                    <button class="btn-edit-profile" onclick="closeGame()">Выйти</button>
+                    <h3 style="margin-top:10px;">Ставка: 10 ZC. Победи AI до 5 очков!</h3>
+                    <canvas id="cvs-pong" class="game-canvas" width="400" height="300"></canvas>
+                </div>
+
+                <div id="arena-clicker" class="game-arena">
+                    <button class="btn-edit-profile" onclick="closeGame()">Выйти</button>
+                    <canvas id="cvs-clicker" class="game-canvas" width="400" height="400"></canvas>
+                    <p>Двигай мышью/пальцем, лови золото!</p>
+                </div>
+
             </div>
 
         </main>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО РИСОВАЛКИ -->
-    <div class="drawing-modal" id="drawing-modal">
-        <div class="drawing-container">
-            <div class="drawing-toolbar">
-                <button class="tool-btn active" onclick="setDrawMode('brush')" title="Кисть">🖌️</button>
-                <button class="tool-btn" onclick="setDrawMode('eraser')" title="Ластик">🧽</button>
-                <button class="tool-btn" onclick="clearDrawCanvas()" title="Очистить всё">🗑️</button>
-                
-                <div style="width: 1px; height: 30px; background: var(--border); margin: 0 10px;"></div>
-                
-                <div class="brush-size">
-                    Размер: <input type="range" id="brush-size" min="1" max="50" value="5" onchange="updateDrawCtx()">
+    <!-- МОДАЛКА РИСОВАНИЯ БАННЕРА -->
+    <div class="modal-overlay" id="draw-modal-overlay">
+        <div class="draw-modal">
+            <div class="draw-toolbar">
+                <button class="draw-tool active" onclick="setTool('brush')">✏️</button>
+                <button class="draw-tool" onclick="setTool('eraser')">🧽</button>
+                <div style="width:1px; height:20px; background:#333;"></div>
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <div class="color-dot active" style="background:#000000" onclick="setColor('#000000', this)"></div>
+                    <div class="color-dot" style="background:#ff2a5f" onclick="setColor('#ff2a5f', this)"></div>
+                    <div class="color-dot" style="background:#1d9bf0" onclick="setColor('#1d9bf0', this)"></div>
+                    <div class="color-dot" style="background:#00e676" onclick="setColor('#00e676', this)"></div>
+                    <div class="color-dot" style="background:#ffea00" onclick="setColor('#ffea00', this)"></div>
+                    <div class="color-dot" style="background:#ffffff" onclick="setColor('#ffffff', this)"></div>
                 </div>
-
-                <div style="width: 1px; height: 30px; background: var(--border); margin: 0 10px;"></div>
-
-                <div class="color-palette" id="color-palette">
-                    <!-- Цвета генерятся в JS -->
-                    <input type="color" id="custom-color" class="custom-color" onchange="setDrawColor(this.value)" title="Свой цвет">
-                </div>
+                <div style="width:1px; height:20px; background:#333;"></div>
+                <input type="range" id="draw-size" min="1" max="40" value="5" style="width:80px;">
+                <button class="draw-tool" style="margin-left:auto;" onclick="clearCanvas()">🗑️</button>
             </div>
-            
-            <div style="overflow: auto; max-height: 60vh; background: #222; display: flex; justify-content: center; align-items: center; padding: 20px;">
-                <canvas id="draw-canvas" width="800" height="250"></canvas>
+            <div class="draw-area">
+                <canvas id="canvas-banner" width="800" height="260"></canvas>
             </div>
-            
-            <div class="drawing-footer">
-                <button class="btn-small" style="background: transparent; border: 1px solid var(--border);" onclick="closeDrawingModal()">Отмена</button>
-                <button class="btn-small" style="background: var(--text); color: var(--bg);" onclick="saveDrawCanvas()">Сохранить баннер</button>
+            <div class="draw-footer">
+                <button class="btn-edit-profile" onclick="closeDrawModal()">Отмена</button>
+                <button class="btn-publish ready" onclick="saveBanner()">Загрузить баннер</button>
             </div>
         </div>
     </div>
 
     <script>
-        /* ================= БАЗА ДАННЫХ И НАСТРОЙКИ ================= */
+        /* ================= ДАННЫЕ ================= */
         let currentUser = null;
-        const allEmojis = ['👽','👻','🤖','🐱','🐶','🦊','🦁','🐸','🐼','🦄','🦖','🐙','🔥','⭐','🥑','🤡','👺','👾','🤠','🥶'];
-        let selectedEmoji = allEmojis[Math.floor(Math.random() * allEmojis.length)];
+        let selectedAvatar = '👽';
+        let allUsers = JSON.parse(localStorage.getItem('itd_users') || '[]');
+        let economy = JSON.parse(localStorage.getItem('itd_economy') || '{}');
 
-        // Инициализация EmailJS (ПОЛЬЗОВАТЕЛЮ НУЖНО ЗАМЕНИТЬ КЛЮЧИ)
-        // emailjs.init("ТВОЙ_PUBLIC_KEY");
+        /* ================= ГЕНЕРАТОР ЭМОДЗИ ================= */
+        const emojiRanges = [
+            [128512, 128567], // Лица
+            [128045, 128063], // Животные
+            [127812, 127827], // Еда
+            [128161, 128175]  // Символы/Сердца
+        ];
+        let emojiCache = [];
 
+        function generateEmojis() {
+            if(emojiCache.length > 0) return;
+            emojiRanges.forEach(range => {
+                for (let i = range[0]; i <= range[1]; i++) emojiCache.push(String.fromCodePoint(i));
+            });
+            renderEmojis(emojiCache);
+        }
+
+        function renderEmojis(list) {
+            const container = document.getElementById('emoji-grid-container');
+            container.innerHTML = list.map(e => `<div class="emoji-item" onclick="selectEmoji('${e}')">${e}</div>`).join('');
+        }
+
+        function filterEmojis() {
+            // В реале нужен маппинг слов, здесь просто показываем случайные для симуляции поиска
+            const q = document.getElementById('emoji-search').value;
+            renderEmojis(q ? emojiCache.slice(0, 20) : emojiCache);
+        }
+
+        function openEmojiPicker() { document.getElementById('massive-emoji-picker').style.display = 'flex'; generateEmojis(); }
+        function closeEmojiPicker() { document.getElementById('massive-emoji-picker').style.display = 'none'; }
+        function selectEmoji(e) { selectedAvatar = e; document.getElementById('auth-avatar-btn').innerText = e; closeEmojiPicker(); }
+
+        /* ================= АВТОРИЗАЦИЯ ================= */
         window.onload = () => {
-            document.getElementById('current-emoji-btn').innerText = selectedEmoji;
-            initEmojiPicker();
+            const saved = localStorage.getItem('itd_session');
+            if(saved) { currentUser = JSON.parse(saved); startApp(); }
             
-            const savedUser = localStorage.getItem('zap_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                startApp();
-            }
-
-            // Синхронизация между вкладками (Мультиплеер!)
+            // Мультиплеер (синхронизация вкладок)
             window.addEventListener('storage', (e) => {
-                if (e.key === 'zap_posts' || e.key === 'zap_wall_' + currentUser?.name) {
-                    loadPosts();
-                }
-                if (e.key === 'zap_users') {
-                    if(document.getElementById('view-search').classList.contains('active')) searchUsers('');
-                }
+                if(e.key === 'itd_posts') renderPosts();
+                if(e.key === 'itd_users') renderChatList();
+                if(e.key.startsWith('itd_chat_')) renderChatMessages();
             });
         };
 
-        /* ================= РЕГИСТРАЦИЯ И АВТОРИЗАЦИЯ ================= */
-        function sendAuthCode() {
-            const email = document.getElementById('auth-email').value;
-            if(!email.includes('@')) return alert('Введите корректный email');
+        function login() {
+            const name = document.getElementById('auth-login').value.trim();
+            if(!name) return alert('Введите имя');
             
-            // Здесь должна быть логика EmailJS
-            /* 
-            emailjs.send("ТВОЙ_SERVICE_ID", "ТВОЙ_TEMPLATE_ID", {
-                to_email: email,
-                code: "1234" // Генерация реального кода
-            }).then(() => { ... });
-            */
+            currentUser = { name, avatar: selectedAvatar, handle: '@' + name.toLowerCase().replace(/\s/g,'') };
+            localStorage.setItem('itd_session', JSON.stringify(currentUser));
             
-            // Имитация для работы без ключей:
-            document.getElementById('auth-step-1').style.display = 'none';
-            document.getElementById('auth-step-2').style.display = 'block';
-        }
-
-        function verifyAuthCode() {
-            const code = document.getElementById('auth-code').value;
-            if(code.length >= 4) { // В реальности проверять сгенерированный код
-                document.getElementById('auth-step-2').style.display = 'none';
-                document.getElementById('auth-step-3').style.display = 'block';
+            if(!allUsers.find(u => u.name === name)) {
+                allUsers.push(currentUser);
+                localStorage.setItem('itd_users', JSON.stringify(allUsers));
             }
-        }
-
-        function toggleEmojiModal(e) {
-            e.stopPropagation();
-            const modal = document.getElementById('emoji-modal');
-            modal.style.display = modal.style.display === 'grid' ? 'none' : 'grid';
             
-            const btnRect = document.getElementById('current-emoji-btn').getBoundingClientRect();
-            modal.style.top = (btnRect.bottom + 10) + 'px';
-            modal.style.left = btnRect.left + 'px';
-        }
-
-        function initEmojiPicker() {
-            const modal = document.getElementById('emoji-modal');
-            allEmojis.forEach(em => {
-                const el = document.createElement('div');
-                el.className = 'emoji-item';
-                el.innerText = em;
-                el.onclick = () => {
-                    selectedEmoji = em;
-                    document.getElementById('current-emoji-btn').innerText = em;
-                    modal.style.display = 'none';
-                };
-                modal.appendChild(el);
-            });
-            document.body.onclick = () => modal.style.display = 'none';
-        }
-
-        function finishRegistration() {
-            const name = document.getElementById('auth-username').value.trim();
-            if(!name) return alert('Введите имя!');
-            
-            currentUser = { name: name, avatar: selectedEmoji, id: Date.now() };
-            localStorage.setItem('zap_user', JSON.stringify(currentUser));
-            
-            // Добавляем в глобальную БД юзеров
-            let users = JSON.parse(localStorage.getItem('zap_users') || '[]');
-            if(!users.find(u => u.name === name)) {
-                users.push(currentUser);
-                localStorage.setItem('zap_users', JSON.stringify(users));
-            }
+            // Инициализация кошелька
+            if(!economy[name]) economy[name] = { coins: 0, skins: {} };
+            saveEconomy();
 
             startApp();
         }
@@ -484,399 +500,371 @@
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('app').style.display = 'flex';
             
-            document.getElementById('sidebar-name').innerText = currentUser.name;
-            document.getElementById('sidebar-avatar').innerText = currentUser.avatar;
-            document.getElementById('prof-name').innerText = currentUser.name;
-            document.getElementById('prof-avatar').innerText = currentUser.avatar;
+            // Заполнение профиля
+            document.getElementById('feed-avatar').innerText = currentUser.avatar;
+            document.getElementById('prof-avatar-s').innerText = currentUser.avatar;
+            document.getElementById('prof-avatar-l').innerText = currentUser.avatar;
+            document.getElementById('prof-name').innerHTML = `${currentUser.name} <svg class="svg-icon" style="fill:var(--accent-blue); width:18px;" viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+            document.getElementById('prof-handle').innerText = currentUser.handle;
             
-            const savedBanner = localStorage.getItem('zap_banner_' + currentUser.name);
+            const savedBanner = localStorage.getItem('itd_banner_' + currentUser.name);
             if(savedBanner) document.getElementById('profile-banner-img').src = savedBanner;
 
-            loadPosts();
+            updateEconomyUI();
+            renderPosts();
+            renderChatList();
         }
 
-        function logout() {
-            localStorage.removeItem('zap_user');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('itd_session'); location.reload(); }
 
-        /* ================= НАВИГАЦИЯ И ТЕМА ================= */
+        /* ================= НАВИГАЦИЯ И UI ================= */
         function nav(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('view-' + id).classList.add('active');
             event.currentTarget.classList.add('active');
-            stopGames();
-            if(id === 'search') searchUsers('');
+            stopAllGames();
         }
 
-        function toggleAppTheme() {
-            document.body.classList.toggle('light');
-            document.getElementById('theme-icon').innerText = document.body.classList.contains('light') ? '☀️' : '🌙';
+        function checkInput(input, btnId) {
+            const btn = document.getElementById(btnId);
+            if(input.value.trim().length > 0) btn.classList.add('ready');
+            else btn.classList.remove('ready');
         }
 
-        /* ================= ЛЕНТА И МУЛЬТИПЛЕЕР ================= */
-        function publishPost(isWall = false) {
-            const input = document.getElementById(isWall ? 'wall-input' : 'feed-input');
+        /* ================= ЛЕНТА (Cross-tab) ================= */
+        function publishPost(type) {
+            const inputId = type === 'feed' ? 'feed-input' : 'prof-input';
+            const input = document.getElementById(inputId);
             const text = input.value.trim();
             if(!text) return;
 
-            const post = { author: currentUser.name, avatar: currentUser.avatar, text: text, time: new Date().toLocaleTimeString() };
-            
-            const storageKey = isWall ? 'zap_wall_' + currentUser.name : 'zap_posts';
-            let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            posts.unshift(post);
-            localStorage.setItem(storageKey, JSON.stringify(posts));
+            let posts = JSON.parse(localStorage.getItem('itd_posts') || '[]');
+            posts.unshift({
+                author: currentUser.name, handle: currentUser.handle, 
+                avatar: currentUser.avatar, text: text,
+                time: new Date().toLocaleTimeString()
+            });
+            localStorage.setItem('itd_posts', JSON.stringify(posts));
             
             input.value = '';
-            loadPosts();
+            document.getElementById(type === 'feed' ? 'btn-pub-feed' : 'btn-pub-prof').classList.remove('ready');
+            
+            addCoins(2); // Награда за пост
+            renderPosts();
         }
 
-        function loadPosts() {
+        function renderPosts() {
             if(!currentUser) return;
-            
-            // Лента
-            const feed = JSON.parse(localStorage.getItem('zap_posts') || '[]');
-            const feedContainer = document.getElementById('feed-container');
-            feedContainer.innerHTML = feed.map(p => `
+            const posts = JSON.parse(localStorage.getItem('itd_posts') || '[]');
+            const html = posts.map(p => `
                 <div class="post">
-                    <div class="post-header">
-                        <div class="user-mini-avatar">${p.avatar}</div>
-                        <div><strong>${p.author}</strong> <span style="color:var(--text-muted); font-size:12px;">${p.time}</span></div>
+                    <div class="composer-avatar">${p.avatar}</div>
+                    <div>
+                        <div class="post-header">
+                            <span class="post-name">${p.author}</span>
+                            <span class="post-handle">${p.handle} · ${p.time}</span>
+                        </div>
+                        <div class="post-text">${p.text}</div>
                     </div>
-                    <div>${p.text}</div>
                 </div>
             `).join('');
-
-            // Стена
-            const wall = JSON.parse(localStorage.getItem('zap_wall_' + currentUser.name) || '[]');
-            const wallContainer = document.getElementById('wall-container');
-            wallContainer.innerHTML = wall.map(p => `
-                <div class="post" style="border-color: transparent; background: var(--bg);">
-                    <div class="post-header">
-                        <div class="user-mini-avatar" style="width:30px;height:30px;font-size:16px;">${p.avatar}</div>
-                        <div><strong>${p.author}</strong> <span style="color:var(--text-muted); font-size:12px;">${p.time}</span></div>
-                    </div>
-                    <div>${p.text}</div>
-                </div>
+            document.getElementById('feed-container').innerHTML = html;
+            
+            // Фильтр для стены профиля
+            const myPosts = posts.filter(p => p.author === currentUser.name);
+            document.getElementById('prof-wall-container').innerHTML = myPosts.map(p => `
+                <div class="post"><div class="composer-avatar">${p.avatar}</div>
+                <div><div class="post-header"><span class="post-name">${p.author}</span><span class="post-handle">${p.handle}</span></div>
+                <div class="post-text">${p.text}</div></div></div>
             `).join('');
         }
 
-        function searchUsers(query) {
-            const users = JSON.parse(localStorage.getItem('zap_users') || '[]');
-            const res = users.filter(u => u.name.toLowerCase().includes(query.toLowerCase()) && u.name !== currentUser.name);
-            
-            const container = document.getElementById('search-results');
-            if(res.length === 0) {
-                container.innerHTML = '<p class="auth-subtitle">Никого не найдено. Открой сайт в другой вкладке и создай аккаунт!</p>';
-                return;
-            }
-            container.innerHTML = res.map(u => `
-                <div class="user-item">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div class="user-mini-avatar">${u.avatar}</div>
-                        <strong>${u.name}</strong>
-                    </div>
-                    <button class="btn-small">Написать</button>
+        /* ================= ЧАТЫ ================= */
+        let activeChatUser = null;
+
+        function renderChatList() {
+            allUsers = JSON.parse(localStorage.getItem('itd_users') || '[]');
+            const others = allUsers.filter(u => u.name !== currentUser.name);
+            document.getElementById('users-list').innerHTML = others.map(u => `
+                <div class="chat-list-item" onclick="openChat('${u.name}')">
+                    <div class="composer-avatar">${u.avatar}</div>
+                    <div style="font-weight: bold;">${u.name}</div>
                 </div>
             `).join('');
         }
 
-        /* ================= РЕДАКТОР БАННЕРА (РИСОВАЛКА) ================= */
-        const drawModal = document.getElementById('drawing-modal');
-        const drawCanvas = document.getElementById('draw-canvas');
-        const dctx = drawCanvas.getContext('2d');
-        let isDrawing = false;
-        let currentDrawMode = 'brush'; // brush, eraser
-        let currentColor = '#ff2a5f';
-        let hasChanges = false;
+        function openChat(targetName) {
+            activeChatUser = targetName;
+            document.getElementById('chat-window').style.display = 'flex';
+            document.getElementById('chat-target-name').innerText = targetName;
+            renderChatMessages();
+        }
 
-        // Генерация палитры
-        const colors = ['#ffffff', '#ff2a5f', '#00e5ff', '#00e676', '#ffea00', '#aa00ff', '#ff9100', '#000000'];
-        const paletteContainer = document.getElementById('color-palette');
-        colors.forEach(c => {
-            const btn = document.createElement('div');
-            btn.className = 'color-swatch';
-            btn.style.background = c;
-            if(c === currentColor) btn.classList.add('active');
-            btn.onclick = () => setDrawColor(c, btn);
-            paletteContainer.insertBefore(btn, document.getElementById('custom-color'));
-        });
+        function closeChat() { document.getElementById('chat-window').style.display = 'none'; activeChatUser = null; }
 
-        function openDrawingModal() {
-            drawModal.style.display = 'flex';
-            hasChanges = false;
+        function getChatKey() {
+            return 'itd_chat_' + [currentUser.name, activeChatUser].sort().join('_');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text || !activeChatUser) return;
+
+            const key = getChatKey();
+            let msgs = JSON.parse(localStorage.getItem(key) || '[]');
+            msgs.push({ sender: currentUser.name, text });
+            localStorage.setItem(key, JSON.stringify(msgs));
             
-            // Заливка белым фоном по умолчанию
-            dctx.fillStyle = '#ffffff';
-            dctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
-            
-            // Загрузка сохраненного
-            const saved = localStorage.getItem('zap_banner_' + currentUser.name);
-            if(saved) {
-                const img = new Image();
-                img.onload = () => dctx.drawImage(img, 0, 0);
-                img.src = saved;
-            }
-            updateDrawCtx();
+            input.value = '';
+            renderChatMessages();
         }
 
-        function closeDrawingModal() {
-            if(hasChanges && !confirm('Закрыть редактор? Несохраненные изменения будут потеряны.')) return;
-            drawModal.style.display = 'none';
+        function renderChatMessages() {
+            if(!activeChatUser) return;
+            const msgs = JSON.parse(localStorage.getItem(getChatKey()) || '[]');
+            const box = document.getElementById('chat-messages');
+            box.innerHTML = msgs.map(m => `
+                <div class="msg ${m.sender === currentUser.name ? 'my' : 'other'}">${m.text}</div>
+            `).join('');
+            box.scrollTop = box.scrollHeight;
         }
 
-        function setDrawColor(color, btnNode = null) {
-            currentColor = color;
-            document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
-            if(btnNode) btnNode.classList.add('active');
-            if(currentDrawMode === 'brush') updateDrawCtx();
+        /* ================= РЕДАКТОР БАННЕРА ================= */
+        const canvas = document.getElementById('canvas-banner');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let dColor = '#000000';
+        let dTool = 'brush';
+
+        function openDrawModal() {
+            document.getElementById('draw-modal-overlay').style.display = 'flex';
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            const saved = localStorage.getItem('itd_banner_' + currentUser.name);
+            if(saved) { const img = new Image(); img.onload = () => ctx.drawImage(img,0,0); img.src = saved; }
         }
-
-        function setDrawMode(mode) {
-            currentDrawMode = mode;
-            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            updateDrawCtx();
+        function closeDrawModal() { document.getElementById('draw-modal-overlay').style.display = 'none'; }
+        function saveBanner() {
+            const data = canvas.toDataURL();
+            localStorage.setItem('itd_banner_' + currentUser.name, data);
+            document.getElementById('profile-banner-img').src = data;
+            closeDrawModal();
         }
+        function setColor(c, el) { dColor = c; document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('active')); el.classList.add('active'); setTool('brush'); }
+        function setTool(t) { dTool = t; document.querySelectorAll('.draw-tool').forEach(d=>d.classList.remove('active')); event.currentTarget.classList.add('active'); }
+        function clearCanvas() { ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
-        function updateDrawCtx() {
-            dctx.lineWidth = document.getElementById('brush-size').value;
-            dctx.lineCap = 'round';
-            dctx.lineJoin = 'round';
-            dctx.strokeStyle = currentDrawMode === 'eraser' ? '#ffffff' : currentColor;
-        }
-
-        function clearDrawCanvas() {
-            dctx.fillStyle = '#ffffff';
-            dctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
-            hasChanges = true;
-        }
-
-        function saveDrawCanvas() {
-            const dataUrl = drawCanvas.toDataURL();
-            localStorage.setItem('zap_banner_' + currentUser.name, dataUrl);
-            document.getElementById('profile-banner-img').src = dataUrl;
-            hasChanges = false;
-            drawModal.style.display = 'none';
-        }
-
-        // Логика рисования мышь/тач
-        const startPos = (e) => { isDrawing = true; hasChanges = true; drawLine(e); };
-        const endPos = () => { isDrawing = false; dctx.beginPath(); };
-        const drawLine = (e) => {
-            if (!isDrawing) return;
-            const rect = drawCanvas.getBoundingClientRect();
-            // Масштабирование координат
-            const scaleX = drawCanvas.width / rect.width;
-            const scaleY = drawCanvas.height / rect.height;
-            
-            const clientX = e.clientX || e.touches[0].clientX;
-            const clientY = e.clientY || e.touches[0].clientY;
-            
-            const x = (clientX - rect.left) * scaleX;
-            const y = (clientY - rect.top) * scaleY;
-
-            dctx.lineTo(x, y);
-            dctx.stroke();
-            dctx.beginPath();
-            dctx.moveTo(x, y);
-            e.preventDefault(); // блочим скролл на мобилках при рисовании
+        const dStart = (e) => { painting = true; dDraw(e); };
+        const dStop = () => { painting = false; ctx.beginPath(); };
+        const dDraw = (e) => {
+            if(!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches?.[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches?.[0].clientY) - rect.top;
+            ctx.lineWidth = document.getElementById('draw-size').value;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = dTool === 'eraser' ? '#ffffff' : dColor;
+            ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+            e.preventDefault();
         };
 
-        drawCanvas.addEventListener('mousedown', startPos);
-        drawCanvas.addEventListener('mouseup', endPos);
-        drawCanvas.addEventListener('mousemove', drawLine);
-        drawCanvas.addEventListener('touchstart', startPos, {passive: false});
-        drawCanvas.addEventListener('touchend', endPos);
-        drawCanvas.addEventListener('touchmove', drawLine, {passive: false});
+        canvas.addEventListener('mousedown', dStart); canvas.addEventListener('mouseup', dStop); canvas.addEventListener('mousemove', dDraw);
+        canvas.addEventListener('touchstart', dStart, {passive:false}); canvas.addEventListener('touchend', dStop); canvas.addEventListener('touchmove', dDraw, {passive:false});
 
+        /* ================= ЭКОНОМИКА И МАГАЗИН ================= */
+        function addCoins(amount) {
+            economy[currentUser.name].coins += amount;
+            saveEconomy(); updateEconomyUI();
+        }
+        function saveEconomy() { localStorage.setItem('itd_economy', JSON.stringify(economy)); }
+        function updateEconomyUI() {
+            const c = economy[currentUser.name].coins;
+            document.getElementById('prof-coins').innerText = c;
+            document.getElementById('balance-display').innerText = c;
+        }
+        function buySkin(game, skinId, price) {
+            let inv = economy[currentUser.name].skins;
+            if(inv[game + '_' + skinId]) return alert('Уже куплено!');
+            if(economy[currentUser.name].coins < price) return alert('Недостаточно ZapCoins!');
+            
+            economy[currentUser.name].coins -= price;
+            inv[game + '_' + skinId] = true;
+            saveEconomy(); updateEconomyUI();
+            alert('Успешно куплено!');
+        }
+        function hasSkin(game, skinId) { return economy[currentUser.name].skins[game + '_' + skinId] === true; }
 
-        /* ================= МИНИ-ИГРЫ ================= */
-        let gameLoopAnim;
+        /* ================= ИГРОВЫЕ ДВИЖКИ ================= */
+        let gameAnimFrame;
 
-        function stopGames() {
-            cancelAnimationFrame(gameLoopAnim);
-            document.getElementById('games-menu').style.display = 'grid';
+        function openGame(id) {
+            document.getElementById('games-grid').style.display = 'none';
+            document.getElementById('arena-' + id).style.display = 'flex';
+            if(id==='snake') runSnake();
+            if(id==='rocket') runRocket();
+            if(id==='flappy') runFlappy();
+            if(id==='pong') runPong();
+            if(id==='clicker') runClicker();
+        }
+
+        function closeGame() {
+            cancelAnimationFrame(gameAnimFrame);
             document.querySelectorAll('.game-arena').forEach(a => a.style.display = 'none');
-            // Снимаем обработчики чтобы не копились
-            window.removeEventListener("keydown", snakeKeyHandler);
+            document.getElementById('games-grid').style.display = 'grid';
         }
+        function stopAllGames() { closeGame(); }
 
-        /* --- ЗМЕЙКА NEON --- */
-        let snakeKeyHandler;
-        function startSnake() {
-            document.getElementById('games-menu').style.display = 'none';
-            document.getElementById('game-snake').style.display = 'block';
+        /* --- 1. NEON SNAKE --- */
+        function runSnake() {
+            const c = document.getElementById('cvs-snake'); const x = c.getContext('2d');
+            const box = 20; let s = [{x:10*box, y:10*box}], f = {x:5*box,y:5*box}, d='R';
             
-            const cvs = document.getElementById("snakeCanvas");
-            const ctx = cvs.getContext("2d");
-            const box = 25;
-            let snake = [{ x: 10 * box, y: 10 * box }];
-            let food = spawnFood();
-            let score = 0;
-            let d;
-            
-            document.getElementById('snake-score').innerText = score;
+            const k = e => { if(e.key==='ArrowLeft'&&d!='R')d='L'; if(e.key==='ArrowUp'&&d!='D')d='U'; if(e.key==='ArrowRight'&&d!='L')d='R'; if(e.key==='ArrowDown'&&d!='U')d='D';};
+            window.addEventListener('keydown', k);
 
-            function spawnFood() {
-                return { x: Math.floor(Math.random()*19)*box, y: Math.floor(Math.random()*19)*box };
-            }
+            let last=0;
+            function loop(t) {
+                gameAnimFrame = requestAnimationFrame(loop);
+                if(t-last < 100) return; last=t;
 
-            snakeKeyHandler = (e) => {
-                if(e.keyCode == 37 && d != "RIGHT") d = "LEFT";
-                else if(e.keyCode == 38 && d != "DOWN") d = "UP";
-                else if(e.keyCode == 39 && d != "LEFT") d = "RIGHT";
-                else if(e.keyCode == 40 && d != "UP") d = "DOWN";
-            };
-            window.addEventListener("keydown", snakeKeyHandler);
+                x.fillStyle='#0f0f11'; x.fillRect(0,0,c.width,c.height);
+                x.fillStyle='#ff2a5f'; x.fillRect(f.x,f.y,box,box);
 
-            let lastTime = 0;
-            function draw(time) {
-                gameLoopAnim = requestAnimationFrame(draw);
-                if(time - lastTime < 100) return; // Скорость
-                lastTime = time;
+                let nx=s[0].x, ny=s[0].y;
+                if(d==='L') nx-=box; if(d==='U') ny-=box; if(d==='R') nx+=box; if(d==='D') ny+=box;
 
-                // Фон (Сетка)
-                ctx.fillStyle = "#1e1e24";
-                ctx.fillRect(0, 0, cvs.width, cvs.height);
-                ctx.strokeStyle = "#2d2d35";
-                for(let i=0; i<cvs.width; i+=box) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,cvs.height); ctx.stroke(); }
-                for(let i=0; i<cvs.height; i+=box) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(cvs.width,i); ctx.stroke(); }
+                if(nx<0||nx>=c.width||ny<0||ny>=c.height||s.some(p=>p.x===nx&&p.y===ny)) { window.removeEventListener('keydown',k); return runSnake(); }
+                if(nx===f.x&&ny===f.y) { addCoins(1); f={x:Math.floor(Math.random()*19)*box,y:Math.floor(Math.random()*19)*box}; } else s.pop();
+                s.unshift({x:nx,y:ny});
 
-                // Еда
-                ctx.fillStyle = "#ff2a5f";
-                ctx.beginPath(); ctx.arc(food.x + box/2, food.y + box/2, box/2.5, 0, Math.PI*2); ctx.fill();
-
-                // Движение
-                let snakeX = snake[0].x;
-                let snakeY = snake[0].y;
-                if(d == "LEFT") snakeX -= box;
-                if(d == "UP") snakeY -= box;
-                if(d == "RIGHT") snakeX += box;
-                if(d == "DOWN") snakeY += box;
-
-                // Столкновения
-                if(snakeX < 0 || snakeX >= cvs.width || snakeY < 0 || snakeY >= cvs.height || collision({x:snakeX, y:snakeY}, snake)){
-                    window.removeEventListener("keydown", snakeKeyHandler);
-                    startSnake(); return;
-                }
-
-                if(snakeX == food.x && snakeY == food.y){
-                    score++; document.getElementById('snake-score').innerText = score;
-                    food = spawnFood();
-                } else {
-                    snake.pop();
-                }
-
-                snake.unshift({x: snakeX, y: snakeY});
-
-                // Отрисовка змеи (Градиент/неон эффект)
-                for(let i = 0; i < snake.length; i++){
-                    ctx.fillStyle = i == 0 ? "#00e5ff" : "#0096cc";
-                    ctx.shadowBlur = i == 0 ? 15 : 0;
-                    ctx.shadowColor = "#00e5ff";
-                    ctx.fillRect(snake[i].x + 1, snake[i].y + 1, box-2, box-2);
-                    ctx.shadowBlur = 0;
-                }
-            }
-            
-            function collision(head, array){
-                for(let i = 0; i < array.length; i++){
-                    if(head.x == array[i].x && head.y == array[i].y) return true;
-                } return false;
-            }
-            gameLoopAnim = requestAnimationFrame(draw);
-        }
-
-        /* --- ПОЛЕТ РАКЕТЫ DEEP SPACE --- */
-        function startRocket() {
-            document.getElementById('games-menu').style.display = 'none';
-            document.getElementById('game-rocket').style.display = 'block';
-            
-            const cvs = document.getElementById("rocketCanvas");
-            const ctx = cvs.getContext("2d");
-            let player = { x: 225, y: 500, w: 30, h: 50 };
-            let asteroids = [];
-            let stars = [];
-            let score = 0;
-            let frame = 0;
-            
-            document.getElementById('rocket-score').innerText = score;
-
-            // Звезды
-            for(let i=0; i<50; i++) stars.push({x: Math.random()*cvs.width, y: Math.random()*cvs.height, s: Math.random()*2+1});
-
-            const moveHandler = (e) => {
-                const rect = cvs.getBoundingClientRect();
-                const clientX = e.clientX || e.touches[0].clientX;
-                player.x = ((clientX - rect.left) / rect.width) * cvs.width - player.w/2;
-            };
-            cvs.addEventListener("mousemove", moveHandler);
-            cvs.addEventListener("touchmove", moveHandler, {passive: true});
-
-            function draw() {
-                // Космос
-                ctx.fillStyle = "#0f0f11";
-                ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-                // Рисуем звезды
-                ctx.fillStyle = "#ffffff";
-                stars.forEach(s => {
-                    s.y += s.s;
-                    if(s.y > cvs.height) s.y = 0;
-                    ctx.fillRect(s.x, s.y, s.s, s.s);
+                s.forEach((p,i) => {
+                    if(hasSkin('snake', 'rainbow')) x.fillStyle = `hsl(${i*10}, 100%, 50%)`;
+                    else if(hasSkin('snake', 'gold')) x.fillStyle = '#ffd700';
+                    else x.fillStyle = i===0 ? '#1d9bf0' : '#105a8f';
+                    x.fillRect(p.x, p.y, box-1, box-1);
                 });
-
-                // Огонь из турбины
-                ctx.fillStyle = frame % 4 < 2 ? "#ff9100" : "#ff2a5f";
-                ctx.beginPath();
-                ctx.moveTo(player.x + 5, player.y + player.h);
-                ctx.lineTo(player.x + player.w/2, player.y + player.h + 20 + Math.random()*10);
-                ctx.lineTo(player.x + player.w - 5, player.y + player.h);
-                ctx.fill();
-
-                // Ракета
-                ctx.fillStyle = "#ffffff";
-                ctx.beginPath();
-                ctx.moveTo(player.x + player.w/2, player.y);
-                ctx.lineTo(player.x + player.w, player.y + player.h);
-                ctx.lineTo(player.x, player.y + player.h);
-                ctx.fill();
-
-                // Спавн астероидов (ускорение со временем)
-                let spawnRate = Math.max(10, 30 - Math.floor(score/5));
-                if(frame % spawnRate === 0) {
-                    asteroids.push({ 
-                        x: Math.random() * (cvs.width - 30), y: -40, size: 20 + Math.random()*20, 
-                        speed: 3 + Math.random()*(3 + score/10) 
-                    });
-                }
-
-                ctx.fillStyle = "#8a8a93";
-                for(let i = 0; i < asteroids.length; i++) {
-                    let a = asteroids[i];
-                    a.y += a.speed;
-                    
-                    ctx.beginPath(); ctx.arc(a.x + a.size/2, a.y + a.size/2, a.size/2, 0, Math.PI*2); ctx.fill();
-
-                    // Collision (круг и квадрат приближенно)
-                    if (player.x < a.x + a.size && player.x + player.w > a.x && player.y < a.y + a.size && player.y + player.h > a.y) {
-                        cvs.removeEventListener("mousemove", moveHandler);
-                        cvs.removeEventListener("touchmove", moveHandler);
-                        startRocket(); return;
-                    }
-
-                    if(a.y > cvs.height) {
-                        asteroids.splice(i, 1);
-                        score++; document.getElementById('rocket-score').innerText = score;
-                    }
-                }
-                frame++;
-                gameLoopAnim = requestAnimationFrame(draw);
-            }
-            draw();
+            } loop(0);
         }
+
+        /* --- 2. SPACE DODGE --- */
+        function runRocket() {
+            const c = document.getElementById('cvs-rocket'); const x = c.getContext('2d');
+            let px=200, ast=[], frame=0;
+
+            const mv = e => { const r=c.getBoundingClientRect(); px = (e.clientX||e.touches[0].clientX)-r.left-15; };
+            c.addEventListener('mousemove', mv); c.addEventListener('touchmove', mv);
+
+            function loop() {
+                x.fillStyle='#0f0f11'; x.fillRect(0,0,c.width,c.height);
+                
+                // Ship
+                x.fillStyle = hasSkin('rocket', 'ufo') ? '#00e676' : '#ffffff';
+                if(hasSkin('rocket','ufo')) { x.beginPath(); x.arc(px+15,450,20,0,Math.PI*2); x.fill(); }
+                else x.fillRect(px, 400, 30, 50);
+
+                if(frame%20===0) ast.push({x:Math.random()*380, y:-30, s:20+Math.random()*20});
+                
+                x.fillStyle='#8a8a93';
+                for(let i=0; i<ast.length; i++) {
+                    let a = ast[i]; a.y+=5; x.fillRect(a.x,a.y,a.s,a.s);
+                    if(px<a.x+a.s && px+30>a.x && 400<a.y+a.s && 450>a.y) { c.removeEventListener('mousemove',mv); return runRocket(); }
+                    if(a.y>500) { ast.splice(i,1); addCoins(1); }
+                }
+                frame++; gameAnimFrame=requestAnimationFrame(loop);
+            } loop();
+        }
+
+        /* --- 3. FLAPPY BLOCK --- */
+        function runFlappy() {
+            const c = document.getElementById('cvs-flappy'); const x = c.getContext('2d');
+            let py=200, v=0, pipes=[], frame=0;
+            
+            const jmp = () => v=-8;
+            window.addEventListener('keydown', e => {if(e.code==='Space')jmp()});
+            c.addEventListener('mousedown', jmp); c.addEventListener('touchstart', jmp);
+
+            function loop() {
+                x.fillStyle='#1c1c21'; x.fillRect(0,0,c.width,c.height);
+                v+=0.5; py+=v;
+                
+                x.fillStyle='#ffea00'; x.fillRect(100, py, 20, 20);
+
+                if(frame%90===0) { let h=100+Math.random()*200; pipes.push({x:400, y:0, w:40, h:h}, {x:400, y:h+120, w:40, h:500}); }
+
+                x.fillStyle='#1d9bf0';
+                for(let i=0; i<pipes.length; i++) {
+                    let p=pipes[i]; p.x-=3; x.fillRect(p.x,p.y,p.w,p.h);
+                    if(100<p.x+p.w && 120>p.x && py<p.y+p.h && py+20>p.y) return runFlappy();
+                    if(p.x==100 && p.y==0) addCoins(2);
+                }
+                if(py>500||py<0) return runFlappy();
+                frame++; gameAnimFrame=requestAnimationFrame(loop);
+            } loop();
+        }
+
+        /* --- 4. PONG AI (СТАВКИ) --- */
+        function runPong() {
+            const c = document.getElementById('cvs-pong'); const x = c.getContext('2d');
+            if(economy[currentUser.name].coins < 10) return alert('Нужно 10 ZC для ставки!');
+            
+            economy[currentUser.name].coins -= 10; saveEconomy(); updateEconomyUI();
+            
+            let py=120, ay=120, bx=200, by=150, bvx=4, bvy=4, s1=0, s2=0;
+            
+            c.addEventListener('mousemove', e => { const r=c.getBoundingClientRect(); py=(e.clientY-r.top)-30; });
+
+            function loop() {
+                x.fillStyle='#0f0f11'; x.fillRect(0,0,c.width,c.height);
+                
+                // AI
+                ay += (by - (ay+30)) * 0.1;
+                
+                bx+=bvx; by+=bvy;
+                if(by<=0 || by>=c.height) bvy=-bvy;
+                
+                // Hit
+                if(bx<=20 && by>py && by<py+60) { bvx=-bvx; bx=20; }
+                if(bx>=380 && by>ay && by<ay+60) { bvx=-bvx; bx=380; }
+                
+                // Score
+                if(bx<0) { s2++; bx=200; by=150; }
+                if(bx>400) { s1++; bx=200; by=150; }
+
+                x.fillStyle='#fff';
+                x.fillRect(10, py, 10, 60); x.fillRect(380, ay, 10, 60); x.fillRect(bx, by, 10, 10);
+                x.fillText(`${s1} : ${s2}`, 180, 20);
+
+                if(s1===5) { addCoins(20); alert('Победа! +20 ZC'); return closeGame(); }
+                if(s2===5) { alert('Поражение!'); return closeGame(); }
+                
+                gameAnimFrame=requestAnimationFrame(loop);
+            } loop();
+        }
+
+        /* --- 5. COIN CATCHER --- */
+        function runClicker() {
+            const c = document.getElementById('cvs-clicker'); const x = c.getContext('2d');
+            let px=150, coins=[], f=0;
+            
+            c.addEventListener('mousemove', e=>{px=(e.clientX-c.getBoundingClientRect().left)-25;});
+
+            function loop() {
+                x.fillStyle='#1c1c21'; x.fillRect(0,0,c.width,c.height);
+                x.fillStyle='#1d9bf0'; x.fillRect(px, 350, 60, 20);
+
+                if(f%30===0) coins.push({x:Math.random()*380, y:0});
+                
+                x.fillStyle='#ffd700';
+                for(let i=0; i<coins.length; i++) {
+                    let cn=coins[i]; cn.y+=4;
+                    x.beginPath(); x.arc(cn.x, cn.y, 10, 0, Math.PI*2); x.fill();
+                    if(cn.y>350 && cn.y<370 && cn.x>px && cn.x<px+60) { addCoins(1); coins.splice(i,1); }
+                }
+                f++; gameAnimFrame=requestAnimationFrame(loop);
+            } loop();
+        }
+
     </script>
 </body>
 </html>
