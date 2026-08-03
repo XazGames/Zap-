@@ -47,7 +47,7 @@
       transition: background 0.4s, color 0.3s;
       position: relative;
     }
-    /* Эффект круглого луча на кнопках */
+    /* Эффект рассеянного луча на кнопках */
     .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge {
       position: relative;
       overflow: hidden;
@@ -59,7 +59,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.6) 0%, transparent 80%);
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.5) 0%, transparent 80%);
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
@@ -286,43 +286,37 @@
       transition:0.3s; display:inline-flex; align-items:center; gap:6px;
     }
     .brand-tag:hover { background: var(--btn-hover); border-color: var(--accent); box-shadow: var(--accent-glow); }
-    /* Стили для страницы О нас */
+    /* Стили для страницы О нас с 3D колонками */
     .about-columns {
       display: flex;
-      gap: 25px;
+      gap: 20px;
       margin-top: 30px;
+      perspective: 800px;
     }
     .about-col {
       flex: 1;
       background: var(--glass-bg);
       backdrop-filter: blur(10px);
       border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 25px;
-      box-shadow: 
-        0 10px 25px -5px rgba(0,0,0,0.15),
-        0 0 0 1px rgba(255,255,255,0.3) inset,
-        0 -4px 6px rgba(0,0,0,0.05) inset;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 10px rgba(255,255,255,0.2);
+      transform: rotateX(2deg) rotateY(2deg);
       transition: transform 0.3s, box-shadow 0.3s;
     }
     .about-col:hover {
-      transform: translateY(-5px);
-      box-shadow: 
-        0 20px 35px -10px rgba(0,0,0,0.25),
-        0 0 0 1px rgba(255,255,255,0.4) inset,
-        0 -6px 10px rgba(0,0,0,0.1) inset;
+      transform: rotateX(0deg) rotateY(0deg);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3);
     }
     .about-col h3 {
-      margin-bottom: 15px;
-      font-size: 1.3em;
-      font-weight: 700;
+      margin-bottom: 10px;
+      font-size: 1.2em;
       color: var(--text);
     }
     .about-col p {
       color: var(--text-secondary);
-      font-size: 0.95em;
-      line-height: 1.6;
-      margin-bottom: 15px;
+      font-size: 0.9em;
+      line-height: 1.5;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -410,33 +404,17 @@
     </div>
     <div id="rulesPage" class="page"><div class="glass" style="padding:30px;"><h2>Правила <span class="admin-only" onclick="editList('rules')" style="cursor:pointer;">✏️</span></h2><div id="rulesList"></div></div></div>
     <div id="descriptionPage" class="page">
-      <div class="glass" style="padding:30px;">
-        <h2>О городе</h2>
-        <p>Хазбиково — проект, созданный энтузиастами. Дружное сообщество, красивые постройки и постоянное развитие.</p>
-      </div>
-    </div>
-    <div id="newsPage" class="page"><div class="glass" style="padding:30px;"><h2>Новости <span class="admin-only" onclick="editJSON('news')" style="cursor:pointer;">✏️</span></h2><div id="newsList"></div></div></div>
-    <div id="sightsPage" class="page"><div class="glass" style="padding:30px;"><h2>Достопримечательности <span class="admin-only" onclick="editJSON('sights')" style="cursor:pointer;">✏️</span></h2><div id="sightsList"></div></div></div>
-    <div id="tasksPage" class="page"><div class="glass" style="padding:30px;"><h2>Задания</h2><p>Скоро здесь появятся ежедневные задания для жителей.</p></div></div>
-    <div id="galleryPage" class="page">
-      <div class="glass" style="padding:30px;">
-        <h2>Галерея <span class="admin-only" style="cursor:pointer;" onclick="document.getElementById('galleryUpload').click()">✏️</span></h2>
-        <input type="file" id="galleryUpload" accept="image/*" style="display:none;" onchange="uploadGalleryImage(event)">
-        <div class="gallery" id="galleryContainer"></div>
-      </div>
-    </div>
-    <div id="aboutPage" class="page">
       <div class="glass" style="padding:40px; text-align:center;">
-        <h1 style="font-size:2.5em; margin-bottom:30px;">О нас</h1>
+        <h1 style="font-size:2.5em; margin-bottom:20px;">О нас</h1>
         <div class="about-columns">
           <div class="about-col">
-            <h3>Информация о сайте</h3>
+            <h3>Вся информация о сайте</h3>
             <p>Сайт был создан компанией Xaz&Der1 специально для города 'Хазбиково' на сервере ChichVAKA. Наш сайт создан, чтобы познакомить вас с уникальными чертами города.</p>
             <p>На сайте можно найти: Жители города, Тест-сервер города, Правила города, Достопримечательности города и многое другое.</p>
             <p>Путешествуйте с удовольствием — Хазбиково ждёт вас!</p>
           </div>
           <div class="about-col">
-            <h3>Цель создания сайта</h3>
+            <h3>Для чего был создан сайт?</h3>
             <p>Сайт был создан в исключительно информационных целях — для обеспечения открытого и оперативного доступа жителей и гостей города к достоверным сведениям о деятельности органов местного самоуправления, городских программах и услугах.</p>
             <p>Никого и ничего мы не хотели задеть или оскорбить, все совпадения случайны.</p>
           </div>
@@ -447,6 +425,16 @@
             <p>Вот так и появился данный сайт от компании Xaz&Der1.</p>
           </div>
         </div>
+      </div>
+    </div>
+    <div id="newsPage" class="page"><div class="glass" style="padding:30px;"><h2>Новости <span class="admin-only" onclick="editJSON('news')" style="cursor:pointer;">✏️</span></h2><div id="newsList"></div></div></div>
+    <div id="sightsPage" class="page"><div class="glass" style="padding:30px;"><h2>Достопримечательности <span class="admin-only" onclick="editJSON('sights')" style="cursor:pointer;">✏️</span></h2><div id="sightsList"></div></div></div>
+    <div id="tasksPage" class="page"><div class="glass" style="padding:30px;"><h2>Задания</h2><p>Скоро здесь появятся ежедневные задания для жителей.</p></div></div>
+    <div id="galleryPage" class="page">
+      <div class="glass" style="padding:30px;">
+        <h2>Галерея <span class="admin-only" style="cursor:pointer;" onclick="document.getElementById('galleryUpload').click()">✏️</span></h2>
+        <input type="file" id="galleryUpload" accept="image/*" style="display:none;" onchange="uploadGalleryImage(event)">
+        <div class="gallery" id="galleryContainer"></div>
       </div>
     </div>
   </div>
@@ -466,12 +454,12 @@
       <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
       <a href="#" onclick="showPolicy('terms')">Условия</a>
       <a href="#" onclick="openSettings()">Настройки</a>
-      <a href="#" onclick="showPage('about')">О нас</a>
+      <a href="#" onclick="showPage('description')">О нас</a>
     </div>
     <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
   </footer>
 
-  <!-- Модальные окна (все как раньше) -->
+  <!-- Модальные окна -->
   <div id="registerModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal('registerModal')">✕</span>
@@ -525,8 +513,8 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.4</strong> – Плавные переходы страниц, 3D-колонки «О нас».</li>
-        <li><strong>v5.3</strong> – Круглый луч на кнопках.</li>
+        <li><strong>v5.3</strong> – Объединены «Описание» и «О нас», 3D-колонки, все эффекты сохранены.</li>
+        <li><strong>v5.2</strong> – Улучшенный футер, анимации кнопок.</li>
       </ul>
     </div>
   </div>
@@ -569,7 +557,7 @@
   </div>
 
   <script>
-    // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (без изменений) ===
+    // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===
     let users = JSON.parse(localStorage.getItem('xazUsers')) || [];
     let currentUser = null;
     let adminMode = false;
@@ -742,10 +730,10 @@
       const text = document.getElementById('policyText');
       if (type === 'privacy') {
         title.innerText = 'Конфиденциальность';
-        text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность...`;
+        text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
       } else if (type === 'terms') {
         title.innerText = 'Условия использования';
-        text.innerText = `Условия использования сервера Хазбиково...`;
+        text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
       }
       document.getElementById('policyModal').classList.add('active');
     };
@@ -872,7 +860,7 @@
     });
     showPage('home');
 
-    // Обработчик для круглого луча на кнопках
+    // Обработчик для рассеянного луча на кнопках
     document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
