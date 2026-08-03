@@ -3,39 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>XazGames™ — Хазбиково</title>
+  <title>Хазбиково</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --glass-bg: rgba(255,255,255,0.15);
-      --glass-border: rgba(255,255,255,0.3);
+      --glass-bg: rgba(255,255,255,0.35);
+      --glass-border: rgba(255,255,255,0.6);
       --text: #1e1e2f;
       --text-secondary: #3d3d5c;
       --accent: #ffffff;
-      --accent-glow: 0 0 20px rgba(255,255,255,0.5);
-      --shadow: 0 20px 40px rgba(0,0,0,0.1);
-      --btn-bg: rgba(255,255,255,0.2);
-      --btn-hover: rgba(255,255,255,0.4);
-      --header-bg: rgba(255,255,255,0.15);
-      --footer-bg: rgba(255,255,255,0.1);
-      --input-bg: rgba(255,255,255,0.2);
-      --bg: linear-gradient(145deg, #e0e0e8 0%, #c8c8d0 100%);
+      --accent-glow: 0 0 12px rgba(255,255,255,0.4);
+      --shadow: 0 15px 40px rgba(0,0,0,0.08);
+      --btn-bg: rgba(255,255,255,0.4);
+      --btn-hover: rgba(255,255,255,0.8);
+      --header-bg: rgba(255,255,255,0.35);
+      --footer-bg: rgba(255,255,255,0.3);
+      --input-bg: rgba(255,255,255,0.5);
+      --bg: linear-gradient(145deg, #f0f0f5 0%, #e0e0ea 100%);
     }
     body.dark-theme {
-      --glass-bg: rgba(20,20,35,0.6);
+      --glass-bg: rgba(20,20,25,0.75);
       --glass-border: rgba(255,255,255,0.08);
-      --text: #f0f0fa;
-      --text-secondary: #b0b0c8;
+      --text: #e8e8f0;
+      --text-secondary: #a0a0b0;
       --accent: #ffffff;
-      --accent-glow: 0 0 20px rgba(255,255,255,0.4);
-      --shadow: 0 20px 40px rgba(0,0,0,0.6);
-      --btn-bg: rgba(30,30,50,0.5);
-      --btn-hover: rgba(40,40,65,0.8);
-      --header-bg: rgba(15,15,30,0.5);
-      --footer-bg: rgba(15,15,30,0.4);
-      --input-bg: rgba(20,20,40,0.6);
-      --bg: linear-gradient(145deg, #0b0b1a 0%, #12122a 100%);
+      --accent-glow: 0 0 12px rgba(255,255,255,0.3);
+      --shadow: 0 15px 40px rgba(0,0,0,0.6);
+      --btn-bg: rgba(40,40,50,0.55);
+      --btn-hover: rgba(60,60,70,0.85);
+      --header-bg: rgba(20,20,25,0.7);
+      --footer-bg: rgba(20,20,25,0.6);
+      --input-bg: rgba(30,30,40,0.7);
+      --bg: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
     }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -46,64 +46,23 @@
       flex-direction: column;
       transition: background 0.4s, color 0.3s;
       position: relative;
-      overflow-x: hidden;
     }
     .bg-glow {
       position: fixed; top:0; left:0; width:100%; height:100%;
       background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 60%);
       z-index:-2; animation: pulse 8s infinite alternate;
     }
-    @keyframes pulse { 0% { opacity:0.6; transform:scale(1); } 100% { opacity:1; transform:scale(1.08); } }
+    @keyframes pulse {
+      0% { opacity:0.6; transform:scale(1); }
+      100% { opacity:1; transform:scale(1.08); }
+    }
     .glass {
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       background: var(--glass-bg);
       border:1px solid var(--glass-border);
-      border-radius: 32px;
+      border-radius: 28px;
       box-shadow: var(--shadow);
     }
-    /* Приветственный экран */
-    .hero {
-      position: fixed; top:0; left:0; width:100%; height:100vh;
-      display:flex; align-items:center; justify-content:center;
-      z-index:500; background: var(--bg);
-      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s;
-    }
-    .hero.hidden {
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
-    }
-    .hero-content {
-      text-align: center;
-      animation: fadeInUp 1s ease;
-    }
-    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-    .hero h1 { font-size: 4em; font-weight:800; letter-spacing: 4px; margin-bottom: 0.2em; color: var(--text); }
-    .hero p { font-size: 1.5em; color: var(--text-secondary); margin-bottom: 2em; }
-    .hero .btn-start {
-      background: rgba(255,255,255,0.3); backdrop-filter: blur(20px);
-      border:1px solid rgba(255,255,255,0.6);
-      color: var(--text); padding: 18px 48px; border-radius: 50px;
-      font-size: 1.4em; font-weight:700; cursor:pointer;
-      transition: 0.4s; letter-spacing: 2px; text-transform: uppercase;
-      box-shadow: 0 0 30px rgba(255,255,255,0.3);
-    }
-    .hero .btn-start:hover {
-      background: rgba(255,255,255,0.6); box-shadow: 0 0 50px rgba(255,255,255,0.6);
-      transform: scale(1.05);
-    }
-
-    /* Основной интерфейс */
-    .main-ui {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s 0.3s, transform 0.8s 0.3s;
-    }
-    .main-ui.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
     .header {
       position: sticky; top:0; z-index:100;
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
@@ -180,6 +139,7 @@
       position:absolute; top:18px; right:22px; background:none;
       border:none; font-size:1.5em; cursor:pointer; color:var(--text); opacity:0.7;
     }
+    .close-btn:hover { opacity:1; transform:scale(1.2); }
     input, textarea {
       width:100%; padding:14px 18px; margin:8px 0;
       background:var(--input-bg); border:1px solid var(--glass-border);
@@ -209,125 +169,221 @@
     table { width:100%; border-collapse: collapse; margin-top:15px; }
     th, td { padding:12px 16px; border-bottom:1px solid var(--glass-border); text-align:left; }
     th { color: var(--text); opacity:0.8; }
-    /* Загрузка картинок */
     .gallery { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
     .gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid var(--glass-border); }
-    .upload-area { margin-top: 10px; }
   </style>
-  <!-- EmailJS: замените ключи на свои -->
+  <!-- Подключаем EmailJS (замените ключи на свои) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
-    // Инициализация EmailJS (замените YOUR_PUBLIC_KEY на ваш Public Key из EmailJS)
     (function() {
-      emailjs.init("YOUR_PUBLIC_KEY");
+      emailjs.init("YOUR_PUBLIC_KEY"); // <-- замените на ваш Public Key
       if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark-theme');
     })();
   </script>
 </head>
 <body>
-  <!-- Приветственный экран -->
-  <div class="hero" id="heroScreen">
-    <div class="hero-content">
-      <h1>Хазбиково</h1>
-      <p>Добро пожаловать в город будущего</p>
-      <button class="btn-start" onclick="enterSite()">Перейти к сайту</button>
+  <div class="bg-glow"></div>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <header class="header">
+    <div class="logo">Хазбиково</div>
+    <span class="version-badge" onclick="openVersion()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      v5.2
+    </span>
+    <div class="nav-links">
+      <button class="nav-btn active" data-page="home" onclick="showPage('home')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
+      </button>
+      <button class="nav-btn" data-page="residents" onclick="showPage('residents')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
+      </button>
+      <button class="nav-btn" data-page="description" onclick="showPage('description')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
+      </button>
+      <button class="nav-btn" data-page="news" onclick="showPage('news')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
+      </button>
+      <button class="nav-btn" onclick="openDiscord()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 10.5c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5zm-7 0c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5S10 12.8 10 12s-.7-1.5-1.5-1.5zm9.7-4.3c-1.4-1.1-3-1.7-4.6-2l-.5 1c-1.4-.3-2.9-.3-4.3 0l-.5-1c-1.6.3-3.2.9-4.6 2C2.2 8.5 1.4 11.5 1.2 14.5c1.6 1.2 3.3 1.9 5 2.3l1-1.6c-1-.3-1.9-.8-2.7-1.4.9.7 2 1.2 3.2 1.6 1.2.4 2.5.6 3.8.6s2.6-.2 3.8-.6c1.2-.4 2.3-.9 3.2-1.6-.8.6-1.7 1.1-2.7 1.4l1 1.6c1.7-.4 3.4-1.1 5-2.3-.2-3-1-6-2.9-8.2z"/></svg> Discord
+      </button>
     </div>
-  </div>
-
-  <!-- Основной интерфейс (изначально скрыт) -->
-  <div class="main-ui" id="mainUI">
-    <div class="bg-glow"></div>
-    <div class="toast-container" id="toastContainer"></div>
-
-    <header class="header">
-      <div class="logo">XazGames™</div>
-      <span class="version-badge" onclick="openVersion()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> v5.1
-      </span>
-      <div class="nav-links">
-        <button class="nav-btn active" data-page="home" onclick="showPage('home')">🏠 Главная</button>
-        <button class="nav-btn" data-page="residents" onclick="showPage('residents')">👥 Жители</button>
-        <button class="nav-btn" data-page="description" onclick="showPage('description')">📄 Описание</button>
-        <button class="nav-btn" data-page="news" onclick="showPage('news')">📰 Новости</button>
-        <button class="nav-btn" onclick="openDiscord()">💬 Discord</button>
-        <button class="nav-btn" onclick="openSettings()">⚙️</button>
+    <div class="auth-area" id="authArea">
+      <button class="btn-glass primary" onclick="openRegister()">Регистрация</button>
+      <button class="btn-glass" onclick="openLogin()">Войти</button>
+    </div>
+    <div id="userArea" style="display:none; align-items:center; gap:12px;">
+      <button class="btn-glass" id="adminBtn" style="display:none;" onclick="toggleAdmin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M16.9 16.9l2.8 2.8M1 12h4M19 12h4M4.2 19.8l2.8-2.8M16.9 7.1l2.8-2.8"/></svg> Админ
+      </button>
+      <div class="profile-trigger" onclick="openProfile()">
+        <img id="userAvatar" class="avatar-img" src="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%228%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E'">
+        <span id="userNick"></span>
       </div>
-      <div class="auth-area" id="authArea">
-        <button class="btn-glass primary" onclick="openRegister()">Регистрация</button>
-        <button class="btn-glass" onclick="openLogin()">Войти</button>
-      </div>
-      <div id="userArea" style="display:none; align-items:center; gap:12px;">
-        <button class="btn-glass" id="adminBtn" style="display:none;" onclick="toggleAdmin()">⚙️ Админ</button>
-        <div class="profile-trigger" onclick="openProfile()">
-          <img id="userAvatar" class="avatar-img" src="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%228%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E'">
-          <span id="userNick"></span>
+      <button class="btn-glass logout" onclick="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="homePage" class="page active">
+      <div class="glass" style="padding:40px; text-align:center;">
+        <h1 style="font-size:2.5em;">Хазбиково</h1>
+        <p style="color:var(--text-secondary); margin-bottom:2em;">Цифровой город будущего. Присоединяйтесь!</p>
+        <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:1.5em;">
+          <button class="btn-glass primary" onclick="toggleMenu()">Перейти к сайту</button>
+          <button class="btn-glass" onclick="showPage('description')">Описание</button>
         </div>
-        <button class="btn-glass logout" onclick="logout()">🚪</button>
-      </div>
-    </header>
-
-    <div class="container">
-      <div id="homePage" class="page active">
-        <div class="glass" style="padding:40px; text-align:center;">
-          <h1 style="font-size:2.5em;">Хазбиково</h1>
-          <p>Исследуйте город вместе с нами.</p>
-          <div style="margin-top:30px; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
-            <button class="btn-glass primary" onclick="toggleMenu()">Перейти к сайту</button>
-            <button class="btn-glass" onclick="showPage('description')">Описание</button>
-          </div>
-          <div id="mainMenu" style="display:none; margin-top:20px;">
-            <div class="grid-2col">
-              <button class="btn-glass" onclick="showPage('residents')">👥 Жители</button>
-              <button class="btn-glass" onclick="showPage('sights')">🏛️ Достопримечательности</button>
-              <button class="btn-glass" onclick="showPage('chs')">🚫 ЧС</button>
-              <button class="btn-glass" onclick="showPage('rules')">📜 Правила</button>
-              <button class="btn-glass" onclick="showPage('gallery')">🖼️ Галерея</button>
-            </div>
-          </div>
-          <div style="margin-top:30px; display:flex; gap:12px; justify-content:center;">
-            <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('ChichWaka™')">ChichWaka™</span>
-            <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('Xaz&Der1™')">Xaz&Der1™</span>
-            <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('Minecraft™')">Minecraft™</span>
+        <div id="mainMenu" style="display:none; margin-top:20px;">
+          <div class="grid-2col">
+            <button class="btn-glass" onclick="showPage('residents')">👥 Жители</button>
+            <button class="btn-glass" onclick="showPage('sights')">🏛️ Достопримечательности</button>
+            <button class="btn-glass" onclick="showPage('chs')">🚫 ЧС</button>
+            <button class="btn-glass" onclick="showPage('rules')">📜 Правила</button>
+            <button class="btn-glass" onclick="showPage('gallery')">🖼️ Галерея</button>
           </div>
         </div>
-      </div>
-      <div id="residentsPage" class="page"><div class="glass" style="padding:30px;"><h2>Жители <span class="admin-only" onclick="editList('residents')" style="cursor:pointer;">✏️</span></h2><table id="residentsTable"><thead><tr><th>Ник</th><th>Роль</th></tr></thead><tbody></tbody></table></div></div>
-      <div id="chsPage" class="page"><div class="glass" style="padding:30px;"><h2>ЧС <span class="admin-only" onclick="editList('chs')" style="cursor:pointer;">✏️</span></h2><table id="chsTable"><thead><tr><th>Ник</th><th>Причина</th></tr></thead><tbody></tbody></table></div></div>
-      <div id="rulesPage" class="page"><div class="glass" style="padding:30px;"><h2>Правила <span class="admin-only" onclick="editList('rules')" style="cursor:pointer;">✏️</span></h2><div id="rulesList"></div></div></div>
-      <div id="descriptionPage" class="page"><div class="glass" style="padding:30px;"><h2>О городе</h2><p>Хазбиково — проект энтузиастов Minecraft. Дружное сообщество, красивые постройки, развитие.</p></div></div>
-      <div id="newsPage" class="page"><div class="glass" style="padding:30px;"><h2>Новости <span class="admin-only" onclick="editJSON('news')" style="cursor:pointer;">✏️</span></h2><div id="newsList"></div></div></div>
-      <div id="sightsPage" class="page"><div class="glass" style="padding:30px;"><h2>Достопримечательности <span class="admin-only" onclick="editJSON('sights')" style="cursor:pointer;">✏️</span></h2><div id="sightsList"></div></div></div>
-      <div id="galleryPage" class="page">
-        <div class="glass" style="padding:30px;">
-          <h2>Галерея <span class="admin-only" style="cursor:pointer;" onclick="document.getElementById('galleryUpload').click()">✏️</span></h2>
-          <input type="file" id="galleryUpload" accept="image/*" style="display:none;" onchange="uploadGalleryImage(event)">
-          <div class="gallery" id="galleryContainer"></div>
+        <div style="margin-top:30px; display:flex; gap:12px; justify-content:center;">
+          <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('ChichWaka™')">ChichWaka™</span>
+          <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('Xaz&Der1™')">Xaz&Der1™</span>
+          <span class="btn-glass" style="font-size:0.75em; padding:8px 16px;" onclick="showBrand('Minecraft™')">Minecraft™</span>
         </div>
       </div>
     </div>
-
-    <footer class="footer">
-      <div class="footer-links">
-        <a href="#" onclick="openTelegram()">✈️ Telegram</a>
-        <a href="#" onclick="openDiscord()">💬 Discord</a>
-        <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
-        <a href="#" onclick="showPolicy('terms')">Условия</a>
-        <a href="#" onclick="openSettings()">Настройки</a>
+    <div id="residentsPage" class="page">
+      <div class="glass" style="padding:30px;">
+        <h2>Жители <span class="admin-only" onclick="editList('residents')" style="cursor:pointer; margin-left:10px;">✏️</span></h2>
+        <table id="residentsTable"><thead><tr><th>Никнейм</th><th>Роль</th></tr></thead><tbody></tbody></table>
       </div>
-      <div>XAZBGAMES.RU © 2026 Хазбиково</div>
-    </footer>
+    </div>
+    <div id="chsPage" class="page">
+      <div class="glass" style="padding:30px;">
+        <h2>ЧС <span class="admin-only" onclick="editList('chs')" style="cursor:pointer; margin-left:10px;">✏️</span></h2>
+        <table id="chsTable"><thead><tr><th>Никнейм</th><th>Причина</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+    <div id="rulesPage" class="page"><div class="glass" style="padding:30px;"><h2>Правила <span class="admin-only" onclick="editList('rules')" style="cursor:pointer;">✏️</span></h2><div id="rulesList"></div></div></div>
+    <div id="descriptionPage" class="page"><div class="glass" style="padding:30px;"><h2>О городе</h2><p>Хазбиково — проект, созданный энтузиастами. Дружное сообщество, красивые постройки и постоянное развитие.</p></div></div>
+    <div id="newsPage" class="page"><div class="glass" style="padding:30px;"><h2>Новости <span class="admin-only" onclick="editJSON('news')" style="cursor:pointer;">✏️</span></h2><div id="newsList"></div></div></div>
+    <div id="sightsPage" class="page"><div class="glass" style="padding:30px;"><h2>Достопримечательности <span class="admin-only" onclick="editJSON('sights')" style="cursor:pointer;">✏️</span></h2><div id="sightsList"></div></div></div>
+    <div id="galleryPage" class="page">
+      <div class="glass" style="padding:30px;">
+        <h2>Галерея <span class="admin-only" style="cursor:pointer;" onclick="document.getElementById('galleryUpload').click()">✏️</span></h2>
+        <input type="file" id="galleryUpload" accept="image/*" style="display:none;" onchange="uploadGalleryImage(event)">
+        <div class="gallery" id="galleryContainer"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- Модальные окна (некоторые сокращены для краткости, полные в исходном коде) -->
-  <div id="registerModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('registerModal')">✕</span><h3>Регистрация</h3><input type="text" id="regNick" placeholder="Ник"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="password" id="regPassConfirm" placeholder="Повторите пароль"><button class="btn-glass primary" onclick="register()">Зарегистрироваться</button></div></div>
-  <div id="loginModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()">Получить код</button></div></div>
-  <div id="codeModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('codeModal')">✕</span><h3>Код подтверждения</h3><p>Введите код из письма</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer"></p></div></div>
-  <div id="profileModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()">Выйти</button></div></div>
-  <div id="versionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('versionModal')">✕</span><h3>Версия 5.1</h3><ul><li>Приветственный экран</li><li>Загрузка картинок</li><li>Чёрно-белый дизайн</li></ul></div></div>
-  <div id="telegramModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Перейти в канал?</p><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div>
-  <div id="discordModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Перейти на сервер?</p><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div>
-  <div id="policyModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText"></div></div></div>
-  <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('settingsModal')">✕</span><h3>Настройки</h3><div style="display:flex; align-items:center; gap:15px; margin:15px 0;"><span>Тема:</span><button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button></div><div style="display:flex; align-items:center; gap:15px;"><span>Громкость:</span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()"></div></div></div>
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#" onclick="openTelegram()">✈️ Telegram</a>
+      <a href="#" onclick="openDiscord()">💬 Discord</a>
+      <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
+      <a href="#" onclick="showPolicy('terms')">Условия</a>
+      <a href="#" onclick="openSettings()">Настройки</a>
+    </div>
+    <div>Хазбиково © 2026. Все права защищены.</div>
+  </footer>
+
+  <!-- Модальные окна -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('registerModal')">✕</span>
+      <h3>Регистрация</h3>
+      <input type="text" id="regNick" placeholder="Ник в Minecraft">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="password" id="regPass" placeholder="Пароль">
+      <input type="password" id="regPassConfirm" placeholder="Повторите пароль">
+      <button class="btn-glass primary" onclick="register()" style="width:100%; margin-top:10px;">Зарегистрироваться</button>
+    </div>
+  </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('loginModal')">✕</span>
+      <h3>Вход</h3>
+      <input type="text" id="loginNick" placeholder="Ник в Minecraft">
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPass" placeholder="Пароль">
+      <button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button>
+    </div>
+  </div>
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('codeModal')">✕</span>
+      <h3>Подтверждение</h3>
+      <p>Введите код, отправленный на почту</p>
+      <div class="code-inputs" id="codeInputs">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+      </div>
+      <button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button>
+      <p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p>
+    </div>
+  </div>
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('profileModal')">✕</span>
+      <h3>Профиль</h3>
+      <p><strong>Ник:</strong> <span id="profNick"></span></p>
+      <p><strong>Email:</strong> <span id="profEmail"></span></p>
+      <p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p>
+      <button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button>
+    </div>
+  </div>
+  <div id="versionModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
+      <h3>История версий</h3>
+      <ul>
+        <li><strong>v5.2</strong> – Полностью чёрно-белый дизайн, название «Хазбиково».</li>
+        <li><strong>v5.1</strong> – Приветственный экран, галерея.</li>
+        <li><strong>v5.0</strong> – Улучшенный UX.</li>
+      </ul>
+    </div>
+  </div>
+  <div id="telegramModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+      <span class="close-btn" onclick="closeModal('telegramModal')">✕</span>
+      <h3>Telegram</h3>
+      <p>Перейти в канал?</p>
+      <button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button>
+    </div>
+  </div>
+  <div id="discordModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+      <span class="close-btn" onclick="closeModal('discordModal')">✕</span>
+      <h3>Discord</h3>
+      <p>Перейти на сервер?</p>
+      <button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button>
+    </div>
+  </div>
+  <div id="policyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('policyModal')">✕</span>
+      <h3 id="policyTitle"></h3>
+      <div id="policyText" style="max-height:50vh; overflow-y:auto;"></div>
+    </div>
+  </div>
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('settingsModal')">✕</span>
+      <h3>Настройки</h3>
+      <div style="display:flex; align-items:center; gap:15px; margin:15px 0;">
+        <span>Тема:</span>
+        <button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px;">
+        <span>Громкость:</span>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
+      </div>
+    </div>
+  </div>
 
   <script>
     // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===
@@ -337,45 +393,55 @@
     let soundVolume = parseFloat(localStorage.getItem('volume') || 0.5);
     let isDark = localStorage.getItem('theme') === 'dark';
     let siteData = JSON.parse(localStorage.getItem('xazSiteData')) || {
-      residents: [{nick:'Xazbik_',role:'Мэр'},{nick:'Der1zon',role:'Архитектор'}],
+      residents: [{nick:'Xazbik_',role:'Мэр'}, {nick:'Der1zon',role:'Архитектор'}],
       chs: [{nick:'Griefer',reason:'Гриф'}],
       rules: ['1. Не гриферить','2. Уважать'],
-      sights: [{title:'Ратуша',desc:'Центральное здание'}],
-      news: [{title:'Открытие',desc:'Сервер запущен',date:'2026-01-01'}],
-      gallery: [], // массив base64 картинок
+      sights: [{title:'Ратуша',desc:'Центральное здание',architect:'Xazbik_'}],
+      news: [{title:'Открытие',desc:'Сервер запущен',date:'01.01.2026'}],
+      gallery: [],
       brands: {'ChichWaka™':'Креатив','Xaz&Der1™':'Разработчики','Minecraft™':'Игра'}
     };
 
-    function save() { localStorage.setItem('xazUsers', JSON.stringify(users)); localStorage.setItem('xazSiteData', JSON.stringify(siteData)); }
+    function save() {
+      localStorage.setItem('xazUsers', JSON.stringify(users));
+      localStorage.setItem('xazSiteData', JSON.stringify(siteData));
+    }
+
     function toast(msg, type='info') {
       const c = document.getElementById('toastContainer');
-      const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg;
+      const t = document.createElement('div');
+      t.className = `toast ${type}`; t.textContent = msg;
       c.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
+
     function playSound() {
       try {
-        const a = new AudioContext(); const o = a.createOscillator(); const g = a.createGain();
+        const a = new AudioContext();
+        const o = a.createOscillator(); const g = a.createGain();
         o.connect(g); g.connect(a.destination);
-        o.frequency.value = 800; o.type = 'sine'; g.gain.value = soundVolume * 0.3;
+        o.frequency.value = 800; o.type = 'sine';
+        g.gain.value = soundVolume * 0.3;
         o.start(); setTimeout(() => o.stop(), 80);
       } catch(e) {}
     }
+
     function applyTheme() {
       document.body.classList.toggle('dark-theme', isDark);
       document.getElementById('themeLabel').textContent = isDark ? 'Тёмная' : 'Светлая';
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
-    window.toggleTheme = () => { isDark = !isDark; applyTheme(); playSound(); };
-    window.updateVolume = () => { soundVolume = parseFloat(document.getElementById('volumeSlider').value); localStorage.setItem('volume', soundVolume); playSound(); };
-    window.openSettings = () => { document.getElementById('volumeSlider').value = soundVolume; document.getElementById('settingsModal').classList.add('active'); };
-    window.closeModal = id => document.getElementById(id).classList.remove('active');
 
-    // Приветственный экран
-    window.enterSite = () => {
-      document.getElementById('heroScreen').classList.add('hidden');
-      document.getElementById('mainUI').classList.add('visible');
+    window.toggleTheme = () => { isDark = !isDark; applyTheme(); playSound(); };
+    window.updateVolume = () => {
+      soundVolume = parseFloat(document.getElementById('volumeSlider').value);
+      localStorage.setItem('volume', soundVolume);
       playSound();
     };
+    window.openSettings = () => {
+      document.getElementById('volumeSlider').value = soundVolume;
+      document.getElementById('settingsModal').classList.add('active');
+    };
+    window.closeModal = id => document.getElementById(id).classList.remove('active');
 
     function showPage(page) {
       playSound();
@@ -384,9 +450,22 @@
       document.querySelectorAll('.nav-btn[data-page]').forEach(b => b.classList.remove('active'));
       document.querySelector(`.nav-btn[data-page="${page}"]`)?.classList.add('active');
       if (page === 'home') document.getElementById('mainMenu').style.display = 'none';
+      // Динамический заголовок
+      const pageTitles = {
+        home: 'Главная',
+        residents: 'Жители',
+        description: 'Описание',
+        news: 'Новости',
+        sights: 'Достопримечательности',
+        chs: 'ЧС',
+        rules: 'Правила',
+        gallery: 'Галерея'
+      };
+      document.title = 'Хазбиково - ' + (pageTitles[page] || '');
       refreshData();
     }
     window.showPage = showPage;
+
     window.toggleMenu = () => {
       const m = document.getElementById('mainMenu');
       m.style.display = m.style.display === 'none' ? 'block' : 'none';
@@ -400,7 +479,7 @@
       if (ct) ct.innerHTML = siteData.chs.map(c => `<tr><td>${c.nick}</td><td>${c.reason}</td></tr>`).join('');
       if (document.getElementById('rulesList')) document.getElementById('rulesList').innerHTML = siteData.rules.map(r => `<p>${r}</p>`).join('');
       if (document.getElementById('newsList')) document.getElementById('newsList').innerHTML = siteData.news.map(n => `<p><strong>${n.title}</strong> (${n.date})<br>${n.desc}</p>`).join('');
-      if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> – ${s.desc}</p>`).join('');
+      if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> — ${s.desc} (арх. ${s.architect})</p>`).join('');
       const gc = document.getElementById('galleryContainer');
       if (gc) gc.innerHTML = siteData.gallery.map(img => `<img src="${img}" alt="gallery">`).join('');
     }
@@ -426,7 +505,7 @@
       }
     };
     window.editJSON = key => {
-      const val = prompt('JSON:', JSON.stringify(siteData[key], null, 2));
+      const val = prompt('Введите JSON:', JSON.stringify(siteData[key], null, 2));
       if (val) { try { siteData[key] = JSON.parse(val); save(); refreshData(); } catch(e) { toast('Ошибка JSON'); } }
     };
     window.uploadGalleryImage = event => {
@@ -452,7 +531,7 @@
     window.openRegister = () => document.getElementById('registerModal').classList.add('active');
     window.openLogin = () => document.getElementById('loginModal').classList.add('active');
 
-    // Авторизация
+    // Авторизация с отправкой кода на почту
     window.register = () => {
       const nick = document.getElementById('regNick').value.trim();
       const email = document.getElementById('regEmail').value.trim();
@@ -481,9 +560,9 @@
       document.getElementById('codeModal').classList.add('active');
       document.querySelectorAll('.code-inputs input').forEach(i => i.value = '');
       document.querySelector('.code-inputs input').focus();
-      // Отправка реального кода через EmailJS (если настроен)
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       sessionStorage.setItem('emailCode', code);
+      // Попытка отправить код через EmailJS
       emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
         to_email: email,
         code: code
@@ -518,27 +597,38 @@
     window.verifyCode = () => {
       const code = Array.from(document.querySelectorAll('.code-inputs input')).map(i => i.value).join('');
       if (code === (sessionStorage.getItem('emailCode') || '123456')) {
-        closeModal('codeModal'); if (window._timer) clearInterval(window._timer);
+        closeModal('codeModal');
+        if (window._timer) clearInterval(window._timer);
         if (window._codeAction === 'reg') {
           const { nick, email, pass } = window._regData;
           users.push({ nick, email, pass, uid: 'u'+Date.now() });
-          save(); currentUser = users[users.length-1];
-          updateUI(); toast('Регистрация успешна!', 'success');
+          save();
+          currentUser = users[users.length-1];
+          updateUI();
+          toast('Регистрация успешна!', 'success');
         } else {
-          currentUser = window._loginUser; updateUI(); toast('С возвращением!', 'success');
+          currentUser = window._loginUser;
+          updateUI();
+          toast('С возвращением!', 'success');
         }
-      } else toast('Неверный код', 'error');
+      } else {
+        toast('Неверный код', 'error');
+      }
     };
 
     function updateUI() {
       const auth = document.getElementById('authArea');
       const userArea = document.getElementById('userArea');
       if (currentUser) {
-        auth.style.display = 'none'; userArea.style.display = 'flex';
+        auth.style.display = 'none';
+        userArea.style.display = 'flex';
         document.getElementById('userNick').textContent = currentUser.nick;
         document.getElementById('userAvatar').src = `https://minotar.net/avatar/${currentUser.nick}/36`;
         document.getElementById('adminBtn').style.display = currentUser.nick === 'Xazbik_' ? 'inline-flex' : 'none';
-      } else { auth.style.display = 'flex'; userArea.style.display = 'none'; }
+      } else {
+        auth.style.display = 'flex';
+        userArea.style.display = 'none';
+      }
     }
 
     window.logout = () => { currentUser = null; updateUI(); showPage('home'); closeModal('profileModal'); };
@@ -559,6 +649,8 @@
       if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick);
       else localStorage.removeItem('xazCurrentUser');
     });
+    // Сразу показываем главную страницу
+    showPage('home');
   </script>
 </body>
 </html>
