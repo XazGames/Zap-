@@ -90,12 +90,12 @@
     }
     .version-badge:hover { background: rgba(255,255,255,0.4); }
 
-    /* НОВАЯ НАВИГАЦИЯ – закреплена слева */
+    /* НАВИГАЦИЯ: активная кнопка + выдвижное меню */
     .nav-container {
       display: flex;
       align-items: center;
       position: relative;
-      margin-left: 10px; /* небольшой отступ от версии */
+      margin-left: 10px;
       flex-shrink: 0;
     }
     .current-tab {
@@ -106,7 +106,7 @@
       border-radius:30px;
       font-weight:500;
       font-size:0.85em;
-      cursor: pointer;
+      cursor: default;
       backdrop-filter: blur(10px);
       transition:0.3s;
       display:flex;
@@ -116,7 +116,6 @@
       z-index:2;
       position: relative;
     }
-    .current-tab:hover { background: var(--btn-hover); border-color: var(--accent); box-shadow: var(--accent-glow); }
     .collapsible-menu {
       display: flex;
       max-width: 0;
@@ -127,14 +126,9 @@
       align-items: center;
     }
     .nav-container:hover .collapsible-menu {
-      max-width: 600px; /* достаточно для всех кнопок */
+      max-width: 600px;
     }
-    /* Убираем исчезновение current-tab – вместо этого делаем его фон прозрачным при наведении, но текст остаётся */
-    .nav-container:hover .current-tab {
-      background: transparent;
-      border-color: transparent;
-      pointer-events: none;
-    }
+    /* Убираем исчезновение current-tab */
     .nav-btn {
       background: var(--btn-bg);
       border:1px solid var(--glass-border);
@@ -248,29 +242,12 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         v5.3
       </span>
-      <!-- Выдвижная навигация -->
       <div class="nav-container" id="navContainer">
         <div class="current-tab" id="currentTab">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
           Главная
         </div>
-        <div class="collapsible-menu" id="collapsibleMenu">
-          <button class="nav-btn" data-page="home">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
-          </button>
-          <button class="nav-btn" data-page="residents">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
-          </button>
-          <button class="nav-btn" data-page="description">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
-          </button>
-          <button class="nav-btn" data-page="news">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
-          </button>
-          <button class="nav-btn" data-page="tasks">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задания
-          </button>
-        </div>
+        <div class="collapsible-menu" id="collapsibleMenu"></div>
       </div>
     </div>
 
@@ -408,7 +385,7 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.3</strong> – Исправлена навигация, версия закреплена.</li>
+        <li><strong>v5.3</strong> – Улучшенная навигация без дублирования.</li>
         <li><strong>v5.2</strong> – Чёрно-белый дизайн, название «Хазбиково».</li>
       </ul>
     </div>
@@ -468,6 +445,15 @@
       brands: {'ChichWaka™':'Креатив','Xaz&Der1™':'Разработчики','Minecraft™':'Игра'}
     };
 
+    // Все возможные страницы для меню
+    const allPages = [
+      { id: 'home', label: 'Главная', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' },
+      { id: 'residents', label: 'Жители', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+      { id: 'description', label: 'Описание', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg>' },
+      { id: 'news', label: 'Новости', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg>' },
+      { id: 'tasks', label: 'Задания', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>' }
+    ];
+
     function save() {
       localStorage.setItem('xazUsers', JSON.stringify(users));
       localStorage.setItem('xazSiteData', JSON.stringify(siteData));
@@ -509,15 +495,23 @@
     };
     window.closeModal = id => document.getElementById(id).classList.remove('active');
 
-    // Обновление выдвижной навигации – текущая вкладка всегда показывает выбранный раздел
-    function updateCurrentTab(page) {
-      const currentTab = document.getElementById('currentTab');
-      const activeBtn = document.querySelector(`.collapsible-menu .nav-btn[data-page="${page}"]`);
-      if (activeBtn) {
-        currentTab.innerHTML = activeBtn.innerHTML; // копируем иконку и текст
-      }
-      document.querySelectorAll('.collapsible-menu .nav-btn').forEach(b => b.classList.remove('active'));
-      activeBtn?.classList.add('active');
+    // Построение выдвижного меню (все страницы кроме текущей)
+    function buildMenu(currentPageId) {
+      const menu = document.getElementById('collapsibleMenu');
+      menu.innerHTML = '';
+      allPages.forEach(p => {
+        if (p.id !== currentPageId) {
+          const btn = document.createElement('button');
+          btn.className = 'nav-btn';
+          btn.dataset.page = p.id;
+          btn.innerHTML = p.icon + ' ' + p.label;
+          btn.addEventListener('click', () => showPage(p.id));
+          menu.appendChild(btn);
+        }
+      });
+      // Обновляем currentTab
+      const current = allPages.find(p => p.id === currentPageId) || allPages[0];
+      document.getElementById('currentTab').innerHTML = current.icon + ' ' + current.label;
     }
 
     function showPage(page) {
@@ -526,7 +520,7 @@
       const target = document.getElementById(page + 'Page');
       if (target) target.classList.add('active');
       if (page === 'home') document.getElementById('mainMenu').style.display = 'none';
-      updateCurrentTab(page);
+      buildMenu(page);
       const pageTitles = {
         home: 'Главная',
         residents: 'Жители',
@@ -542,14 +536,6 @@
       refreshData();
     }
     window.showPage = showPage;
-
-    // При клике на кнопки в выдвижном меню переключаем страницу
-    document.querySelectorAll('.collapsible-menu .nav-btn').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        const page = this.dataset.page;
-        showPage(page);
-      });
-    });
 
     window.toggleMenu = () => {
       const m = document.getElementById('mainMenu');
@@ -734,7 +720,7 @@
       if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick);
       else localStorage.removeItem('xazCurrentUser');
     });
-    // Показываем главную и обновляем текущую вкладку
+    // Запуск
     showPage('home');
   </script>
 </body>
