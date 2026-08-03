@@ -140,6 +140,11 @@
       border-color: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,0.5);
       color: white;
     }
+    .nav-btn.active {
+      background: rgba(168,85,247,0.4); border-color: #a855f7;
+      box-shadow: 0 0 15px rgba(168,85,247,0.6); color: white;
+      font-weight: 700;
+    }
     .nav-btn .icon { width: 22px; height: 22px; fill: currentColor; }
 
     .auth-buttons { display: flex; gap: 15px; align-items: center; }
@@ -262,6 +267,22 @@
       background: rgba(255,255,255,0.8);
     }
 
+    .code-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .code-inputs input {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 1.5em;
+      padding: 0;
+      margin: 0;
+      border-radius: 12px;
+    }
+
     .footer {
       text-align: center; padding: 25px; margin-top: auto;
       border-top: 1px solid rgba(0,0,0,0.15);
@@ -299,27 +320,15 @@
       100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
     }
 
-    /* Ползунок громкости */
     input[type=range] {
-      -webkit-appearance: none;
-      background: transparent;
-      padding: 0;
-      margin: 10px 0;
-      border: none;
+      -webkit-appearance: none; background: transparent; padding: 0; margin: 10px 0; border: none;
     }
     input[type=range]::-webkit-slider-runnable-track {
-      height: 6px;
-      background: rgba(168,85,247,0.3);
-      border-radius: 3px;
+      height: 6px; background: rgba(168,85,247,0.3); border-radius: 3px;
     }
     input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px; height: 20px;
-      background: #a855f7;
-      border-radius: 50%;
-      cursor: pointer;
-      margin-top: -7px;
-      box-shadow: 0 0 8px #a855f7;
+      -webkit-appearance: none; width: 20px; height: 20px; background: #a855f7;
+      border-radius: 50%; cursor: pointer; margin-top: -7px; box-shadow: 0 0 8px #a855f7;
     }
 
     @media (max-width: 768px) {
@@ -341,16 +350,16 @@
   <header class="header">
     <div class="logo">XazGames™</div>
     <div class="nav-links">
-      <button class="nav-btn" onclick="showPage('home')">
+      <button class="nav-btn active" data-page="home" onclick="showPage('home')">
         <svg class="icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9z" fill="none" stroke="currentColor" stroke-width="2"/></svg> Главная
       </button>
-      <button class="nav-btn" onclick="showPage('residents')">
+      <button class="nav-btn" data-page="residents" onclick="showPage('residents')">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7" fill="none" stroke="currentColor" stroke-width="2"/></svg> Жители
       </button>
-      <button class="nav-btn" onclick="showPage('description')">
+      <button class="nav-btn" data-page="description" onclick="showPage('description')">
         <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="7" x2="16" y2="7" stroke="currentColor" stroke-width="2"/><line x1="8" y1="11" x2="16" y2="11" stroke="currentColor" stroke-width="2"/><line x1="8" y1="15" x2="12" y2="15" stroke="currentColor" stroke-width="2"/></svg> Описание
       </button>
-      <button class="nav-btn" onclick="showPage('news')">
+      <button class="nav-btn" data-page="news" onclick="showPage('news')">
         <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 7h20" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="13" r="2" fill="currentColor"/><path d="M14 12h4M14 16h4" stroke="currentColor" stroke-width="2"/></svg> Новости
       </button>
       <button class="nav-btn" onclick="openDiscordModal()">
@@ -423,12 +432,12 @@
       </div>
     </div>
 
-    <div id="residentsPage" class="page"><div class="glass-panel"><h2>Жители города <span class="edit-icon admin-only" onclick="editResidents()">✏️</span></h2><div id="residentsTable"></div></div></div>
-    <div id="descriptionPage" class="page"><div class="glass-panel"><h2>Описание <span class="edit-icon admin-only" onclick="editDescription()">✏️</span></h2><div id="descColumns"></div></div></div>
-    <div id="newsPage" class="page"><div class="glass-panel"><h2>Новости <span class="edit-icon admin-only" onclick="editNews()">✏️</span></h2><div id="newsContainer"></div></div></div>
-    <div id="sightsPage" class="page"><div class="glass-panel"><h2>Достопримечательности <span class="edit-icon admin-only" onclick="editSights()">✏️</span></h2><div id="sightsCarousel"></div></div></div>
-    <div id="chsPage" class="page"><div class="glass-panel"><h2>ЧС города <span class="edit-icon admin-only" onclick="editCHS()">✏️</span></h2><div id="chsTable"></div></div></div>
-    <div id="rulesPage" class="page"><div class="glass-panel"><h2>Правила <span class="edit-icon admin-only" onclick="editRules()">✏️</span></h2><div id="rulesContent"></div></div></div>
+    <div id="residentsPage" class="page"><div class="glass-panel"><h2>Жители города <span class="edit-icon admin-only" onclick="editTextList('residents')">✏️</span></h2><div id="residentsTable"></div></div></div>
+    <div id="descriptionPage" class="page"><div class="glass-panel"><h2>Описание <span class="edit-icon admin-only" onclick="editJSON('descriptionColumns')">✏️</span></h2><div id="descColumns"></div></div></div>
+    <div id="newsPage" class="page"><div class="glass-panel"><h2>Новости <span class="edit-icon admin-only" onclick="editJSON('news')">✏️</span></h2><div id="newsContainer"></div></div></div>
+    <div id="sightsPage" class="page"><div class="glass-panel"><h2>Достопримечательности <span class="edit-icon admin-only" onclick="editJSON('sights')">✏️</span></h2><div id="sightsCarousel"></div></div></div>
+    <div id="chsPage" class="page"><div class="glass-panel"><h2>ЧС города <span class="edit-icon admin-only" onclick="editTextList('chs')">✏️</span></h2><div id="chsTable"></div></div></div>
+    <div id="rulesPage" class="page"><div class="glass-panel"><h2>Правила <span class="edit-icon admin-only" onclick="editTextList('rules')">✏️</span></h2><div id="rulesContent"></div></div></div>
   </div>
 
   <footer class="footer">XAZBGAMES.RU © 2026 Хазбиково. Все права защищены.</footer>
@@ -457,6 +466,11 @@
       <input type="text" id="loginNick" placeholder="Ник в Minecraft">
       <input type="password" id="loginPass" placeholder="Пароль">
       <button class="btn-3d" onclick="login()" style="margin-top:15px;">Войти</button>
+      <div style="margin-top:20px; text-align:center; font-size:0.8em;">
+        <a href="#" onclick="openRegister(); closeModal('loginModal');" style="color:#a855f7; text-decoration:none;">Регистрация</a> |
+        <a href="#" onclick="alert('Функция восстановления пароля временно недоступна');" style="color:#a855f7; text-decoration:none;">Забыли пароль?</a> |
+        <a href="#" onclick="alert('Обратитесь к администратору');" style="color:#a855f7; text-decoration:none;">Нет доступа к почте?</a>
+      </div>
     </div>
   </div>
 
@@ -465,7 +479,14 @@
       <button class="close-modal" onclick="closeModal('codeModal')">✕</button>
       <h3>Подтверждение</h3>
       <p>Введите 6-значный код, отправленный на почту</p>
-      <input type="text" id="codeInput" placeholder="123456" maxlength="6">
+      <div class="code-inputs" id="codeInputs">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" oninput="handleCodeInput(this)">
+      </div>
       <button class="btn-3d" onclick="verifyCode()">Подтвердить</button>
     </div>
   </div>
@@ -542,9 +563,12 @@
         residents: [{ nick: 'Xazbik_', role: 'Мэр' }, { nick: 'Der1zon', role: 'Архитектор' }, { nick: 'Steve', role: 'Житель' }],
         chs: [{ nick: 'Griefer123', reason: 'Гриф' }],
         rules: ["1. Не гриферить", "2. Уважать других"],
-        sights: [{ title: 'Ратуша', desc: 'Главное здание', architect: 'Xazbik_', builders: 'Der1zon', img: '🏛️' }],
+        sights: [
+          { title: 'Ратуша', desc: 'Главное здание', architect: 'Xazbik_', builders: 'Der1zon', img: '<svg width="40" height="40" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg>' },
+          { title: 'Мост', desc: 'Соединяет берега', architect: 'Der1zon', builders: 'Xazbik_', img: '<svg width="40" height="40" viewBox="0 0 24 24"><path d="M4 12h16M6 8v8M18 8v8" stroke="currentColor" stroke-width="2" fill="none"/></svg>' }
+        ],
         descriptionColumns: [{ title: 'История', text: 'Основан в 2024' }],
-        news: [{ title: 'Открытие', desc: 'Сервер запущен', date: '01.01.2026', img: '🖼️' }],
+        news: [{ title: 'Открытие', desc: 'Сервер запущен', date: '01.01.2026', img: '<svg width="40" height="40" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/></svg>' }],
         brandTexts: { 'ChichWaka™': 'Креатив', 'Xaz&Der1™': 'Разработчики', 'Minecraft™': 'Игра' }
       };
 
@@ -596,6 +620,13 @@
       window.toggleTheme = toggleTheme;
       window.updateVolume = updateVolume;
 
+      function setActiveNav(page) {
+        document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.page === page) btn.classList.add('active');
+        });
+      }
+
       function showPage(page) {
         playClickSound();
         document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
@@ -608,6 +639,7 @@
           else if (page === 'sights') renderSights();
           else if (page === 'chs') renderCHS();
           else if (page === 'rules') renderRules();
+          setActiveNav(page);
         }
         if (page === 'home') document.getElementById('siteMenu').style.display = 'none';
         updateAdminIcons();
@@ -634,10 +666,10 @@
         document.getElementById('descColumns').innerHTML = siteData.descriptionColumns.map(c => `<div><h3>${c.title}</h3><p>${c.text}</p></div>`).join('');
       }
       function renderNews() {
-        document.getElementById('newsContainer').innerHTML = siteData.news.map(n => `<div><h3>${n.title}</h3><p>${n.desc}</p><small>${n.date}</small></div>`).join('');
+        document.getElementById('newsContainer').innerHTML = siteData.news.map(n => `<div><div style="margin-bottom:10px;">${n.img}</div><h3>${n.title}</h3><p>${n.desc}</p><small>${n.date}</small></div>`).join('');
       }
       function renderSights() {
-        document.getElementById('sightsCarousel').innerHTML = siteData.sights.map(s => `<div><h3>${s.title}</h3><p>${s.desc}</p><small>${s.architect}, ${s.builders}</small></div>`).join('');
+        document.getElementById('sightsCarousel').innerHTML = siteData.sights.map(s => `<div style="display:flex; align-items:center; gap:20px; margin-bottom:20px;"><div>${s.img}</div><div><h3>${s.title}</h3><p>${s.desc}</p><small>Архитектор: ${s.architect}, Строители: ${s.builders}</small></div></div>`).join('');
       }
 
       function updateAdminIcons() {
@@ -654,30 +686,53 @@
       }
       window.toggleAdminMode = toggleAdminMode;
 
-      window.editResidents = () => openEditModal('residents', siteData.residents);
-      window.editCHS = () => openEditModal('chs', siteData.chs);
-      window.editRules = () => openEditModal('rules', siteData.rules);
-      window.editSights = () => openEditModal('sights', siteData.sights);
-      window.editNews = () => openEditModal('news', siteData.news);
-      window.editDescription = () => openEditModal('descriptionColumns', siteData.descriptionColumns);
+      window.editTextList = function(key) {
+        let data = siteData[key];
+        let text = '';
+        if (key === 'residents') text = data.map(r => r.nick + ' - ' + r.role).join('\n');
+        else if (key === 'chs') text = data.map(c => c.nick + ' - ' + c.reason).join('\n');
+        else if (key === 'rules') text = data.join('\n');
+        openEditModal(key, text, 'text');
+      };
 
-      function openEditModal(key, data) {
+      window.editJSON = function(key) {
+        openEditModal(key, JSON.stringify(siteData[key], null, 2), 'json');
+      };
+
+      function openEditModal(key, content, type) {
         const modal = document.getElementById('editModal');
-        const content = document.getElementById('editModalContent');
-        content.innerHTML = `<h3>Редактирование ${key}</h3><textarea id="editData" rows="10">${JSON.stringify(data, null, 2)}</textarea>
-          <button class="btn-3d" onclick="saveEdit('${key}')">Сохранить</button>
+        const container = document.getElementById('editModalContent');
+        container.innerHTML = `<h3>Редактирование ${key}</h3><textarea id="editData" rows="10">${content}</textarea>
+          <button class="btn-3d" onclick="saveEdit('${key}', '${type}')">Сохранить</button>
           <button class="close-modal" onclick="closeModal('editModal')">✕</button>`;
         modal.classList.add('active');
       }
-      window.saveEdit = function(key) {
-        const newData = document.getElementById('editData').value;
+
+      window.saveEdit = function(key, type) {
+        const newValue = document.getElementById('editData').value;
         try {
-          const parsed = JSON.parse(newData);
-          siteData[key] = parsed;
+          if (type === 'text') {
+            const lines = newValue.split('\n').filter(line => line.trim() !== '');
+            if (key === 'residents') {
+              siteData[key] = lines.map(line => {
+                const parts = line.split(' - ');
+                return { nick: parts[0]?.trim() || '', role: parts[1]?.trim() || '' };
+              });
+            } else if (key === 'chs') {
+              siteData[key] = lines.map(line => {
+                const parts = line.split(' - ');
+                return { nick: parts[0]?.trim() || '', reason: parts[1]?.trim() || '' };
+              });
+            } else if (key === 'rules') {
+              siteData[key] = lines;
+            }
+          } else {
+            siteData[key] = JSON.parse(newValue);
+          }
           saveData();
           closeModal('editModal');
           showPage(key === 'residents' ? 'residents' : key === 'chs' ? 'chs' : key === 'rules' ? 'rules' : key === 'sights' ? 'sights' : key === 'news' ? 'news' : 'description');
-        } catch(e) { alert('Ошибка JSON'); }
+        } catch(e) { alert('Ошибка: ' + e.message); }
       };
 
       function closeModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -699,9 +754,37 @@
       function requestCode(action) {
         pendingAction = action;
         document.getElementById('codeModal').classList.add('active');
+        const inputs = document.querySelectorAll('.code-inputs input');
+        inputs[0].focus();
       }
+      function handleCodeInput(input) {
+        const value = input.value.replace(/[^0-9]/g, '');
+        input.value = value;
+        if (value && input.nextElementSibling) {
+          input.nextElementSibling.focus();
+        }
+        // поддержка вставки
+        if (value.length > 1) {
+          const digits = value.split('');
+          const inputs = document.querySelectorAll('.code-inputs input');
+          let idx = Array.from(inputs).indexOf(input);
+          digits.forEach((digit, i) => {
+            if (inputs[idx + i]) inputs[idx + i].value = digit;
+          });
+          input.value = digits[0];
+          if (inputs[idx + digits.length - 1]) inputs[idx + digits.length - 1].focus();
+        }
+      }
+      window.handleCodeInput = handleCodeInput;
+
+      function getCode() {
+        const inputs = document.querySelectorAll('.code-inputs input');
+        return Array.from(inputs).map(i => i.value).join('');
+      }
+
       function verifyCode() {
-        const code = document.getElementById('codeInput').value;
+        const code = getCode();
+        if (code.length !== 6) return alert('Введите код полностью');
         if (code === '123456') {
           closeModal('codeModal');
           if (pendingAction) pendingAction();
