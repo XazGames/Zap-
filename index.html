@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Хазбиково</title>
-  <!-- Динамическая иконка: светлая тема – чёрный значок, тёмная тема – белый -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" id="favicon">
+  <!-- Динамический favicon -->
+  <link rel="icon" id="dynamicFavicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -48,11 +48,27 @@
       transition: background 0.4s, color 0.3s;
       position: relative;
     }
-    /* Рассеянный луч на кнопках */
+    /* Эффект лучика (пробегающего блика) на кнопках при наведении */
     .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge {
       position: relative;
       overflow: hidden;
     }
+    .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after {
+      left: 100%;
+    }
+    /* Рассеянный круглый луч, следующий за мышкой */
     .btn-glass::before, .nav-btn::before, .current-tab::before, .brand-tag::before, .version-badge::before {
       content: "";
       position: absolute;
@@ -287,12 +303,11 @@
       transition:0.3s; display:inline-flex; align-items:center; gap:6px;
     }
     .brand-tag:hover { background: var(--btn-hover); border-color: var(--accent); box-shadow: var(--accent-glow); }
-    /* 3D карточки как в Steam */
+    /* 3D tilt карточки "О нас" с бликом */
     .about-columns {
       display: flex;
       gap: 20px;
       margin-top: 30px;
-      perspective: 1200px;
     }
     .about-col {
       flex: 1;
@@ -301,13 +316,28 @@
       border: 1px solid var(--glass-border);
       border-radius: 20px;
       padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 10px rgba(255,255,255,0.2);
-      transition: transform 0.1s ease-out, box-shadow 0.3s;
       transform-style: preserve-3d;
+      transform: perspective(800px);
+      transition: transform 0.1s ease;
       position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-    .about-col:hover {
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.3);
+    .about-col::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 2;
+    }
+    .about-col:hover::after {
+      opacity: 1;
     }
     .about-col h3 {
       margin-bottom: 10px;
@@ -337,7 +367,7 @@
       <div class="logo">Хазбиково</div>
       <span class="version-badge" onclick="openVersion()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        v5.3
+        v5.4
       </span>
       <div class="nav-container" id="navContainer">
         <div class="current-tab" id="currentTab">
@@ -408,18 +438,18 @@
       <div class="glass" style="padding:40px; text-align:center;">
         <h1 style="font-size:2.5em; margin-bottom:20px;">О нас</h1>
         <div class="about-columns">
-          <div class="about-col">
+          <div class="about-col" id="aboutCol1">
             <h3>Вся информация о сайте</h3>
             <p>Сайт был создан компанией Xaz&Der1 специально для города 'Хазбиково' на сервере ChichVAKA. Наш сайт создан, чтобы познакомить вас с уникальными чертами города.</p>
             <p>На сайте можно найти: Жители города, Тест-сервер города, Правила города, Достопримечательности города и многое другое.</p>
             <p>Путешествуйте с удовольствием — Хазбиково ждёт вас!</p>
           </div>
-          <div class="about-col">
+          <div class="about-col" id="aboutCol2">
             <h3>Для чего был создан сайт?</h3>
             <p>Сайт был создан в исключительно информационных целях — для обеспечения открытого и оперативного доступа жителей и гостей города к достоверным сведениям о деятельности органов местного самоуправления, городских программах и услугах.</p>
             <p>Никого и ничего мы не хотели задеть или оскорбить, все совпадения случайны.</p>
           </div>
-          <div class="about-col">
+          <div class="about-col" id="aboutCol3">
             <h3>О компании Xaz&Der1</h3>
             <p>Компания Xaz&Der1 начала своё производство совсем недавно. В компанию входят игроки ChichVAKA Xazbik_ и Der1zon. Они лучшие друзья и всегда играли вместе.</p>
             <p>Дискорд-сервер создан 10.02.2026. Тест-сервер в Minecraft — 01.03.2026. А уже 20.03.2026 Xazbik_ придумал создать сайт города.</p>
@@ -460,16 +490,102 @@
     <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
   </footer>
 
-  <!-- Модальные окна (прежние, без изменений) -->
-  <div id="registerModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('registerModal')">✕</span><h3>Регистрация</h3><input type="text" id="regNick" placeholder="Ник в Minecraft"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="password" id="regPassConfirm" placeholder="Повторите пароль"><button class="btn-glass primary" onclick="register()" style="width:100%; margin-top:10px;">Зарегистрироваться</button></div></div>
-  <div id="loginModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
-  <div id="codeModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
-  <div id="profileModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-  <div id="versionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v5.3</strong> – 3D-карточки как в Steam, динамическая иконка.</li><li><strong>v5.2</strong> – Улучшенный футер, анимации.</li></ul></div></div>
-  <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Перейти в канал?</p><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div>
-  <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Перейти на сервер?</p><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div>
-  <div id="policyModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
-  <div id="settingsModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('settingsModal')">✕</span><h3>Настройки</h3><div style="display:flex; align-items:center; gap:15px; margin:15px 0;"><span>Тема:</span><button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button></div><div style="display:flex; align-items:center; gap:15px;"><span>Громкость:</span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()"></div></div></div>
+  <!-- Модальные окна (без изменений) -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('registerModal')">✕</span>
+      <h3>Регистрация</h3>
+      <input type="text" id="regNick" placeholder="Ник в Minecraft">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="password" id="regPass" placeholder="Пароль">
+      <input type="password" id="regPassConfirm" placeholder="Повторите пароль">
+      <button class="btn-glass primary" onclick="register()" style="width:100%; margin-top:10px;">Зарегистрироваться</button>
+    </div>
+  </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('loginModal')">✕</span>
+      <h3>Вход</h3>
+      <input type="text" id="loginNick" placeholder="Ник в Minecraft">
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPass" placeholder="Пароль">
+      <button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button>
+    </div>
+  </div>
+  <div id="codeModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('codeModal')">✕</span>
+      <h3>Подтверждение</h3>
+      <p>Введите код, отправленный на почту</p>
+      <div class="code-inputs" id="codeInputs">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+        <input type="text" maxlength="1" oninput="handleCode(this)">
+      </div>
+      <button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button>
+      <p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p>
+    </div>
+  </div>
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('profileModal')">✕</span>
+      <h3>Профиль</h3>
+      <p><strong>Ник:</strong> <span id="profNick"></span></p>
+      <p><strong>Email:</strong> <span id="profEmail"></span></p>
+      <p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p>
+      <button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button>
+    </div>
+  </div>
+  <div id="versionModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
+      <h3>История версий</h3>
+      <ul>
+        <li><strong>v5.4</strong> – Лучи на кнопках, динамический favicon, 3D-карточки с бликом как в Steam.</li>
+        <li><strong>v5.3</strong> – Объединены «Описание» и «О нас».</li>
+      </ul>
+    </div>
+  </div>
+  <div id="telegramModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+      <span class="close-btn" onclick="closeModal('telegramModal')">✕</span>
+      <h3>Telegram</h3>
+      <p>Перейти в канал?</p>
+      <button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button>
+    </div>
+  </div>
+  <div id="discordModal" class="modal">
+    <div class="modal-content" style="text-align:center;">
+      <span class="close-btn" onclick="closeModal('discordModal')">✕</span>
+      <h3>Discord</h3>
+      <p>Перейти на сервер?</p>
+      <button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button>
+    </div>
+  </div>
+  <div id="policyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('policyModal')">✕</span>
+      <h3 id="policyTitle"></h3>
+      <div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div>
+    </div>
+  </div>
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('settingsModal')">✕</span>
+      <h3>Настройки</h3>
+      <div style="display:flex; align-items:center; gap:15px; margin:15px 0;">
+        <span>Тема:</span>
+        <button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:15px;">
+        <span>Громкость:</span>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()">
+      </div>
+    </div>
+  </div>
 
   <script>
     // === ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ===
@@ -526,14 +642,18 @@
       updateFavicon();
     }
 
+    // Динамический favicon
     function updateFavicon() {
-      const favicon = document.getElementById('favicon');
-      if (isDark) {
-        favicon.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
-      } else {
-        favicon.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
-      }
+      const favicon = document.getElementById('dynamicFavicon');
+      const isDarkTheme = document.body.classList.contains('dark-theme');
+      // В тёмной теме активная вкладка — белый логотип, неактивная — чёрный
+      // В светлой теме активная — чёрный, неактивная — белый
+      const activeColor = isDarkTheme ? '#fff' : '#111';
+      const inactiveColor = isDarkTheme ? '#111' : '#fff';
+      const color = document.hidden ? inactiveColor : activeColor;
+      favicon.href = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='${encodeURIComponent(color)}' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E`;
     }
+    document.addEventListener('visibilitychange', updateFavicon);
 
     window.toggleTheme = () => { isDark = !isDark; applyTheme(); playSound(); };
     window.updateVolume = () => {
@@ -579,6 +699,10 @@
             buildMenu(page);
             document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || '');
             refreshData();
+            // Активируем 3D tilt для карточек "О нас"
+            if (page === 'description') {
+              enableTilt();
+            }
           }
         }, { once: true });
       } else {
@@ -589,6 +713,9 @@
           buildMenu(page);
           document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || '');
           refreshData();
+          if (page === 'description') {
+            enableTilt();
+          }
         }
       }
     }
@@ -610,6 +737,30 @@
       if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> — ${s.desc} (арх. ${s.architect})</p>`).join('');
       const gc = document.getElementById('galleryContainer');
       if (gc) gc.innerHTML = siteData.gallery.map(img => `<img src="${img}" alt="gallery">`).join('');
+    }
+
+    // 3D tilt + блик для карточек "О нас"
+    function enableTilt() {
+      const cards = document.querySelectorAll('.about-col');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 10;
+          const rotateY = (centerX - x) / 10;
+          card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          card.style.setProperty('--mouse-x', x + 'px');
+          card.style.setProperty('--mouse-y', y + 'px');
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)';
+          card.style.setProperty('--mouse-x', '50%');
+          card.style.setProperty('--mouse-y', '50%');
+        });
+      });
     }
 
     window.toggleAdmin = () => {
@@ -777,7 +928,6 @@
 
     applyTheme();
     if (isDark) document.body.classList.add('dark-theme');
-    updateFavicon();
     const saved = localStorage.getItem('xazCurrentUser');
     if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
     window.addEventListener('beforeunload', () => {
@@ -786,7 +936,7 @@
     });
     showPage('home');
 
-    // Обработчик для рассеянного луча на кнопках
+    // Обработчик для рассеянного луча и лучик-градиента на кнопках
     document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
@@ -794,23 +944,6 @@
         const y = e.clientY - rect.top;
         btn.style.setProperty('--mouse-x', x + 'px');
         btn.style.setProperty('--mouse-y', y + 'px');
-      });
-    });
-
-    // 3D эффект для карточек "О нас"
-    document.querySelectorAll('.about-col').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (x - centerX) / 10;
-        card.style.transform = `perspective(1200px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1200px) rotateX(0) rotateY(0)';
       });
     });
   </script>
