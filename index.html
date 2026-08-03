@@ -48,11 +48,11 @@
       position: relative;
     }
     /* Лучи на кнопках */
-    .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
+    .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .neon-btn {
       position: relative;
       overflow: hidden;
     }
-    .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after, .back-btn::after {
+    .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after, .neon-btn::after {
       content: "";
       position: absolute;
       top: 0; left: -100%; width: 100%; height: 100%;
@@ -60,10 +60,10 @@
       transition: left 0.6s ease;
       pointer-events: none; z-index: 2;
     }
-    .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after, .back-btn:hover::after {
+    .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after, .neon-btn:hover::after {
       left: 100%;
     }
-    .btn-glass::before, .nav-btn::before, .current-tab::before, .brand-tag::before, .version-badge::before, .back-btn::before {
+    .btn-glass::before, .nav-btn::before, .current-tab::before, .brand-tag::before, .version-badge::before, .neon-btn::before {
       content: "";
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -71,7 +71,7 @@
       opacity: 0; transition: opacity 0.3s;
       pointer-events: none; z-index: 1;
     }
-    .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .back-btn:hover::before {
+    .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .neon-btn:hover::before {
       opacity: 1;
     }
     .bg-glow { position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1), transparent 60%); z-index:-2; animation: pulse 8s infinite alternate; }
@@ -80,8 +80,6 @@
     .header { position: sticky; top:0; z-index:100; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); background: var(--header-bg); border-bottom:1px solid var(--glass-border); padding: 15px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
     .header-left { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
     .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color: var(--text); white-space: nowrap; }
-    .back-btn { margin-top: 0; background: rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color: var(--text); padding: 8px 20px; border-radius: 25px; font-size: 0.85em; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; }
-    .back-btn:hover { background: rgba(255,0,0,0.4); border-color: red; box-shadow: 0 0 15px red; }
     .version-badge { background: rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); color: var(--text); padding:5px 14px; border-radius:30px; font-size:0.75em; font-weight:600; cursor:pointer; backdrop-filter: blur(10px); transition:0.3s; display:flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink: 0; }
     .version-badge:hover { background: rgba(255,255,255,0.4); }
     .nav-container { display: flex; align-items: center; position: relative; margin-left: 10px; flex-shrink: 0; }
@@ -101,14 +99,58 @@
     .profile-trigger:hover { background:var(--btn-hover); }
     .avatar-img { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.3); object-fit:cover; }
     .container { max-width:1200px; margin:30px auto; padding:0 20px; flex:1; }
-    .back-button-container { max-width:1200px; margin:0 auto; padding:10px 20px 0; }
     .page { display: none; animation-duration: 0.5s; animation-fill-mode: both; }
     .page.active { display: block; animation-name: slideInUp; }
     .page.exit { display: block; animation-name: slideOutDown; }
     @keyframes slideInUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     @keyframes slideOutDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(40px); opacity: 0; } }
-    .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:25px; max-width:500px; margin:0 auto; margin-top:8px; }
-    @media (max-width:600px) { .grid-2col { grid-template-columns:1fr; } }
+    /* Новые стили для меню */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 550px;
+      margin: 0 auto;
+      margin-top: 15px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .menu-grid.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .neon-btn {
+      background: var(--btn-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      font-weight: 600;
+      font-size: 0.85em;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      white-space: nowrap;
+      color: var(--text);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .neon-btn:hover {
+      transform: translateY(-3px);
+    }
+    .neon-purple { border-color: #a855f7; box-shadow: 0 0 20px rgba(168,85,247,0.3); }
+    .neon-purple:hover { box-shadow: 0 0 30px rgba(168,85,247,0.7); }
+    .neon-blue { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+    .neon-blue:hover { box-shadow: 0 0 30px rgba(59,130,246,0.7); }
+    .neon-pink { border-color: #ec4899; box-shadow: 0 0 20px rgba(236,72,153,0.3); }
+    .neon-pink:hover { box-shadow: 0 0 30px rgba(236,72,153,0.7); }
+    .neon-green { border-color: #10b981; box-shadow: 0 0 20px rgba(16,185,129,0.3); }
+    .neon-green:hover { box-shadow: 0 0 30px rgba(16,185,129,0.7); }
+    .neon-btn svg { width: 28px; height: 28px; }
+    @media (max-width:600px) { .menu-grid { grid-template-columns:1fr; } }
     .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(16px); display:flex; justify-content:center; align-items:center; z-index:200; visibility:hidden; opacity:0; transition:0.3s; }
     .modal.active { visibility:visible; opacity:1; }
     .modal-content { background: var(--glass-bg); backdrop-filter:blur(30px); border:1px solid var(--glass-border); border-radius:32px; padding:30px; max-width:550px; width:90%; box-shadow:var(--shadow), 0 0 30px rgba(255,255,255,0.2); animation: modalPop 0.3s ease; max-height: 80vh; overflow-y: auto; position: relative; }
@@ -134,8 +176,6 @@
     table { width:100%; border-collapse: collapse; margin-top:15px; }
     th, td { padding:12px 16px; border-bottom:1px solid var(--glass-border); text-align:left; }
     th { color: var(--text); opacity:0.8; }
-    .gallery { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
-    .gallery img { width: 100px; height: 100px; object-fit: cover; border-radius: 12px; border: 2px solid var(--glass-border); }
     .brand-tag { background: rgba(255,255,255,0.2); border:1px solid var(--glass-border); color: var(--text); padding:8px 16px; border-radius:30px; font-size:0.75em; cursor:pointer; backdrop-filter: blur(10px); transition:0.3s; display:inline-flex; align-items:center; gap:6px; }
     .brand-tag:hover { background: var(--btn-hover); border-color: var(--accent); box-shadow: var(--accent-glow); }
     .brands-row { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
@@ -162,7 +202,7 @@
       <div class="logo">Хазбиково</div>
       <span class="version-badge" onclick="openVersion()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        v5.4
+        v5.5
       </span>
       <div class="nav-container" id="navContainer">
         <div class="current-tab" id="currentTab">
@@ -190,10 +230,6 @@
     </div>
   </header>
 
-  <div class="back-button-container" id="backButtonContainer" style="display: none;">
-    <button class="back-btn" onclick="showPage('home')">← Назад</button>
-  </div>
-
   <div class="container">
     <div id="homePage" class="page active">
       <div class="glass" style="padding:40px; text-align:center;">
@@ -203,14 +239,23 @@
           <button class="btn-glass primary" id="toggleSiteButton" onclick="toggleMenu()">Перейти к сайту</button>
           <button class="btn-glass" onclick="showPage('description')">Описание</button>
         </div>
-        <div id="mainMenu" style="display:none;">
-          <div class="grid-2col">
-            <button class="btn-glass" onclick="showPage('residents')">👥 Жители</button>
-            <button class="btn-glass" onclick="showPage('sights')">🏛️ Достопримечательности</button>
-            <button class="btn-glass" onclick="showPage('chs')">🚫 ЧС</button>
-            <button class="btn-glass" onclick="showPage('rules')">📜 Правила</button>
-            <button class="btn-glass" onclick="showPage('gallery')">🖼️ Галерея</button>
-          </div>
+        <div class="menu-grid" id="mainMenu">
+          <button class="neon-btn neon-purple" onclick="showPage('residents')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Жители
+          </button>
+          <button class="neon-btn neon-blue" onclick="showPage('sights')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M17 2v5M7 2v5"/></svg>
+            Достопримечательности
+          </button>
+          <button class="neon-btn neon-pink" onclick="showPage('chs')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            ЧС
+          </button>
+          <button class="neon-btn neon-green" onclick="showPage('rules')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Правила
+          </button>
         </div>
       </div>
       <div class="brands-row">
@@ -227,7 +272,6 @@
     <div id="newsPage" class="page"><div class="glass" style="padding:30px;"><h2>Новости <span class="admin-only" onclick="editJSON('news')" style="cursor:pointer;">✏️</span></h2><div id="newsList"></div></div></div>
     <div id="sightsPage" class="page"><div class="glass" style="padding:30px;"><h2>Достопримечательности <span class="admin-only" onclick="editJSON('sights')" style="cursor:pointer;">✏️</span></h2><div id="sightsList"></div></div></div>
     <div id="tasksPage" class="page"><div class="glass" style="padding:30px;"><h2>Задания</h2><p>Скоро здесь появятся ежедневные задания для жителей.</p></div></div>
-    <div id="galleryPage" class="page"><div class="glass" style="padding:30px;"><h2>Галерея <span class="admin-only" style="cursor:pointer;" onclick="document.getElementById('galleryUpload').click()">✏️</span></h2><input type="file" id="galleryUpload" accept="image/*" style="display:none;" onchange="uploadGalleryImage(event)"><div class="gallery" id="galleryContainer"></div></div></div>
   </div>
 
   <footer class="footer">
@@ -249,12 +293,11 @@
   <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
   <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
   <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-  <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v5.4</strong> – Кнопка «Назад» отдельно, анимация «Перейти к сайту»/«Закрыть», бренды с крестиком.</li></ul></div></div>
+  <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v5.5</strong> – Иконки, анимированное меню по центру, неоновые кнопки.</li></ul></div></div>
   <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Перейти в канал?</p><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div>
   <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Перейти на сервер?</p><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div>
   <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
   <div id="settingsModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('settingsModal')">✕</span><h3>Настройки</h3><div style="display:flex; align-items:center; gap:15px; margin:15px 0;"><span>Тема:</span><button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button></div><div style="display:flex; align-items:center; gap:15px;"><span>Громкость:</span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()"></div></div></div>
-  <!-- Модалка для брендов -->
   <div id="brandModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('brandModal')">✕</span><h3 id="brandTitle"></h3><p>Скоро будет</p></div></div>
 
   <script>
@@ -270,7 +313,6 @@
       rules: ['1. Не гриферить','2. Уважать'],
       sights: [{title:'Ратуша',desc:'Центральное здание',architect:'Xazbik_'}],
       news: [{title:'Открытие',desc:'Сервер запущен',date:'01.01.2026'}],
-      gallery: [],
       brands: {'ChichWaka™':'Креатив','Xaz&Der1™':'Разработчики','Minecraft™':'Игра'}
     };
 
@@ -297,33 +339,31 @@
 
     function showPage(page) {
       playSound();
-      document.getElementById('backButtonContainer').style.display = page === 'home' ? 'none' : 'block';
       const currentActive = document.querySelector('.page.active');
-      if (currentActive) { currentActive.classList.add('exit'); currentActive.addEventListener('animationend', function handler() { currentActive.removeEventListener('animationend', handler); currentActive.classList.remove('active', 'exit'); const target = document.getElementById(page + 'Page'); if (target) { target.classList.add('active'); if (page === 'home') document.getElementById('mainMenu').style.display = 'none'; buildMenu(page); document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || ''); refreshData(); if (page === 'description') enableTilt(); } }, { once: true }); } else { const target = document.getElementById(page + 'Page'); if (target) { target.classList.add('active'); if (page === 'home') document.getElementById('mainMenu').style.display = 'none'; buildMenu(page); document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || ''); refreshData(); if (page === 'description') enableTilt(); } }
+      if (currentActive) { currentActive.classList.add('exit'); currentActive.addEventListener('animationend', function handler() { currentActive.removeEventListener('animationend', handler); currentActive.classList.remove('active', 'exit'); const target = document.getElementById(page + 'Page'); if (target) { target.classList.add('active'); if (page === 'home') { document.getElementById('mainMenu').classList.remove('visible'); document.getElementById('toggleSiteButton').innerHTML = 'Перейти к сайту'; } buildMenu(page); document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || ''); refreshData(); if (page === 'description') enableTilt(); } }, { once: true }); } else { const target = document.getElementById(page + 'Page'); if (target) { target.classList.add('active'); if (page === 'home') { document.getElementById('mainMenu').classList.remove('visible'); document.getElementById('toggleSiteButton').innerHTML = 'Перейти к сайту'; } buildMenu(page); document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || ''); refreshData(); if (page === 'description') enableTilt(); } }
     }
     window.showPage = showPage;
 
     window.toggleMenu = () => {
       const menu = document.getElementById('mainMenu');
       const btn = document.getElementById('toggleSiteButton');
-      if (menu.style.display === 'none') {
-        menu.style.display = 'block';
-        btn.innerHTML = 'Закрыть';
-      } else {
-        menu.style.display = 'none';
+      if (menu.classList.contains('visible')) {
+        menu.classList.remove('visible');
         btn.innerHTML = 'Перейти к сайту';
+      } else {
+        menu.classList.add('visible');
+        btn.innerHTML = 'Закрыть';
       }
       playSound();
     };
 
-    function refreshData() { const rt = document.querySelector('#residentsTable tbody'); if (rt) rt.innerHTML = siteData.residents.map(r => `<tr><td>${r.nick}</td><td>${r.role}</td></tr>`).join(''); const ct = document.querySelector('#chsTable tbody'); if (ct) ct.innerHTML = siteData.chs.map(c => `<tr><td>${c.nick}</td><td>${c.reason}</td></tr>`).join(''); if (document.getElementById('rulesList')) document.getElementById('rulesList').innerHTML = siteData.rules.map(r => `<p>${r}</p>`).join(''); if (document.getElementById('newsList')) document.getElementById('newsList').innerHTML = siteData.news.map(n => `<p><strong>${n.title}</strong> (${n.date})<br>${n.desc}</p>`).join(''); if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> — ${s.desc} (арх. ${s.architect})</p>`).join(''); const gc = document.getElementById('galleryContainer'); if (gc) gc.innerHTML = siteData.gallery.map(img => `<img src="${img}" alt="gallery">`).join(''); }
+    function refreshData() { const rt = document.querySelector('#residentsTable tbody'); if (rt) rt.innerHTML = siteData.residents.map(r => `<tr><td>${r.nick}</td><td>${r.role}</td></tr>`).join(''); const ct = document.querySelector('#chsTable tbody'); if (ct) ct.innerHTML = siteData.chs.map(c => `<tr><td>${c.nick}</td><td>${c.reason}</td></tr>`).join(''); if (document.getElementById('rulesList')) document.getElementById('rulesList').innerHTML = siteData.rules.map(r => `<p>${r}</p>`).join(''); if (document.getElementById('newsList')) document.getElementById('newsList').innerHTML = siteData.news.map(n => `<p><strong>${n.title}</strong> (${n.date})<br>${n.desc}</p>`).join(''); if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> — ${s.desc} (арх. ${s.architect})</p>`).join(''); }
 
     function enableTilt() { const cards = document.querySelectorAll('.about-col'); cards.forEach(card => { card.addEventListener('mousemove', (e) => { const rect = card.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; const centerX = rect.width / 2; const centerY = rect.height / 2; const rotateX = (y - centerY) / 10; const rotateY = (centerX - x) / 10; card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`; card.style.setProperty('--mouse-x', x + 'px'); card.style.setProperty('--mouse-y', y + 'px'); const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI); card.style.setProperty('--rotate-angle', angle); }); card.addEventListener('mouseleave', () => { card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)'; card.style.setProperty('--mouse-x', '50%'); card.style.setProperty('--mouse-y', '50%'); card.style.setProperty('--rotate-angle', '45'); }); }); }
 
     window.toggleAdmin = () => { if (currentUser?.nick !== 'Xazbik_') return; adminMode = !adminMode; document.querySelectorAll('.admin-only').forEach(el => el.style.display = adminMode ? 'inline' : 'none'); };
     window.editList = key => { let text = ''; if (key === 'residents') text = siteData.residents.map(r => r.nick + ' - ' + r.role).join('\n'); else if (key === 'chs') text = siteData.chs.map(c => c.nick + ' - ' + c.reason).join('\n'); else if (key === 'rules') text = siteData.rules.join('\n'); const val = prompt('Редактировать:', text); if (val) { const lines = val.split('\n').filter(l => l.trim()); if (key === 'residents') siteData.residents = lines.map(l => { const [n,r] = l.split(' - '); return {nick:n?.trim(), role:r?.trim()}; }); else if (key === 'chs') siteData.chs = lines.map(l => { const [n,r] = l.split(' - '); return {nick:n?.trim(), reason:r?.trim()}; }); else siteData.rules = lines; save(); refreshData(); } };
     window.editJSON = key => { const val = prompt('Введите JSON:', JSON.stringify(siteData[key], null, 2)); if (val) { try { siteData[key] = JSON.parse(val); save(); refreshData(); } catch(e) { toast('Ошибка JSON'); } } };
-    window.uploadGalleryImage = event => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = e => { siteData.gallery.push(e.target.result); save(); refreshData(); toast('Картинка загружена'); }; reader.readAsDataURL(file); };
     window.showBrand = b => { document.getElementById('brandTitle').innerText = b; document.getElementById('brandModal').classList.add('active'); };
     window.openDiscord = () => document.getElementById('discordModal').classList.add('active');
     window.openTelegram = () => document.getElementById('telegramModal').classList.add('active');
@@ -352,7 +392,7 @@
     window.addEventListener('beforeunload', () => { if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick); else localStorage.removeItem('xazCurrentUser'); });
     showPage('home');
 
-    document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn').forEach(btn => { btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px'); btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px'); }); });
+    document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .neon-btn').forEach(btn => { btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px'); btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px'); }); });
   </script>
 </body>
 </html>
