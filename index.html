@@ -90,7 +90,7 @@
     }
     .version-badge:hover { background: rgba(255,255,255,0.4); }
 
-    /* НАВИГАЦИЯ: активная кнопка + выдвижное меню */
+    /* НАВИГАЦИЯ с растворением */
     .nav-container {
       display: flex;
       align-items: center;
@@ -120,15 +120,16 @@
       display: flex;
       max-width: 0;
       overflow: hidden;
-      transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
       margin-left: 10px;
       gap: 10px;
       align-items: center;
     }
     .nav-container:hover .collapsible-menu {
       max-width: 600px;
+      opacity: 1;
     }
-    /* Убираем исчезновение current-tab */
     .nav-btn {
       background: var(--btn-bg);
       border:1px solid var(--glass-border);
@@ -385,7 +386,7 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.3</strong> – Улучшенная навигация без дублирования.</li>
+        <li><strong>v5.3</strong> – Плавное растворение меню.</li>
         <li><strong>v5.2</strong> – Чёрно-белый дизайн, название «Хазбиково».</li>
       </ul>
     </div>
@@ -445,7 +446,6 @@
       brands: {'ChichWaka™':'Креатив','Xaz&Der1™':'Разработчики','Minecraft™':'Игра'}
     };
 
-    // Все возможные страницы для меню
     const allPages = [
       { id: 'home', label: 'Главная', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' },
       { id: 'residents', label: 'Жители', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
@@ -495,7 +495,6 @@
     };
     window.closeModal = id => document.getElementById(id).classList.remove('active');
 
-    // Построение выдвижного меню (все страницы кроме текущей)
     function buildMenu(currentPageId) {
       const menu = document.getElementById('collapsibleMenu');
       menu.innerHTML = '';
@@ -509,7 +508,6 @@
           menu.appendChild(btn);
         }
       });
-      // Обновляем currentTab
       const current = allPages.find(p => p.id === currentPageId) || allPages[0];
       document.getElementById('currentTab').innerHTML = current.icon + ' ' + current.label;
     }
@@ -521,18 +519,7 @@
       if (target) target.classList.add('active');
       if (page === 'home') document.getElementById('mainMenu').style.display = 'none';
       buildMenu(page);
-      const pageTitles = {
-        home: 'Главная',
-        residents: 'Жители',
-        description: 'Описание',
-        news: 'Новости',
-        sights: 'Достопримечательности',
-        chs: 'ЧС',
-        rules: 'Правила',
-        tasks: 'Задания',
-        gallery: 'Галерея'
-      };
-      document.title = 'Хазбиково - ' + (pageTitles[page] || '');
+      document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || '');
       refreshData();
     }
     window.showPage = showPage;
@@ -555,7 +542,6 @@
       if (gc) gc.innerHTML = siteData.gallery.map(img => `<img src="${img}" alt="gallery">`).join('');
     }
 
-    // Админка
     window.toggleAdmin = () => {
       if (currentUser?.nick !== 'Xazbik_') return;
       adminMode = !adminMode;
@@ -602,7 +588,6 @@
     window.openRegister = () => document.getElementById('registerModal').classList.add('active');
     window.openLogin = () => document.getElementById('loginModal').classList.add('active');
 
-    // Авторизация
     window.register = () => {
       const nick = document.getElementById('regNick').value.trim();
       const email = document.getElementById('regEmail').value.trim();
@@ -711,7 +696,6 @@
     };
     window.copyUID = () => { navigator.clipboard.writeText(currentUser.uid).then(() => toast('UID скопирован')); };
 
-    // Инициализация
     applyTheme();
     if (isDark) document.body.classList.add('dark-theme');
     const saved = localStorage.getItem('xazCurrentUser');
@@ -720,7 +704,6 @@
       if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick);
       else localStorage.removeItem('xazCurrentUser');
     });
-    // Запуск
     showPage('home');
   </script>
 </body>
