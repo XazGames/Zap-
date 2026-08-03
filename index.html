@@ -21,6 +21,7 @@
       --footer-bg: rgba(255,255,255,0.15);
       --input-bg: rgba(255,255,255,0.5);
       --bg: linear-gradient(145deg, #f0f0f5 0%, #e0e0ea 100%);
+      --active-icon-color: #1e1e2f;
     }
     body.dark-theme {
       --glass-bg: rgba(20,20,25,0.75);
@@ -36,6 +37,7 @@
       --footer-bg: rgba(15,15,20,0.5);
       --input-bg: rgba(30,30,40,0.7);
       --bg: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+      --active-icon-color: #ffffff;
     }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -318,6 +320,10 @@
       font-size: 0.9em;
       line-height: 1.5;
     }
+    /* Иконка активной вкладки меняет цвет */
+    .nav-btn.active svg, .current-tab svg {
+      stroke: var(--active-icon-color);
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script>
@@ -513,7 +519,7 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.3</strong> – Объединены «Описание» и «О нас», 3D-колонки, все эффекты сохранены.</li>
+        <li><strong>v5.3</strong> – Иконки меняют цвет при активации, возвращены лучи на кнопках.</li>
         <li><strong>v5.2</strong> – Улучшенный футер, анимации кнопок.</li>
       </ul>
     </div>
