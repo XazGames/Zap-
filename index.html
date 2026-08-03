@@ -47,7 +47,7 @@
       transition: background 0.4s, color 0.3s;
       position: relative;
     }
-    /* Эффект круглого луча на кнопках */
+    /* Рассеянный крупный луч на кнопках */
     .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge {
       position: relative;
       overflow: hidden;
@@ -59,7 +59,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.5) 0%, transparent 70%);
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
@@ -67,6 +67,22 @@
     }
     .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before {
       opacity: 1;
+    }
+    /* Летучий лучик (блик) при наведении */
+    .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.7s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after {
+      left: 100%;
     }
     .bg-glow {
       position: fixed; top:0; left:0; width:100%; height:100%;
@@ -437,7 +453,7 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.3</strong> – Круглый луч на кнопках, без следа мыши.</li>
+        <li><strong>v5.3</strong> – Рассеянный луч + летучие лучики на кнопках.</li>
         <li><strong>v5.2</strong> – Улучшенный футер.</li>
       </ul>
     </div>
@@ -779,7 +795,7 @@
     });
     showPage('home');
 
-    // Обработчик для круглого луча на кнопках
+    // Обработчик для рассеянного луча на кнопках
     document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
         const rect = btn.getBoundingClientRect();
