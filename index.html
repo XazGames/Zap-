@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>XazGames™ — город Хазбиково</title>
+  <!-- Иконка сайта (SVG) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23c084fc'/%3E%3Cstop offset='100%25' style='stop-color:%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='46' font-family='Arial Black', sans-serif font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -213,6 +214,41 @@
       display:grid; grid-template-columns:1fr 1fr; gap:25px;
       max-width:500px; margin:30px auto 0;
     }
+    /* кастомные уведомления */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      color: #1e1e2f;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s ease;
+      max-width: 350px;
+    }
+    body.dark-theme .toast {
+      background: rgba(20,10,30,0.8);
+      border-color: rgba(200,150,255,0.3);
+      color: #f0e6ff;
+    }
+    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.success { border-left: 4px solid #10b981; }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
     @media (max-width:768px) {
       .header { flex-direction:column; align-items:flex-start; padding:15px 20px; }
       .nav-links { flex-wrap:wrap; gap:8px; }
@@ -230,6 +266,7 @@
 <body>
   <div class="bg-glow"></div>
   <div class="grid-bg"></div>
+  <div class="toast-container" id="toastContainer"></div>
 
   <header class="header">
     <div class="logo">XazGames™</div>
@@ -254,16 +291,26 @@
       </button>
     </div>
     <div class="auth-buttons" id="authButtons">
-      <button class="btn-glass primary" onclick="openRegister()">Регистрация</button>
-      <button class="btn-glass" onclick="openLogin()">Войти</button>
+      <button class="btn-glass primary" onclick="openRegister()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg>
+        Регистрация
+      </button>
+      <button class="btn-glass" onclick="openLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        Войти
+      </button>
     </div>
     <div id="userProfileArea" style="display:none; align-items:center; gap:15px;">
-      <button class="btn-glass" id="adminBtn" style="display:none;" onclick="toggleAdmin()">✏️</button>
+      <button class="btn-glass" id="adminBtn" style="display:none;" onclick="toggleAdmin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M16.9 16.9l2.8 2.8M1 12h4M19 12h4M4.2 19.8l2.8-2.8M16.9 7.1l2.8-2.8"/></svg>
+      </button>
       <span onclick="openProfile()" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
         <img id="avatar" width="32" height="32" style="border-radius:6px; background:rgba(255,255,255,0.3);" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%228%22 r=%224%22 fill=%22%23a855f7%22/%3E%3C/svg%3E'">
         <span id="nickDisplay"></span>
       </span>
-      <button class="btn-glass" style="background:rgba(255,0,0,0.2);" onclick="logout()">Выход</button>
+      <button class="btn-glass" style="background:rgba(255,0,0,0.2);" onclick="logout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
     </div>
   </header>
 
@@ -278,10 +325,22 @@
         </div>
         <div class="site-menu-wrapper" id="siteMenuWrapper">
           <div class="site-menu-grid">
-            <button class="btn-glass" onclick="showPage('residents')">👥 Жители</button>
-            <button class="btn-glass" onclick="showPage('sights')">🏛️ Достопримечательности</button>
-            <button class="btn-glass" onclick="showPage('chs')">🚫 ЧС</button>
-            <button class="btn-glass" onclick="showPage('rules')">📜 Правила</button>
+            <button class="btn-glass" onclick="showPage('residents')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+              Жители
+            </button>
+            <button class="btn-glass" onclick="showPage('sights')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="16" rx="2"/><path d="M12 3v3M8 6V4h8v2"/></svg>
+              Достопримечательности
+            </button>
+            <button class="btn-glass" onclick="showPage('chs')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg>
+              ЧС
+            </button>
+            <button class="btn-glass" onclick="showPage('rules')">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
+              Правила
+            </button>
           </div>
         </div>
         <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
@@ -302,8 +361,14 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-links">
-        <a href="#" onclick="openTelegramModal()">📱 Telegram</a>
-        <a href="#" onclick="openDiscordModal()">💬 Discord</a>
+        <a href="#" onclick="openTelegramModal()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.05-.2-.06-.06-.15-.04-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.87-1.25 4.79-2.08 5.76-2.47 2.74-1.14 3.31-1.34 3.68-1.34.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          Telegram
+        </a>
+        <a href="#" onclick="openDiscordModal()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 10.5c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5zm-7 0c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5S10 12.8 10 12s-.7-1.5-1.5-1.5zm9.7-4.3c-1.4-1.1-3-1.7-4.6-2l-.5 1c-1.4-.3-2.9-.3-4.3 0l-.5-1c-1.6.3-3.2.9-4.6 2C2.2 8.5 1.4 11.5 1.2 14.5c1.6 1.2 3.3 1.9 5 2.3l1-1.6c-1-.3-1.9-.8-2.7-1.4.9.7 2 1.2 3.2 1.6 1.2.4 2.5.6 3.8.6s2.6-.2 3.8-.6c1.2-.4 2.3-.9 3.2-1.6-.8.6-1.7 1.1-2.7 1.4l1 1.6c1.7-.4 3.4-1.1 5-2.3-.2-3-1-6-2.9-8.2z"/></svg>
+          Discord
+        </a>
       </div>
       <div class="footer-links">
         <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
@@ -314,7 +379,7 @@
     <div style="text-align:center; margin-top:20px; opacity:0.8;">XAZBGAMES.RU © 2026 Хазбиково</div>
   </footer>
 
-  <!-- Модальные окна регистрации, входа, кода и т.д. -->
+  <!-- Модальные окна -->
   <div id="registerModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeModal('registerModal')">✕</span>
@@ -420,6 +485,16 @@
         localStorage.setItem('xazSiteData', JSON.stringify(siteData));
       }
 
+      // Кастомные уведомления
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
       function playSound() {
         try {
           const a = new AudioContext();
@@ -476,6 +551,8 @@
         if (document.getElementById('residentsList')) document.getElementById('residentsList').innerHTML = siteData.residents.map(r => `<p>${r.nick} - ${r.role}</p>`).join('');
         if (document.getElementById('chsList')) document.getElementById('chsList').innerHTML = siteData.chs.map(c => `<p>${c.nick} - ${c.reason}</p>`).join('');
         if (document.getElementById('rulesList')) document.getElementById('rulesList').innerHTML = siteData.rules.map(r => `<p>${r}</p>`).join('');
+        if (document.getElementById('newsList')) document.getElementById('newsList').innerHTML = siteData.news.map(n => `<p><strong>${n.title}</strong> (${n.date})<br>${n.desc}</p>`).join('');
+        if (document.getElementById('sightsList')) document.getElementById('sightsList').innerHTML = siteData.sights.map(s => `<p><strong>${s.title}</strong> — ${s.desc} (арх. ${s.architect})</p>`).join('');
       }
 
       // Регистрация и вход
@@ -487,10 +564,10 @@
         const email = document.getElementById('regEmail').value.trim();
         const pass = document.getElementById('regPass').value;
         const pass2 = document.getElementById('regPassConfirm').value;
-        if (!nick || !email || !pass) return alert('Заполните все поля');
-        if (pass !== pass2) return alert('Пароли не совпадают');
-        if (users.find(u => u.nick === nick)) return alert('Ник уже используется');
-        // Отправка кода (имитация)
+        if (!nick || !email || !pass) return showToast('Заполните все поля', 'error');
+        if (pass !== pass2) return showToast('Пароли не совпадают', 'error');
+        if (users.find(u => u.nick === nick)) return showToast('Ник уже используется', 'error');
+        // Сохраняем данные и переходим к коду
         window.pendingRegistration = { nick, email, pass };
         document.getElementById('registerModal').classList.remove('active');
         requestCode('reg');
@@ -501,18 +578,21 @@
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value;
         const user = users.find(u => u.nick === nick && u.email === email && u.pass === pass);
-        if (!user) return alert('Неверный логин, email или пароль');
+        if (!user) return showToast('Неверный логин, email или пароль', 'error');
         window.pendingLogin = user;
         document.getElementById('loginModal').classList.remove('active');
         requestCode('login');
       };
 
       function requestCode(type) {
-        document.getElementById('codeModal').classList.add('active');
-        document.querySelectorAll('.code-inputs input').forEach(i => i.value = '');
-        document.querySelector('.code-inputs input').focus();
+        // Сбрасываем предыдущие ожидания
+        window.pendingRegistration = null;
+        window.pendingLogin = null;
         window.codeAction = type;
-        // таймер
+        document.getElementById('codeModal').classList.add('active');
+        const inputs = document.querySelectorAll('.code-inputs input');
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
         let sec = 30;
         document.getElementById('resendTimer').innerText = `Повтор через ${sec}с`;
         if (window.codeInterval) clearInterval(window.codeInterval);
@@ -543,19 +623,27 @@
 
       window.verifyCode = () => {
         const code = Array.from(document.querySelectorAll('.code-inputs input')).map(i => i.value).join('');
-        if (code !== '123456') return alert('Неверный код');
+        if (code !== '123456') {
+          showToast('Неверный код', 'error');
+          return;
+        }
         document.getElementById('codeModal').classList.remove('active');
-        if (window.codeAction === 'reg' && window.pendingRegistration) {
+        if (window.codeInterval) clearInterval(window.codeInterval);
+
+        if (window.codeAction === 'reg') {
           const { nick, email, pass } = window.pendingRegistration;
           users.push({ nick, email, pass, uid: 'u' + Date.now() });
           save();
           currentUser = users[users.length-1];
           updateAuthUI();
-        } else if (window.codeAction === 'login' && window.pendingLogin) {
+          showToast('Регистрация успешна!', 'success');
+        } else if (window.codeAction === 'login') {
           currentUser = window.pendingLogin;
           updateAuthUI();
+          showToast('Добро пожаловать!', 'success');
         }
-        if (window.codeInterval) clearInterval(window.codeInterval);
+        window.pendingRegistration = null;
+        window.pendingLogin = null;
       };
 
       function updateAuthUI() {
@@ -581,7 +669,7 @@
 
       window.openProfile = () => {
         if (!currentUser) return;
-        alert(`Профиль: ${currentUser.nick}\nEmail: ${currentUser.email}\nUID: ${currentUser.uid}`);
+        showToast(`Профиль: ${currentUser.nick} (${currentUser.email})`, 'info');
       };
 
       // Админка
@@ -610,21 +698,24 @@
       window.editJSON = (key) => {
         const newVal = prompt('Введите новый JSON:', JSON.stringify(siteData[key], null, 2));
         if (newVal) {
-          try { siteData[key] = JSON.parse(newVal); save(); refreshLists(); } catch(e) { alert('Ошибка JSON'); }
+          try { siteData[key] = JSON.parse(newVal); save(); refreshLists(); } catch(e) { showToast('Ошибка JSON', 'error'); }
         }
       };
 
-      window.showBrand = (brand) => alert(siteData.brands[brand] || brand);
+      window.showBrand = (brand) => showToast(siteData.brands[brand] || brand);
       window.openDiscordModal = () => document.getElementById('discordModal').classList.add('active');
       window.openTelegramModal = () => document.getElementById('telegramModal').classList.add('active');
       window.showPolicy = (type) => {
         document.getElementById('policyTitle').innerText = type === 'privacy' ? 'Конфиденциальность' : 'Условия';
-        document.getElementById('policyText').innerText = type === 'privacy' ? 'Здесь длинный текст о конфиденциальности...' : 'Здесь длинный текст условий использования...';
+        document.getElementById('policyText').innerText = type === 'privacy' ?
+          'Политика конфиденциальности Хазбиково. Мы собираем только необходимые данные (ник, email) для авторизации. Данные не передаются третьим лицам.' :
+          'Условия использования сервера Хазбиково. Запрещены гриферство, читы, оскорбления. Администрация оставляет за собой право ограничивать доступ.';
         document.getElementById('policyModal').classList.add('active');
       };
 
       // Инициализация
       applyTheme();
+      if (isDark) document.body.classList.add('dark-theme');
       const savedNick = localStorage.getItem('xazCurrentUser');
       if (savedNick) {
         currentUser = users.find(u => u.nick === savedNick) || null;
