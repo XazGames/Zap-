@@ -59,7 +59,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.5) 0%, transparent 80%);
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.6) 0%, transparent 80%);
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
@@ -289,7 +289,7 @@
     /* Стили для страницы О нас */
     .about-columns {
       display: flex;
-      gap: 20px;
+      gap: 25px;
       margin-top: 30px;
     }
     .about-col {
@@ -297,17 +297,32 @@
       background: var(--glass-bg);
       backdrop-filter: blur(10px);
       border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 24px;
+      padding: 25px;
+      box-shadow: 
+        0 10px 25px -5px rgba(0,0,0,0.15),
+        0 0 0 1px rgba(255,255,255,0.3) inset,
+        0 -4px 6px rgba(0,0,0,0.05) inset;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .about-col:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 20px 35px -10px rgba(0,0,0,0.25),
+        0 0 0 1px rgba(255,255,255,0.4) inset,
+        0 -6px 10px rgba(0,0,0,0.1) inset;
     }
     .about-col h3 {
-      margin-bottom: 10px;
-      font-size: 1.2em;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      font-weight: 700;
+      color: var(--text);
     }
     .about-col p {
       color: var(--text-secondary);
-      font-size: 0.9em;
-      line-height: 1.5;
+      font-size: 0.95em;
+      line-height: 1.6;
+      margin-bottom: 15px;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -412,16 +427,16 @@
     </div>
     <div id="aboutPage" class="page">
       <div class="glass" style="padding:40px; text-align:center;">
-        <h1 style="font-size:2.5em; margin-bottom:20px;">О нас</h1>
+        <h1 style="font-size:2.5em; margin-bottom:30px;">О нас</h1>
         <div class="about-columns">
           <div class="about-col">
-            <h3>Вся информация о сайте</h3>
+            <h3>Информация о сайте</h3>
             <p>Сайт был создан компанией Xaz&Der1 специально для города 'Хазбиково' на сервере ChichVAKA. Наш сайт создан, чтобы познакомить вас с уникальными чертами города.</p>
             <p>На сайте можно найти: Жители города, Тест-сервер города, Правила города, Достопримечательности города и многое другое.</p>
             <p>Путешествуйте с удовольствием — Хазбиково ждёт вас!</p>
           </div>
           <div class="about-col">
-            <h3>Для чего был создан сайт?</h3>
+            <h3>Цель создания сайта</h3>
             <p>Сайт был создан в исключительно информационных целях — для обеспечения открытого и оперативного доступа жителей и гостей города к достоверным сведениям о деятельности органов местного самоуправления, городских программах и услугах.</p>
             <p>Никого и ничего мы не хотели задеть или оскорбить, все совпадения случайны.</p>
           </div>
@@ -510,8 +525,8 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.3</strong> – Плавные переходы страниц, раздел «О нас» с колонками.</li>
-        <li><strong>v5.2</strong> – Улучшенный футер, анимации кнопок.</li>
+        <li><strong>v5.4</strong> – Плавные переходы страниц, 3D-колонки «О нас».</li>
+        <li><strong>v5.3</strong> – Круглый луч на кнопках.</li>
       </ul>
     </div>
   </div>
@@ -640,12 +655,10 @@
       playSound();
       const currentActive = document.querySelector('.page.active');
       if (currentActive) {
-        // Запускаем анимацию ухода
         currentActive.classList.add('exit');
         currentActive.addEventListener('animationend', function handler() {
           currentActive.removeEventListener('animationend', handler);
           currentActive.classList.remove('active', 'exit');
-          // Показываем новую страницу
           const target = document.getElementById(page + 'Page');
           if (target) {
             target.classList.add('active');
@@ -656,7 +669,6 @@
           }
         }, { once: true });
       } else {
-        // Если нет активной страницы, просто показываем
         const target = document.getElementById(page + 'Page');
         if (target) {
           target.classList.add('active');
