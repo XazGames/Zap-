@@ -4,27 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Город Хазбиково | Minecraft Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #1a1a1a;
-            --grass-top: #5d8a3c;
-            --grass-side: #7c9c5e;
-            --dirt: #8b6914;
-            --stone: #7f7f7f;
-            --wood: #8b6914;
-            --wood-light: #c4a04a;
+            --grass-top: #6a9e3a;
+            --grass-side: #8fb05a;
+            --dirt: #8b5a2b;
+            --stone: #7a7a7a;
+            --wood: #9e7a4a;
+            --planks: #b8945c;
             --gold: #f5c842;
+            --iron: #d1d1d1;
+            --diamond: #5ce0d4;
+            --redstone: #d1483c;
+            --bg-day: #87ceeb;
+            --bg-night: #1a2332;
             --text: #e0d8c0;
-            --text-dark: #3a3020;
-            --panel-bg: #2a2218;
+            --text-dark: #2a1f0a;
+            --panel-bg: rgba(42, 34, 24, 0.92);
             --panel-border: #5a4a2a;
             --accent: #4caf50;
             --accent2: #ff9800;
             --danger: #c0392b;
             --water: #3a6bc5;
-            --sky: #87ceeb;
             --cloud: #f0f0f0;
-            --font-pixel: 'Courier New', monospace;
+            --pixel-font: 'Press Start 2P', 'Courier New', monospace;
             --pixel-size: 4px;
         }
 
@@ -37,49 +41,103 @@
         body {
             font-family: 'Segoe UI', 'Arial', sans-serif;
             background: #1a1a1a;
-            background-image:
-                linear-gradient(180deg, #87ceeb 0%, #87ceeb 40%, #5d8a3c 40%, #5d8a3c 42%, #8b6914 42%, #8b6914 65%, #7f7f7f 65%, #7f7f7f 100%);
-            background-attachment: fixed;
             color: var(--text);
             min-height: 100vh;
-            image-rendering: pixelated;
-            position: relative;
             overflow-x: hidden;
+            transition: background 0.8s ease;
+            position: relative;
+            image-rendering: auto;
         }
 
-        /* Пиксельные облака */
-        body::before {
-            content: '';
+        /* Фоновые слои */
+        .background {
             position: fixed;
-            top: 5%;
-            left: -10%;
-            width: 120%;
-            height: 200px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .sky {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(180deg, #4facfe 0%, #87ceeb 100%);
+            transition: background 1s ease;
+        }
+        body.night-mode .sky {
+            background: linear-gradient(180deg, #0b1a2f 0%, #162c48 100%);
+        }
+
+        .mountains {
+            position: absolute;
+            bottom: 40%;
+            left: 0;
+            width: 100%;
+            height: 20%;
             background:
-                /* облако 1 */
-                linear-gradient(var(--cloud) 20px, transparent 20px) 80px 40px / 120px 40px no-repeat,
-                linear-gradient(var(--cloud) 20px, transparent 20px) 60px 20px / 100px 40px no-repeat,
-                linear-gradient(var(--cloud) 20px, transparent 20px) 100px 0px / 80px 40px no-repeat,
-                /* облако 2 */
-                linear-gradient(var(--cloud) 24px, transparent 24px) 500px 70px / 140px 48px no-repeat,
-                linear-gradient(var(--cloud) 24px, transparent 24px) 480px 45px / 110px 48px no-repeat,
-                linear-gradient(var(--cloud) 24px, transparent 24px) 530px 25px / 90px 48px no-repeat,
-                /* облако 3 */
-                linear-gradient(var(--cloud) 16px, transparent 16px) 900px 30px / 100px 32px no-repeat,
-                linear-gradient(var(--cloud) 16px, transparent 16px) 880px 15px / 80px 32px no-repeat;
+                linear-gradient(135deg, transparent 30%, #5a6b3c 30%, #5a6b3c 35%, transparent 35%) 0 0 / 100px 80px repeat-x,
+                linear-gradient(225deg, transparent 30%, #4a5b2c 30%, #4a5b2c 35%, transparent 35%) 50px 0 / 100px 80px repeat-x;
+            opacity: 0.7;
+            transition: opacity 0.8s;
+        }
+        body.night-mode .mountains {
+            opacity: 0.4;
+            filter: brightness(0.6);
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background:
+                linear-gradient(180deg, #6a9e3a 0%, #6a9e3a 6px, #8b5a2b 6px, #8b5a2b 8px, #8b5a2b 100%);
+            border-top: 4px solid #4a7a2e;
+            transition: background 0.8s;
+        }
+        body.night-mode .ground {
+            background: linear-gradient(180deg, #3a5a2a 0%, #3a5a2a 6px, #5a3a1a 6px, #5a3a1a 8px, #5a3a1a 100%);
+            border-top-color: #2a4a1a;
+        }
+
+        /* Плавающие пиксельные частицы */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.85;
-            animation: clouds 30s linear infinite;
         }
-
-        @keyframes clouds {
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            animation: floatUp linear infinite;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+        }
+        @keyframes floatUp {
             0% {
-                transform: translateX(0);
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
             }
             100% {
-                transform: translateX(-100px);
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
             }
+        }
+        body.night-mode .particle {
+            background: rgba(255, 255, 200, 0.9);
+            box-shadow: 0 0 6px rgba(255, 255, 200, 0.7);
         }
 
         /* Контейнер */
@@ -88,24 +146,32 @@
             margin: 0 auto;
             padding: 0 20px;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        /* ШАПКА */
+        /* Шапка */
         .header {
-            background: linear-gradient(180deg, #3d2b0f 0%, #2a1f0a 100%);
-            border: 4px solid #5a4a2a;
-            border-top: none;
+            background: linear-gradient(180deg, #5a3a1a 0%, #3d2b0f 100%);
+            border: 4px solid #8b6914;
             border-radius: 0 0 16px 16px;
             padding: 0;
             margin-bottom: 24px;
             box-shadow:
-                0 8px 0 #1a1008,
-                0 12px 24px rgba(0, 0, 0, 0.6);
+                0 8px 0 #2a1a08,
+                0 12px 24px rgba(0, 0, 0, 0.7),
+                inset 0 2px 0 rgba(255, 255, 200, 0.3);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            animation: headerGlow 3s infinite alternate;
         }
-
+        @keyframes headerGlow {
+            0% {
+                box-shadow: 0 8px 0 #2a1a08, 0 12px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 200, 50, 0.4);
+            }
+            100% {
+                box-shadow: 0 8px 0 #2a1a08, 0 12px 24px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 200, 50, 0.7);
+            }
+        }
         .header::after {
             content: '';
             position: absolute;
@@ -114,49 +180,58 @@
             right: 0;
             height: 6px;
             background: repeating-linear-gradient(90deg,
-                    #5d8a3c 0px, #5d8a3c 8px,
+                    #6a9e3a 0px, #6a9e3a 8px,
                     #4a7a2e 8px, #4a7a2e 16px);
             z-index: 2;
         }
-
         .header-inner {
             padding: 28px 30px 22px;
             text-align: center;
             position: relative;
+            z-index: 1;
         }
-
         .header-logo {
-            font-family: var(--font-pixel);
-            font-size: 2.8em;
+            font-family: var(--pixel-font);
+            font-size: 2.5em;
             font-weight: 900;
             letter-spacing: 3px;
             color: var(--gold);
             text-shadow:
-                3px 3px 0 #8b6914,
-                5px 5px 0 rgba(0, 0, 0, 0.5);
+                3px 3px 0 #6b4a0a,
+                5px 5px 0 rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(255, 200, 50, 0.7);
             text-transform: uppercase;
-            margin-bottom: 4px;
-            image-rendering: pixelated;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
-
-        .header-logo .icon {
+        .logo-icon {
             display: inline-block;
-            width: 36px;
-            height: 36px;
-            background: #4caf50;
-            border: 3px solid #2e7d32;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(180deg, #6a9e3a 0%, #6a9e3a 40%, #8b5a2b 40%, #8b5a2b 100%);
+            border: 3px solid #4a3a1a;
+            box-shadow: 0 4px 0 #2a1a08, 0 0 10px rgba(0, 0, 0, 0.5);
             image-rendering: pixelated;
-            vertical-align: middle;
-            margin: 0 6px;
-            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
             position: relative;
-            top: -4px;
+            animation: bounce 2s infinite;
         }
-
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
         .header-subtitle {
-            font-family: var(--font-pixel);
-            font-size: 1em;
-            color: #c4a04a;
+            font-family: var(--pixel-font);
+            font-size: 0.7em;
+            color: #e0c080;
             letter-spacing: 2px;
             text-transform: uppercase;
             opacity: 0.9;
@@ -166,47 +241,48 @@
         .nav {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
             margin-bottom: 24px;
             padding: 0 10px;
         }
-
         .nav-btn {
-            font-family: var(--font-pixel);
-            font-size: 0.9em;
+            font-family: var(--pixel-font);
+            font-size: 0.7em;
             font-weight: bold;
             letter-spacing: 1px;
             text-transform: uppercase;
-            padding: 12px 20px;
-            background: linear-gradient(180deg, #8b8b8b 0%, #6b6b6b 40%, #5a5a5a 100%);
+            padding: 12px 18px;
+            background: linear-gradient(180deg, #a0a0a0 0%, #7a7a7a 50%, #5a5a5a 100%);
             color: #fff;
             border: 3px solid #3a3a3a;
-            border-bottom: 4px solid #2a2a2a;
+            border-bottom: 5px solid #2a2a2a;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.1s ease;
+            transition: all 0.08s ease;
             position: relative;
             image-rendering: pixelated;
-            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
             user-select: none;
+            text-shadow: 1px 1px 0 #000;
         }
-
         .nav-btn:hover {
-            background: linear-gradient(180deg, #a0a0a0 0%, #808080 40%, #6b6b6b 100%);
+            background: linear-gradient(180deg, #b0b0b0 0%, #8a8a8a 50%, #6a6a6a 100%);
             transform: translateY(-2px);
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4);
+            border-bottom-width: 5px;
         }
         .nav-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+            border-bottom-width: 2px;
         }
         .nav-btn.active {
-            background: linear-gradient(180deg, #5d8a3c 0%, #4a7a2e 40%, #3a6a1e 100%);
-            border-color: #2e7d32;
-            border-bottom-color: #1b5e20;
+            background: linear-gradient(180deg, #6a9e3a 0%, #4a7a2e 50%, #2a5a1a 100%);
+            border-color: #2a6a1a;
+            border-bottom-color: #1a4a0a;
             color: #fff;
-            box-shadow: 0 3px 0 #1b5e20, 0 0 16px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 4px 0 #1a3a0a, 0 0 15px rgba(76, 175, 80, 0.5);
         }
 
         /* Панели */
@@ -218,10 +294,16 @@
             margin-bottom: 20px;
             box-shadow:
                 0 6px 0 #1a1008,
-                0 8px 20px rgba(0, 0, 0, 0.4);
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 200, 0.2);
             position: relative;
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #1a1008, 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
         .panel::before {
             content: '';
             position: absolute;
@@ -234,94 +316,90 @@
                     #8b6914 6px, #8b6914 12px);
             border-radius: 4px 4px 0 0;
         }
-
         .panel h2 {
-            font-family: var(--font-pixel);
-            font-size: 1.5em;
+            font-family: var(--pixel-font);
+            font-size: 1.2em;
             letter-spacing: 2px;
             color: var(--gold);
             text-transform: uppercase;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             border-bottom: 2px dashed #5a4a2a;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
         }
         .panel h2 .pixel-icon {
             display: inline-block;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: var(--accent);
             border: 2px solid #2e7d32;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
             image-rendering: pixelated;
-        }
-
-        .panel h3 {
-            font-family: var(--font-pixel);
-            color: #ff9800;
-            letter-spacing: 1px;
-            margin: 14px 0 8px;
-            font-size: 1.1em;
         }
 
         /* Карточки */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
         }
-
         .card {
-            background: #3d2b0f;
-            border: 3px solid #5a4a2a;
+            background: linear-gradient(135deg, #5a3a1a 0%, #3d2b0f 100%);
+            border: 3px solid #8b6914;
             border-radius: 6px;
-            padding: 18px;
-            transition: all 0.2s ease;
+            padding: 20px 16px;
+            transition: all 0.25s ease;
             cursor: default;
             position: relative;
+            box-shadow: 0 4px 0 #2a1a08, 0 6px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
         .card:hover {
-            transform: translateY(-3px);
-            border-color: #c4a04a;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
+            border-color: #f5c842;
+            box-shadow: 0 8px 0 #2a1a08, 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px rgba(245, 200, 66, 0.3);
         }
         .card-icon {
-            font-size: 2.5em;
-            text-align: center;
-            margin-bottom: 8px;
-            image-rendering: pixelated;
+            font-size: 3em;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.5));
         }
         .card h3 {
-            font-family: var(--font-pixel);
+            font-family: var(--pixel-font);
             color: #f5c842;
-            text-align: center;
-            margin: 0 0 6px;
-            font-size: 1em;
+            margin: 0 0 8px;
+            font-size: 0.8em;
             letter-spacing: 1px;
+            text-shadow: 1px 1px 0 #3a2000;
         }
         .card p {
             font-size: 0.9em;
-            color: #c0b090;
-            text-align: center;
-            line-height: 1.4;
+            color: #d0c090;
+            line-height: 1.5;
         }
 
         /* Таблица */
         .table-wrap {
             overflow-x: auto;
+            border-radius: 6px;
+            border: 2px solid #5a4a2a;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            font-family: var(--font-pixel);
-            font-size: 0.85em;
+            font-family: var(--pixel-font);
+            font-size: 0.7em;
+            background: rgba(30, 20, 10, 0.8);
         }
         table th,
         table td {
-            padding: 10px 14px;
+            padding: 12px 14px;
             border: 2px solid #5a4a2a;
             text-align: left;
+            color: #e0d0b0;
         }
         table th {
             background: #4a3a1a;
@@ -329,24 +407,25 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-size: 0.9em;
+            text-shadow: 1px 1px 0 #000;
         }
         table td {
-            background: #2a1f0a;
-            color: #d0c8b0;
+            background: rgba(42, 31, 15, 0.7);
         }
         table tr:hover td {
-            background: #3d2b0f;
+            background: rgba(62, 45, 20, 0.9);
         }
         .badge {
             display: inline-block;
-            padding: 3px 10px;
+            padding: 4px 12px;
             background: #4caf50;
             color: #fff;
-            font-size: 0.8em;
+            font-size: 0.7em;
             font-weight: bold;
             letter-spacing: 1px;
             border: 2px solid #2e7d32;
-            image-rendering: pixelated;
+            text-shadow: 1px 1px 0 #000;
+            box-shadow: 0 2px 0 #1a3a0a;
         }
         .badge.orange {
             background: #ff9800;
@@ -363,65 +442,75 @@
             flex-wrap: wrap;
             gap: 16px;
             justify-content: center;
+            margin: 20px 0;
         }
         .stat-box {
             flex: 1 1 140px;
             min-width: 120px;
             text-align: center;
-            background: #3d2b0f;
-            border: 3px solid #5a4a2a;
+            background: linear-gradient(180deg, #4a3a1a 0%, #2a1a0a 100%);
+            border: 3px solid #8b6914;
             border-radius: 6px;
-            padding: 16px 12px;
-            transition: all 0.2s ease;
+            padding: 18px 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 0 #1a1008, 0 0 10px rgba(0, 0, 0, 0.4);
+            cursor: default;
         }
         .stat-box:hover {
-            border-color: #c4a04a;
+            border-color: #f5c842;
+            transform: scale(1.03);
+            box-shadow: 0 6px 0 #1a1008, 0 0 20px rgba(245, 200, 66, 0.4);
         }
         .stat-number {
-            font-family: var(--font-pixel);
-            font-size: 2.2em;
+            font-family: var(--pixel-font);
+            font-size: 2em;
             font-weight: 900;
             color: var(--gold);
             letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(245, 200, 66, 0.7);
         }
         .stat-label {
-            font-family: var(--font-pixel);
-            font-size: 0.75em;
-            color: #a09070;
+            font-family: var(--pixel-font);
+            font-size: 0.6em;
+            color: #c0a060;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         /* Кнопка */
         .btn-mc {
             display: inline-block;
-            font-family: var(--font-pixel);
-            font-size: 1em;
+            font-family: var(--pixel-font);
+            font-size: 0.8em;
             font-weight: bold;
             letter-spacing: 1px;
             text-transform: uppercase;
-            padding: 14px 28px;
-            background: linear-gradient(180deg, #5d8a3c 0%, #4a7a2e 50%, #3a6a1e 100%);
+            padding: 16px 32px;
+            background: linear-gradient(180deg, #6a9e3a 0%, #4a7a2e 50%, #2a5a1a 100%);
             color: #fff;
             border: 3px solid #2e7d32;
-            border-bottom: 5px solid #1b5e20;
+            border-bottom: 6px solid #1b5e20;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.1s ease;
             image-rendering: pixelated;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4), 0 0 12px rgba(76, 175, 80, 0.5);
             user-select: none;
             text-align: center;
+            text-shadow: 1px 1px 0 #000;
+            position: relative;
+            overflow: hidden;
         }
         .btn-mc:hover {
-            background: linear-gradient(180deg, #6d9a4c 0%, #5a8a3e 50%, #4a7a2e 100%);
+            background: linear-gradient(180deg, #7ab04a 0%, #5a8a3e 50%, #3a6a2a 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4), 0 0 20px rgba(76, 175, 80, 0.7);
+            border-bottom-width: 6px;
         }
         .btn-mc:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
             border-bottom-width: 2px;
         }
         .btn-mc.gold {
@@ -429,69 +518,80 @@
             border-color: #b8860b;
             border-bottom-color: #8b6508;
             color: #3a2000;
+            text-shadow: none;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 200, 66, 0.6);
+        }
+        .btn-mc.gold:hover {
+            background: linear-gradient(180deg, #ffe066 0%, #f0b830 50%, #d4a020 100%);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4), 0 0 25px rgba(245, 200, 66, 0.8);
         }
 
         /* Галерея */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
         }
         .gallery-item {
             aspect-ratio: 1;
             background: #3d2b0f;
-            border: 3px solid #5a4a2a;
+            border: 3px solid #8b6914;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3em;
+            font-size: 2.8em;
             position: relative;
             overflow: hidden;
             image-rendering: pixelated;
+            box-shadow: 0 4px 0 #2a1a08;
         }
         .gallery-item:hover {
-            border-color: #c4a04a;
-            transform: scale(1.04);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+            border-color: #f5c842;
+            transform: scale(1.06);
+            box-shadow: 0 6px 0 #2a1a08, 0 0 18px rgba(245, 200, 66, 0.4);
         }
         .gallery-item .placeholder {
             text-align: center;
             color: #8b7b5a;
-            font-family: var(--font-pixel);
-            font-size: 0.35em;
+            font-family: var(--pixel-font);
+            font-size: 0.3em;
             letter-spacing: 1px;
         }
 
         /* Футер */
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: 24px 20px;
             margin-top: 20px;
-            font-family: var(--font-pixel);
-            font-size: 0.8em;
+            font-family: var(--pixel-font);
+            font-size: 0.7em;
             color: #8b7b5a;
             letter-spacing: 1px;
             border-top: 3px solid #3d2b0f;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px 12px 0 0;
         }
-        .footer .ip-box {
+        .ip-box {
             display: inline-block;
             background: #1a1008;
-            border: 2px solid #5a4a2a;
-            padding: 8px 20px;
+            border: 2px solid #8b6914;
+            padding: 12px 28px;
             border-radius: 4px;
             color: #f5c842;
             font-size: 1.2em;
             letter-spacing: 2px;
-            margin: 8px 0;
+            margin: 10px 0;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 3px 0 #0a0500;
         }
-        .footer .ip-box:hover {
+        .ip-box:hover {
             border-color: #f5c842;
             background: #2a1a08;
+            box-shadow: 0 4px 0 #0a0500, 0 0 12px rgba(245, 200, 66, 0.5);
         }
 
         /* Модальное окно */
@@ -501,51 +601,65 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
         }
         .modal-overlay.show {
             opacity: 1;
             pointer-events: auto;
         }
         .modal {
-            background: #2a1f0a;
+            background: #3d2b0f;
             border: 4px solid #c4a04a;
-            border-radius: 8px;
-            padding: 28px;
-            max-width: 550px;
+            border-radius: 12px;
+            padding: 32px 24px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(245, 200, 66, 0.3);
             position: relative;
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
         .modal h2 {
-            font-family: var(--font-pixel);
+            font-family: var(--pixel-font);
             color: var(--gold);
             letter-spacing: 2px;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
+            font-size: 1.2em;
         }
         .modal .close-btn {
             position: absolute;
-            top: 10px;
+            top: 12px;
             right: 14px;
             background: #c0392b;
             color: #fff;
             border: 2px solid #7b241c;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
-            font-family: var(--font-pixel);
-            font-size: 1em;
-            line-height: 28px;
+            font-family: var(--pixel-font);
+            font-size: 0.9em;
+            line-height: 32px;
             text-align: center;
             image-rendering: pixelated;
+            transition: background 0.2s;
+            box-shadow: 0 2px 0 #4a0a0a;
         }
         .modal .close-btn:hover {
             background: #e74c3c;
@@ -554,80 +668,125 @@
         /* Переключатель день/ночь */
         .theme-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             z-index: 100;
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             background: #3d2b0f;
-            border: 3px solid #5a4a2a;
+            border: 3px solid #8b6914;
             cursor: pointer;
-            font-size: 1.5em;
-            border-radius: 4px;
+            font-size: 1.8em;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.4);
             image-rendering: pixelated;
+            line-height: 1;
         }
         .theme-toggle:hover {
-            border-color: #c4a04a;
+            border-color: #f5c842;
             background: #4a3a1a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 18px rgba(245, 200, 66, 0.4);
         }
 
         /* Ночной режим */
-        body.night-mode {
-            background-image:
-                linear-gradient(180deg, #1a2a4a 0%, #1a2a4a 35%, #2a3a20 35%, #2a3a20 37%, #5a4a2a 37%, #5a4a2a 62%, #3a3a3a 62%, #3a3a3a 100%);
-        }
-        body.night-mode::before {
-            opacity: 0.3;
-            filter: brightness(0.5);
-        }
         body.night-mode .panel {
-            background: #1a140a;
+            background: rgba(20, 15, 8, 0.94);
             border-color: #3a2a15;
         }
         body.night-mode .card {
-            background: #1a140a;
+            background: linear-gradient(135deg, #2a1a0a 0%, #1a1005 100%);
+            border-color: #5a4a2a;
         }
         body.night-mode table td {
-            background: #1a1008;
+            background: rgba(20, 15, 8, 0.7);
         }
         body.night-mode table th {
             background: #2a1a0a;
         }
         body.night-mode .stat-box {
-            background: #1a140a;
+            background: linear-gradient(180deg, #2a1a0a 0%, #1a0a05 100%);
+            border-color: #5a4a2a;
         }
         body.night-mode .header {
-            background: linear-gradient(180deg, #1a1008 0%, #0d0804 100%);
-            border-color: #3a2a15;
+            background: linear-gradient(180deg, #2a1a0a 0%, #1a0a05 100%);
+            border-color: #5a4a2a;
         }
         body.night-mode .header-logo {
-            text-shadow: 3px 3px 0 #5a3a10, 5px 5px 0 rgba(0, 0, 0, 0.6);
+            text-shadow: 3px 3px 0 #4a3a10, 5px 5px 0 rgba(0, 0, 0, 0.6), 0 0 15px rgba(200, 150, 30, 0.6);
         }
         body.night-mode .footer {
             border-top-color: #2a1a0a;
             color: #6b5b3a;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        body.night-mode .btn-mc {
+            background: linear-gradient(180deg, #5a6a3a 0%, #3a4a2a 50%, #2a3a1a 100%);
+            border-color: #1a3a1a;
+            border-bottom-color: #0a2a0a;
+        }
+        body.night-mode .btn-mc.gold {
+            background: linear-gradient(180deg, #c0a030 0%, #a08020 50%, #806010 100%);
+            border-color: #6b4a0a;
+            border-bottom-color: #4a3008;
+        }
+        body.night-mode .nav-btn.active {
+            background: linear-gradient(180deg, #4a6a2a 0%, #3a5a1a 50%, #2a4a0a 100%);
+        }
+        /* Звезды ночью */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background: transparent;
+        }
+        body.night-mode .stars {
+            opacity: 1;
+            background-image:
+                radial-gradient(2px 2px at 20px 50px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 150px 200px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 300px 80px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 500px 150px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 700px 30px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 900px 180px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(1px 1px at 1050px 90px, #fff, rgba(0, 0, 0, 0)),
+                radial-gradient(2px 2px at 1200px 220px, #fff, rgba(0, 0, 0, 0));
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         /* Адаптивность */
         @media (max-width: 768px) {
             .header-logo {
-                font-size: 1.8em;
-                letter-spacing: 1px;
+                font-size: 1.5em;
+                gap: 8px;
             }
-            .header-inner {
-                padding: 18px 14px 14px;
+            .logo-icon {
+                width: 36px;
+                height: 36px;
             }
             .nav-btn {
-                padding: 10px 14px;
-                font-size: 0.75em;
+                padding: 10px 12px;
+                font-size: 0.6em;
             }
             .panel {
-                padding: 14px;
+                padding: 16px;
             }
             .cards-grid {
                 grid-template-columns: 1fr;
@@ -635,13 +794,10 @@
             .gallery {
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
-            .stats-row {
-                gap: 8px;
-            }
             .stat-box {
                 flex: 1 1 100px;
                 min-width: 80px;
-                padding: 10px 6px;
+                padding: 12px 8px;
             }
             .stat-number {
                 font-size: 1.5em;
@@ -650,6 +806,17 @@
     </style>
 </head>
 <body>
+    <!-- Фоновые слои -->
+    <div class="background">
+        <div class="sky"></div>
+        <div class="mountains"></div>
+        <div class="ground"></div>
+    </div>
+    <div class="stars"></div>
+
+    <!-- Частицы -->
+    <div class="particles" id="particles"></div>
+
     <!-- Переключатель день/ночь -->
     <button class="theme-toggle" id="themeToggle" title="День / Ночь">☀️</button>
 
@@ -658,7 +825,7 @@
         <header class="header">
             <div class="header-inner">
                 <div class="header-logo">
-                    <span class="icon"></span> ХАЗБИКОВО <span class="icon"></span>
+                    <span class="logo-icon"></span> ХАЗБИКОВО <span class="logo-icon"></span>
                 </div>
                 <p class="header-subtitle">Город на сервере Minecraft • Основан в 2024</p>
             </div>
@@ -680,11 +847,9 @@
                 <div class="panel">
                     <h2><span class="pixel-icon"></span> Добро пожаловать в Хазбиково!</h2>
                     <p style="font-size:1.05em;line-height:1.6;color:#d0c8b0;">
-                        <strong>Хазбиково</strong> — уютный и процветающий город на нашем сервере Minecraft.
-                        Здесь живут дружелюбные игроки, строятся невероятные здания и кипит жизнь!
-                        Присоединяйся к нам и стань частью нашей истории. 🏰
+                        <strong>Хазбиково</strong> — процветающий город с уникальной архитектурой, дружным сообществом и собственной экономикой. Присоединяйся к нам и стань частью легенды! 🏰
                     </p>
-                    <div style="text-align:center;margin-top:18px;">
+                    <div style="text-align:center;margin-top:24px;">
                         <span class="btn-mc gold" id="btnJoin">⚡ Подключиться к серверу</span>
                     </div>
                 </div>
@@ -716,22 +881,22 @@
                         <div class="card">
                             <div class="card-icon">🏛️</div>
                             <h3>Уникальная архитектура</h3>
-                            <p>Каждое здание построено с душой — от средневековых замков до современных небоскрёбов.</p>
+                            <p>Каждое здание — произведение искусства, от средневековых замков до футуристических башен.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🤝</div>
                             <h3>Дружное комьюнити</h3>
-                            <p>Мы всегда рады новым игрокам! Проводим совместные ивенты и фестивали.</p>
+                            <p>Регулярные ивенты, конкурсы и помощь новичкам — у нас каждый найдёт друзей.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🛡️</div>
                             <h3>Защита от гриферов</h3>
-                            <p>Плагины защиты территории и отзывчивая администрация обеспечат сохранность твоих построек.</p>
+                            <p>Продвинутая система защиты и внимательная администрация оберегают твои постройки.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🌟</div>
-                            <h3>Экономика</h3>
-                            <p>Собственная валюта, магазины, аукционы и рынок — развивайся и богатей!</p>
+                            <h3>Живая экономика</h3>
+                            <p>Магазины, аукционы и собственная валюта — торгуй, богатей и развивайся!</p>
                         </div>
                     </div>
                 </div>
@@ -767,32 +932,32 @@
                         <div class="card">
                             <div class="card-icon">🏰</div>
                             <h3>Ратуша</h3>
-                            <p>Главное административное здание в центре города. Высота — 64 блока.</p>
+                            <p>Административное сердце города. Высота 64 блока, часы на башне.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">⛪</div>
                             <h3>Храм Единства</h3>
-                            <p>Величественный собор из кварца и тёмного дуба с витражами.</p>
+                            <p>Собор из кварца и тёмного дуба с огромными витражами.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🏪</div>
                             <h3>Торговый центр</h3>
-                            <p>Огромный молл с десятками магазинов, кафе и кинотеатром.</p>
+                            <p>Многоэтажный молл с магазинами, кафе и кинотеатром.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🌉</div>
                             <h3>Мост Хасана</h3>
-                            <p>Подвесной мост через реку, соединяющий Северный и Южный районы.</p>
+                            <p>Подвесной мост через реку, соединяющий два берега города.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🏟️</div>
                             <h3>Арена PvP</h3>
-                            <p>Колизей для сражений и турниров с призами.</p>
+                            <p>Колизей для эпических сражений и турниров с наградами.</p>
                         </div>
                         <div class="card">
                             <div class="card-icon">🚂</div>
                             <h3>Ж/д вокзал</h3>
-                            <p>Станция с разветвлённой сетью путей по всему серверу.</p>
+                            <p>Узел путей, связывающий Хазбиково со всеми уголками сервера.</p>
                         </div>
                     </div>
                 </div>
@@ -803,34 +968,15 @@
                 <div class="panel">
                     <h2><span class="pixel-icon"></span> Скриншоты города</h2>
                     <div class="gallery">
-                        <div class="gallery-item" title="Центральная площадь">
-                            <span class="placeholder">🏛️<br>Центральная<br>площадь</span>
-                        </div>
-                        <div class="gallery-item" title="Ночной город">
-                            <span class="placeholder">🌃<br>Ночной<br>вид</span>
-                        </div>
-                        <div class="gallery-item" title="Фермы">
-                            <span class="placeholder">🌾<br>Фермы</span>
-                        </div>
-                        <div class="gallery-item" title="Порт">
-                            <span class="placeholder">⚓<br>Порт</span>
-                        </div>
-                        <div class="gallery-item" title="Шахта">
-                            <span class="placeholder">⛏️<br>Шахта</span>
-                        </div>
-                        <div class="gallery-item" title="Парк">
-                            <span class="placeholder">🌳<br>Парк</span>
-                        </div>
-                        <div class="gallery-item" title="Библиотека">
-                            <span class="placeholder">📚<br>Библиотека</span>
-                        </div>
-                        <div class="gallery-item" title="Стадион">
-                            <span class="placeholder">🏟️<br>Стадион</span>
-                        </div>
+                        <div class="gallery-item" title="Центральная площадь"><span class="placeholder">🏛️<br>Центральная<br>площадь</span></div>
+                        <div class="gallery-item" title="Ночной город"><span class="placeholder">🌃<br>Ночной<br>вид</span></div>
+                        <div class="gallery-item" title="Фермы"><span class="placeholder">🌾<br>Фермы</span></div>
+                        <div class="gallery-item" title="Порт"><span class="placeholder">⚓<br>Порт</span></div>
+                        <div class="gallery-item" title="Шахта"><span class="placeholder">⛏️<br>Шахта</span></div>
+                        <div class="gallery-item" title="Парк"><span class="placeholder">🌳<br>Парк</span></div>
+                        <div class="gallery-item" title="Библиотека"><span class="placeholder">📚<br>Библиотека</span></div>
+                        <div class="gallery-item" title="Стадион"><span class="placeholder">🏟️<br>Стадион</span></div>
                     </div>
-                    <p style="text-align:center;margin-top:12px;color:#8b7b5a;font-style:italic;">
-                        Кликни по картинке, чтобы открыть скриншот (заглушки — добавь свои!)
-                    </p>
                 </div>
             </div>
 
@@ -838,14 +984,14 @@
             <div class="tab-panel" id="tab-rules" style="display:none;">
                 <div class="panel">
                     <h2><span class="pixel-icon"></span> Правила города</h2>
-                    <ol style="line-height:2;padding-left:24px;color:#d0c8b0;font-size:1em;">
-                        <li><strong>Не гриферить</strong> — за порчу чужих построек бан.</li>
-                        <li><strong>Уважай соседей</strong> — не строй вплотную без согласования.</li>
-                        <li><strong>Честная игра</strong> — никаких читов и дюпов.</li>
-                        <li><strong>Соблюдай стиль</strong> — новые постройки должны вписываться в общий дизайн района.</li>
-                        <li><strong>Помогай новичкам</strong> — мы ценим дружелюбие!</li>
-                        <li><strong>Не засоряй чат</strong> — флуд и спам запрещены.</li>
-                        <li><strong>Следи за редстоуном</strong> — лаг-машины будут удалены.</li>
+                    <ol style="line-height:2.2;padding-left:28px;color:#d0c8b0;font-size:0.95em;font-family: var(--pixel-font); letter-spacing:0.5px;">
+                        <li><strong>Не гриферить</strong> — за порчу чужих построек бан без предупреждения.</li>
+                        <li><strong>Уважай соседей</strong> — согласовывай строительство рядом с чужими участками.</li>
+                        <li><strong>Честная игра</strong> — читы, дюпы и эксплойты запрещены.</li>
+                        <li><strong>Единый стиль</strong> — постройки должны соответствовать архитектурному кодексу района.</li>
+                        <li><strong>Помогай новичкам</strong> — дружелюбие и поддержка приветствуются.</li>
+                        <li><strong>Чистый чат</strong> — флуд, спам и оскорбления караются мутом.</li>
+                        <li><strong>Лаг-машины</strong> — механизмы, создающие нагрузку, будут удалены.</li>
                     </ol>
                 </div>
             </div>
@@ -856,7 +1002,7 @@
             <p>Подключайся прямо сейчас!</p>
             <div class="ip-box" id="ipBox" title="Нажми, чтобы скопировать">🎮 mc.khazbikovo.ru</div>
             <p style="margin-top:8px;">Версия: 1.21 • Java Edition • Город основан 15 мая 2024</p>
-            <p style="margin-top:6px;font-size:0.7em;">© 2024 Город Хазбиково. Все права защищены (в мире Minecraft 😄)</p>
+            <p style="margin-top:6px;font-size:0.6em;">© 2024 Город Хазбиково. Все права защищены (в мире Minecraft 😄)</p>
         </footer>
     </div>
 
@@ -865,11 +1011,26 @@
         <div class="modal">
             <button class="close-btn" id="modalClose">✖</button>
             <h2 id="modalTitle">Подключение</h2>
-            <p id="modalText" style="color:#d0c8b0;line-height:1.5;"></p>
+            <p id="modalText" style="color:#d0c8b0;line-height:1.6;font-family:var(--pixel-font);font-size:0.7em;"></p>
         </div>
     </div>
 
     <script>
+        // Генерация частиц
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 8 + 4;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.bottom = Math.random() * 60 + 40 + '%';
+            particle.style.animationDuration = Math.random() * 10 + 8 + 's';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
         // Переключение вкладок
         const nav = document.getElementById('nav');
         const tabPanels = document.querySelectorAll('.tab-panel');
@@ -879,14 +1040,9 @@
             const btn = e.target.closest('.nav-btn');
             if (!btn) return;
             const tabName = btn.dataset.tab;
-
-            // Скрыть все панели
             tabPanels.forEach(panel => panel.style.display = 'none');
-            // Показать нужную
             const targetPanel = document.getElementById('tab-' + tabName);
             if (targetPanel) targetPanel.style.display = 'block';
-
-            // Обновить активную кнопку
             navBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         });
@@ -919,30 +1075,27 @@
 
         btnJoin.addEventListener('click', function() {
             openModal('Подключение к серверу',
-                'IP-адрес сервера: mc.khazbikovo.ru\nВерсия: Minecraft Java 1.21\n\nЗайди в игру, нажми "Сетевая игра" → "Добавить сервер" и введи адрес. Ждём тебя в Хазбиково! 🎉');
+                'IP-адрес: mc.khazbikovo.ru\nВерсия: 1.21 Java Edition\n\nЗайди в игру, добавь сервер и присоединяйся к нашему городу! 🎉');
         });
 
         ipBox.addEventListener('click', function() {
             const ip = 'mc.khazbikovo.ru';
             navigator.clipboard.writeText(ip).then(() => {
-                openModal('✅ Скопировано!',
-                    'IP-адрес ' + ip + ' скопирован в буфер обмена.\nЗаходи в Minecraft и присоединяйся!');
+                openModal('✅ Скопировано!', 'IP-адрес ' + ip + ' скопирован. Добро пожаловать в Хазбиково!');
             }).catch(() => {
                 openModal('IP-адрес', 'Скопируй вручную: ' + ip);
             });
         });
 
-        // Галерея — клик по картинкам
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        galleryItems.forEach(item => {
+        // Галерея — заглушки
+        document.querySelectorAll('.gallery-item').forEach(item => {
             item.addEventListener('click', function() {
                 const title = this.getAttribute('title') || 'Скриншот';
-                openModal('📷 ' + title,
-                    'Это заглушка для скриншота. Здесь будет настоящая картинка из игры!\n\nДобавь свои скриншоты, заменив плейсхолдеры в галерее.');
+                openModal('📷 ' + title, 'Здесь будет настоящий скриншот из игры. Замените заглушки на свои изображения!');
             });
         });
 
-        // Переключатель день/ночь
+        // День/ночь
         const themeToggle = document.getElementById('themeToggle');
         let isNight = false;
         themeToggle.addEventListener('click', function() {
@@ -951,7 +1104,7 @@
             themeToggle.textContent = isNight ? '🌙' : '☀️';
         });
 
-        // Анимация счётчика жителей
+        // Анимированный счётчик жителей
         const statResidents = document.getElementById('stat-residents');
         let residentCount = 47;
         let animating = false;
@@ -961,7 +1114,7 @@
             animating = true;
             const target = residentCount + Math.floor(Math.random() * 3) - 1;
             const start = residentCount;
-            const duration = 800;
+            const duration = 700;
             const startTime = performance.now();
 
             function step(time) {
@@ -979,12 +1132,11 @@
             }
             requestAnimationFrame(step);
         }
-        // Периодическое обновление
         setInterval(() => {
-            if (Math.random() < 0.4) animateResidents();
-        }, 8000);
+            if (Math.random() < 0.5) animateResidents();
+        }, 7000);
 
-        // Инициализация — показать главную вкладку
+        // Инициализация главной вкладки
         document.getElementById('tab-main').style.display = 'block';
     </script>
 </body>
