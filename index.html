@@ -2,471 +2,990 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zap! v1.0.5</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Город Хазбиково | Minecraft Server</title>
     <style>
-        /* ================= ПЕРЕМЕННЫЕ И ТЕМЫ ================= */
         :root {
-            --bg-main: #f7f9f9; --bg-card: #ffffff; --bg-hover: #f0f2f5; --text-main: #0f1419; --text-muted: #536471;
-            --accent: #1d9bf0; --border-color: #eff3f4; --danger: #f4212e; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08); --modal-bg: rgba(0,0,0,0.4);
+            --bg: #1a1a1a;
+            --grass-top: #5d8a3c;
+            --grass-side: #7c9c5e;
+            --dirt: #8b6914;
+            --stone: #7f7f7f;
+            --wood: #8b6914;
+            --wood-light: #c4a04a;
+            --gold: #f5c842;
+            --text: #e0d8c0;
+            --text-dark: #3a3020;
+            --panel-bg: #2a2218;
+            --panel-border: #5a4a2a;
+            --accent: #4caf50;
+            --accent2: #ff9800;
+            --danger: #c0392b;
+            --water: #3a6bc5;
+            --sky: #87ceeb;
+            --cloud: #f0f0f0;
+            --font-pixel: 'Courier New', monospace;
+            --pixel-size: 4px;
         }
-        [data-theme="dark"] {
-            --bg-main: #0f0f11; --bg-card: #1c1c21; --bg-hover: #26262d; --text-main: #ffffff; --text-muted: #8a8a93;
-            --accent: #ffffff; --border-color: #2f3336; --danger: #ff2a5f; --shadow: 0 4px 20px rgba(0,0,0,0.5); --modal-bg: rgba(0,0,0,0.7);
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-main); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; transition: background-color 0.3s, color 0.3s; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
-        .svg-icon { width: 22px; height: 22px; fill: currentColor; transition: 0.2s; }
-        .btn-icon { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 50%; transition: 0.2s; }
-        .btn-icon:hover { background: var(--bg-hover); color: var(--accent); }
-        /* ================= АВТОРИЗАЦИЯ ================= */
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; }
-        .auth-logo { font-size: 32px; font-weight: 900; margin-bottom: 30px; }
-        .auth-box { width: 100%; max-width: 400px; padding: 30px; background: var(--bg-card); border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
-        .auth-input-wrapper { display: flex; align-items: center; background: var(--bg-hover); border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--border-color); overflow: hidden; }
-        .auth-input { flex: 1; padding: 18px 15px; border: none; background: transparent; color: var(--text-main); font-size: 16px; }
-        .auth-avatar-btn { font-size: 24px; padding: 0 15px; cursor: pointer; background: transparent; border: none; border-right: 1px solid var(--border-color); }
-        .btn-primary { width: 100%; background: var(--text-main); color: var(--bg-main); border: none; border-radius: 30px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .btn-primary:hover { opacity: 0.8; transform: translateY(-2px); }
-        #emoji-picker { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; width: 90%; max-width: 350px; height: 450px; padding: 15px; z-index: 10001; flex-direction: column; box-shadow: var(--shadow); }
-        .emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; overflow-y: auto; margin-top: 10px; }
-        .emoji-item { font-size: 28px; text-align: center; cursor: pointer; border-radius: 10px; padding: 5px; transition: 0.1s; }
-        .emoji-item:hover { background: var(--bg-hover); transform: scale(1.1); }
-        /* ================= ЛЕЙАУТ ================= */
-        #app { display: none; width: 100%; height: 100%; max-width: 1200px; margin: 0 auto; position: relative; }
-        .top-bar { position: absolute; top: 0; left: 0; width: 100%; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; pointer-events: none; }
-        .top-bar > * { pointer-events: auto; }
-        .mobile-menu-btn { display: none; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%; padding: 10px; cursor: pointer; color: var(--text-main); box-shadow: var(--shadow); }
-        .theme-toggle { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-main); box-shadow: var(--shadow); transition: 0.3s; overflow: hidden; position: relative; }
-        .theme-icon { position: absolute; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s; }
-        .icon-sun { opacity: 1; transform: translateY(0) rotate(0deg); } .icon-moon { opacity: 0; transform: translateY(30px) rotate(-90deg); }
-        [data-theme="dark"] .icon-sun { opacity: 0; transform: translateY(-30px) rotate(90deg); } [data-theme="dark"] .icon-moon { opacity: 1; transform: translateY(0) rotate(0deg); }
-        .sidebar { width: 280px; height: 100vh; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid var(--border-color); background: var(--bg-main); transition: 0.3s; z-index: 90; }
-        .logo-area { padding: 10px 15px; margin-bottom: 20px; font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-        .nav-btn { display: flex; align-items: center; gap: 20px; padding: 15px; background: transparent; color: var(--text-main); border: none; border-radius: 30px; font-size: 18px; font-weight: 500; cursor: pointer; transition: 0.2s; width: fit-content; margin-bottom: 5px; }
-        .nav-btn:hover { background: var(--bg-hover); } .nav-btn.active { font-weight: 700; background: var(--bg-hover); }
-        .sidebar-user { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 30px; cursor: pointer; transition: 0.2s; }
-        .sidebar-user:hover { background: var(--bg-hover); }
-        .sidebar-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-        .main-content { flex: 1; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border-color); background: var(--bg-main); position: relative; padding-top: 60px; }
-        .view { display: none; min-height: 100%; padding-bottom: 50px; animation: fadeIn 0.3s ease; } .view.active { display: block; }
-        .post-composer { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; background: var(--bg-card); }
-        .composer-input { flex: 1; background: transparent; border: none; color: var(--text-main); font-size: 18px; resize: none; min-height: 50px; }
-        .composer-tools { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 10px; }
-        .btn-small { background: var(--text-main); color: var(--bg-main); border: none; border-radius: 20px; padding: 8px 16px; font-weight: 700; cursor: pointer; transition: 0.2s; opacity: 0.5; }
-        .btn-small.ready { opacity: 1; }
-        .post { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; gap: 15px; background: var(--bg-main); transition: background 0.2s; cursor: pointer; }
-        .post:hover { background: var(--bg-hover); }
-        .post-header { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; } .post-text { font-size: 16px; line-height: 1.5; word-wrap: break-word; }
-        .profile-banner { height: 200px; background: var(--bg-hover); position: relative; } .profile-banner img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-actions { display: flex; justify-content: flex-end; padding: 15px; position: relative; height: 70px; gap: 10px; }
-        .profile-avatar-large { position: absolute; top: -70px; left: 20px; width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--bg-main); background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 70px; z-index: 2; }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .btn-outline:hover { background: var(--bg-hover); }
-        .profile-info { padding: 0 20px 20px; }
-        .profile-tabs { display: flex; border-bottom: 1px solid var(--border-color); }
-        .profile-tab { flex: 1; text-align: center; padding: 15px; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: 0.2s; border-bottom: 3px solid transparent; }
-        .profile-tab.active { color: var(--text-main); border-color: var(--accent); }
-        .chat-search { padding: 15px; border-bottom: 1px solid var(--border-color); }
-        .chat-search input { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--border-color); background: var(--bg-hover); color: var(--text-main); }
-        .user-item { display: flex; align-items: center; gap: 15px; padding: 15px 20px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
-        .user-item:hover { background: var(--bg-hover); }
-        .chat-window { display: none; flex-direction: column; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-main); z-index: 50; }
-        .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); }
-        .chat-actions { display: flex; gap: 5px; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { max-width: 75%; padding: 12px 16px; border-radius: 18px; font-size: 15px; position: relative; user-select: none; }
-        .msg.my { background: var(--text-main); color: var(--bg-main); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.other { background: var(--bg-card); border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 4px; }
-        #context-menu { display: none; position: fixed; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: var(--shadow); z-index: 20000; padding: 5px 0; min-width: 150px; }
-        .ctx-item { padding: 10px 20px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
-        .ctx-item:hover { background: var(--bg-hover); } .ctx-item.danger { color: var(--danger); }
-        .game-list { padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .game-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow); }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .game-window-wrapper { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 100; flex-direction: column; overflow: hidden; min-width: 300px; min-height: 400px; resize: both; max-width: 95%; max-height: 90vh; }
-        .game-window-header { background: var(--bg-hover); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); cursor: grab; font-weight: 600; }
-        .game-canvas-container { flex: 1; background: #000; position: relative; width: 100%; height: 100%; overflow: hidden; }
-        canvas.playable-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        #call-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 20, 25, 0.95); z-index: 30000; flex-direction: column; align-items: center; justify-content: center; color: white; backdrop-filter: blur(10px); }
-        .call-avatar { width: 120px; height: 120px; border-radius: 50%; background: #2f3336; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 20px; animation: pulse 2s infinite; }
-        .call-controls { display: flex; gap: 20px; margin-top: 40px; }
-        .call-btn { width: 60px; height: 60px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .call-btn.end { background: var(--danger); color: white; } .call-btn.end:hover { background: #c01d24; transform: scale(1.1); }
-        .video-feed { width: 80%; max-width: 800px; height: 60%; background: #000; border-radius: 20px; margin-bottom: 20px; display: none; border: 2px solid #333; position: relative; overflow: hidden; }
-        .video-inner-avatar { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; opacity: 0.5; }
-        #draw-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-bg); z-index: 20000; align-items: center; justify-content: center; }
-        .draw-box { background: var(--bg-card); border-radius: 16px; width: 90%; max-width: 800px; border: 1px solid var(--border-color); overflow: hidden; }
-        .draw-toolbar { padding: 15px; display: flex; gap: 15px; align-items: center; background: var(--bg-hover); border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
-        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid var(--border-color); }
-        .color-dot.active { border-color: var(--text-main); transform: scale(1.1); }
-        .draw-area { background: #888; padding: 20px; display: flex; justify-content: center; overflow: auto; }
-        #canvas-banner { background: #fff; cursor: crosshair; box-shadow: var(--shadow); max-width: 100%; height: auto; }
-        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 40000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-        .toast { background: var(--text-main); color: var(--bg-main); padding: 12px 20px; border-radius: 12px; font-weight: 600; font-size: 14px; box-shadow: var(--shadow); animation: slideInLeft 0.3s forwards; pointer-events: auto; display: flex; align-items: center; gap: 10px; }
-        .update-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; margin: 20px; }
-        #mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 89; }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: #1a1a1a;
+            background-image:
+                linear-gradient(180deg, #87ceeb 0%, #87ceeb 40%, #5d8a3c 40%, #5d8a3c 42%, #8b6914 42%, #8b6914 65%, #7f7f7f 65%, #7f7f7f 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            image-rendering: pixelated;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Пиксельные облака */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 5%;
+            left: -10%;
+            width: 120%;
+            height: 200px;
+            background:
+                /* облако 1 */
+                linear-gradient(var(--cloud) 20px, transparent 20px) 80px 40px / 120px 40px no-repeat,
+                linear-gradient(var(--cloud) 20px, transparent 20px) 60px 20px / 100px 40px no-repeat,
+                linear-gradient(var(--cloud) 20px, transparent 20px) 100px 0px / 80px 40px no-repeat,
+                /* облако 2 */
+                linear-gradient(var(--cloud) 24px, transparent 24px) 500px 70px / 140px 48px no-repeat,
+                linear-gradient(var(--cloud) 24px, transparent 24px) 480px 45px / 110px 48px no-repeat,
+                linear-gradient(var(--cloud) 24px, transparent 24px) 530px 25px / 90px 48px no-repeat,
+                /* облако 3 */
+                linear-gradient(var(--cloud) 16px, transparent 16px) 900px 30px / 100px 32px no-repeat,
+                linear-gradient(var(--cloud) 16px, transparent 16px) 880px 15px / 80px 32px no-repeat;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.85;
+            animation: clouds 30s linear infinite;
+        }
+
+        @keyframes clouds {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100px);
+            }
+        }
+
+        /* Контейнер */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ШАПКА */
+        .header {
+            background: linear-gradient(180deg, #3d2b0f 0%, #2a1f0a 100%);
+            border: 4px solid #5a4a2a;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            padding: 0;
+            margin-bottom: 24px;
+            box-shadow:
+                0 8px 0 #1a1008,
+                0 12px 24px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: repeating-linear-gradient(90deg,
+                    #5d8a3c 0px, #5d8a3c 8px,
+                    #4a7a2e 8px, #4a7a2e 16px);
+            z-index: 2;
+        }
+
+        .header-inner {
+            padding: 28px 30px 22px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-logo {
+            font-family: var(--font-pixel);
+            font-size: 2.8em;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-shadow:
+                3px 3px 0 #8b6914,
+                5px 5px 0 rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            image-rendering: pixelated;
+        }
+
+        .header-logo .icon {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: #4caf50;
+            border: 3px solid #2e7d32;
+            image-rendering: pixelated;
+            vertical-align: middle;
+            margin: 0 6px;
+            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+            position: relative;
+            top: -4px;
+        }
+
+        .header-subtitle {
+            font-family: var(--font-pixel);
+            font-size: 1em;
+            color: #c4a04a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Навигация */
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 24px;
+            padding: 0 10px;
+        }
+
+        .nav-btn {
+            font-family: var(--font-pixel);
+            font-size: 0.9em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            background: linear-gradient(180deg, #8b8b8b 0%, #6b6b6b 40%, #5a5a5a 100%);
+            color: #fff;
+            border: 3px solid #3a3a3a;
+            border-bottom: 4px solid #2a2a2a;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.1s ease;
+            position: relative;
+            image-rendering: pixelated;
+            box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+            user-select: none;
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(180deg, #a0a0a0 0%, #808080 40%, #6b6b6b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+        }
+        .nav-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+        }
+        .nav-btn.active {
+            background: linear-gradient(180deg, #5d8a3c 0%, #4a7a2e 40%, #3a6a1e 100%);
+            border-color: #2e7d32;
+            border-bottom-color: #1b5e20;
+            color: #fff;
+            box-shadow: 0 3px 0 #1b5e20, 0 0 16px rgba(76, 175, 80, 0.4);
+        }
+
+        /* Панели */
+        .panel {
+            background: var(--panel-bg);
+            border: 4px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow:
+                0 6px 0 #1a1008,
+                0 8px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: repeating-linear-gradient(90deg,
+                    #c4a04a 0px, #c4a04a 6px,
+                    #8b6914 6px, #8b6914 12px);
+            border-radius: 4px 4px 0 0;
+        }
+
+        .panel h2 {
+            font-family: var(--font-pixel);
+            font-size: 1.5em;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            border-bottom: 2px dashed #5a4a2a;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .panel h2 .pixel-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border: 2px solid #2e7d32;
+            image-rendering: pixelated;
+        }
+
+        .panel h3 {
+            font-family: var(--font-pixel);
+            color: #ff9800;
+            letter-spacing: 1px;
+            margin: 14px 0 8px;
+            font-size: 1.1em;
+        }
+
+        /* Карточки */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: #3d2b0f;
+            border: 3px solid #5a4a2a;
+            border-radius: 6px;
+            padding: 18px;
+            transition: all 0.2s ease;
+            cursor: default;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: #c4a04a;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .card-icon {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 8px;
+            image-rendering: pixelated;
+        }
+        .card h3 {
+            font-family: var(--font-pixel);
+            color: #f5c842;
+            text-align: center;
+            margin: 0 0 6px;
+            font-size: 1em;
+            letter-spacing: 1px;
+        }
+        .card p {
+            font-size: 0.9em;
+            color: #c0b090;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Таблица */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-pixel);
+            font-size: 0.85em;
+        }
+        table th,
+        table td {
+            padding: 10px 14px;
+            border: 2px solid #5a4a2a;
+            text-align: left;
+        }
+        table th {
+            background: #4a3a1a;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+        table td {
+            background: #2a1f0a;
+            color: #d0c8b0;
+        }
+        table tr:hover td {
+            background: #3d2b0f;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #4caf50;
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 2px solid #2e7d32;
+            image-rendering: pixelated;
+        }
+        .badge.orange {
+            background: #ff9800;
+            border-color: #e65100;
+        }
+        .badge.red {
+            background: #c0392b;
+            border-color: #7b241c;
+        }
+
+        /* Статистика */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .stat-box {
+            flex: 1 1 140px;
+            min-width: 120px;
+            text-align: center;
+            background: #3d2b0f;
+            border: 3px solid #5a4a2a;
+            border-radius: 6px;
+            padding: 16px 12px;
+            transition: all 0.2s ease;
+        }
+        .stat-box:hover {
+            border-color: #c4a04a;
+        }
+        .stat-number {
+            font-family: var(--font-pixel);
+            font-size: 2.2em;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+        .stat-label {
+            font-family: var(--font-pixel);
+            font-size: 0.75em;
+            color: #a09070;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* Кнопка */
+        .btn-mc {
+            display: inline-block;
+            font-family: var(--font-pixel);
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 14px 28px;
+            background: linear-gradient(180deg, #5d8a3c 0%, #4a7a2e 50%, #3a6a1e 100%);
+            color: #fff;
+            border: 3px solid #2e7d32;
+            border-bottom: 5px solid #1b5e20;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.1s ease;
+            image-rendering: pixelated;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+            user-select: none;
+            text-align: center;
+        }
+        .btn-mc:hover {
+            background: linear-gradient(180deg, #6d9a4c 0%, #5a8a3e 50%, #4a7a2e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+        }
+        .btn-mc:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+            border-bottom-width: 2px;
+        }
+        .btn-mc.gold {
+            background: linear-gradient(180deg, #f5c842 0%, #e0a820 50%, #c49010 100%);
+            border-color: #b8860b;
+            border-bottom-color: #8b6508;
+            color: #3a2000;
+        }
+
+        /* Галерея */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        .gallery-item {
+            aspect-ratio: 1;
+            background: #3d2b0f;
+            border: 3px solid #5a4a2a;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            position: relative;
+            overflow: hidden;
+            image-rendering: pixelated;
+        }
+        .gallery-item:hover {
+            border-color: #c4a04a;
+            transform: scale(1.04);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+        }
+        .gallery-item .placeholder {
+            text-align: center;
+            color: #8b7b5a;
+            font-family: var(--font-pixel);
+            font-size: 0.35em;
+            letter-spacing: 1px;
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: var(--font-pixel);
+            font-size: 0.8em;
+            color: #8b7b5a;
+            letter-spacing: 1px;
+            border-top: 3px solid #3d2b0f;
+        }
+        .footer .ip-box {
+            display: inline-block;
+            background: #1a1008;
+            border: 2px solid #5a4a2a;
+            padding: 8px 20px;
+            border-radius: 4px;
+            color: #f5c842;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .footer .ip-box:hover {
+            border-color: #f5c842;
+            background: #2a1a08;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal {
+            background: #2a1f0a;
+            border: 4px solid #c4a04a;
+            border-radius: 8px;
+            padding: 28px;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+        .modal h2 {
+            font-family: var(--font-pixel);
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .modal .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: #c0392b;
+            color: #fff;
+            border: 2px solid #7b241c;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-family: var(--font-pixel);
+            font-size: 1em;
+            line-height: 28px;
+            text-align: center;
+            image-rendering: pixelated;
+        }
+        .modal .close-btn:hover {
+            background: #e74c3c;
+        }
+
+        /* Переключатель день/ночь */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 44px;
+            height: 44px;
+            background: #3d2b0f;
+            border: 3px solid #5a4a2a;
+            cursor: pointer;
+            font-size: 1.5em;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            image-rendering: pixelated;
+        }
+        .theme-toggle:hover {
+            border-color: #c4a04a;
+            background: #4a3a1a;
+        }
+
+        /* Ночной режим */
+        body.night-mode {
+            background-image:
+                linear-gradient(180deg, #1a2a4a 0%, #1a2a4a 35%, #2a3a20 35%, #2a3a20 37%, #5a4a2a 37%, #5a4a2a 62%, #3a3a3a 62%, #3a3a3a 100%);
+        }
+        body.night-mode::before {
+            opacity: 0.3;
+            filter: brightness(0.5);
+        }
+        body.night-mode .panel {
+            background: #1a140a;
+            border-color: #3a2a15;
+        }
+        body.night-mode .card {
+            background: #1a140a;
+        }
+        body.night-mode table td {
+            background: #1a1008;
+        }
+        body.night-mode table th {
+            background: #2a1a0a;
+        }
+        body.night-mode .stat-box {
+            background: #1a140a;
+        }
+        body.night-mode .header {
+            background: linear-gradient(180deg, #1a1008 0%, #0d0804 100%);
+            border-color: #3a2a15;
+        }
+        body.night-mode .header-logo {
+            text-shadow: 3px 3px 0 #5a3a10, 5px 5px 0 rgba(0, 0, 0, 0.6);
+        }
+        body.night-mode .footer {
+            border-top-color: #2a1a0a;
+            color: #6b5b3a;
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .sidebar { position: fixed; transform: translateX(-100%); border-right: none; }
-            .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
-            #mobile-overlay.active { display: block; }
-            .main-content { width: 100%; padding-top: 70px; border:none; }
-            .mobile-menu-btn { display: block; } .top-bar { padding: 10px; } .post-composer { flex-direction: column; }
+            .header-logo {
+                font-size: 1.8em;
+                letter-spacing: 1px;
+            }
+            .header-inner {
+                padding: 18px 14px 14px;
+            }
+            .nav-btn {
+                padding: 10px 14px;
+                font-size: 0.75em;
+            }
+            .panel {
+                padding: 14px;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            .stats-row {
+                gap: 8px;
+            }
+            .stat-box {
+                flex: 1 1 100px;
+                min-width: 80px;
+                padding: 10px 6px;
+            }
+            .stat-number {
+                font-size: 1.5em;
+            }
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(29, 155, 240, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(29, 155, 240, 0); } 100% { box-shadow: 0 0 0 0 rgba(29, 155, 240, 0); } }
     </style>
 </head>
 <body>
-    <!-- Overlay для закрытия мобильного меню -->
-    <div id="mobile-overlay" onclick="toggleMobileMenu()"></div>
-    <!-- ЭКРАН ВХОДА -->
-    <div id="auth-screen">
-        <div class="auth-logo">Zap!</div>
-        <div class="auth-box">
-            <h2 style="margin-bottom: 10px;">Вход в систему</h2>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Выберите уникальный аватар и введите имя</p>
-            <div class="auth-input-wrapper">
-                <button class="auth-avatar-btn" id="auth-avatar-btn" onclick="openEmojiPicker()">👽</button>
-                <input type="text" id="auth-login" class="auth-input" placeholder="Твое имя...">
+    <!-- Переключатель день/ночь -->
+    <button class="theme-toggle" id="themeToggle" title="День / Ночь">☀️</button>
+
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="header-logo">
+                    <span class="icon"></span> ХАЗБИКОВО <span class="icon"></span>
+                </div>
+                <p class="header-subtitle">Город на сервере Minecraft • Основан в 2024</p>
             </div>
-            <p style="color: var(--danger); font-size: 12px; margin-top: -10px; margin-bottom: 20px; font-weight: 600;">Смайлик навсегда привязывается к аккаунту!</p>
-            <button class="btn-primary" onclick="login()">Продолжить</button>
-        </div>
-    </div>
-    <!-- ВЫБОР ЭМОДЗИ -->
-    <div id="emoji-picker">
-        <h3 style="margin-bottom: 10px;">Выбор аватара</h3>
-        <input type="text" class="auth-input" style="background:var(--bg-hover); border-radius:10px; margin-bottom:10px; width:100%; border:1px solid var(--border-color);" placeholder="Поиск (напр. 'cat', 'smile')..." id="emoji-search" oninput="filterEmojis(this.value)">
-        <div class="emoji-grid" id="emoji-grid-container"></div>
-        <button class="btn-outline" style="margin-top:auto; width:100%;" onclick="closeEmojiPicker()">Закрыть</button>
-    </div>
-    <!-- ГЛАВНОЕ ПРИЛОЖЕНИЕ -->
-    <div id="app">
-        <div class="top-bar">
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-            </button>
-            <button class="theme-toggle" onclick="toggleTheme()" title="Сменить тему">
-                <svg class="svg-icon theme-icon icon-sun" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0l1.06-1.06z"/></svg>
-                <svg class="svg-icon theme-icon icon-moon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-            </button>
-        </div>
-        <nav class="sidebar" id="sidebar">
-            <div class="logo-area">Zap!</div>
-            <button data-nav-id="feed" class="nav-btn"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zm-7 13H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Лента</button>
-            <button data-nav-id="chats" class="nav-btn"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Сообщения</button>
-            <button data-nav-id="games" class="nav-btn"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5S17.67 6 18.5 6s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>Игры</button>
-            <button data-nav-id="profile" class="nav-btn"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Профиль</button>
-            <button data-nav-id="updates" class="nav-btn"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Обновления</button>
-            <div class="sidebar-user" onclick="logout()" title="Выйти">
-                <div class="sidebar-avatar" id="side-avatar">👤</div>
-                <div style="flex:1;"><div style="font-weight:700;" id="side-name">User</div><div style="color:var(--text-muted); font-size:13px;">Выйти</div></div>
-            </div>
+        </header>
+
+        <!-- Навигация -->
+        <nav class="nav" id="nav">
+            <button class="nav-btn active" data-tab="main">🏠 Главная</button>
+            <button class="nav-btn" data-tab="residents">👥 Жители</button>
+            <button class="nav-btn" data-tab="buildings">🏗️ Постройки</button>
+            <button class="nav-btn" data-tab="gallery">📷 Галерея</button>
+            <button class="nav-btn" data-tab="rules">📜 Правила</button>
         </nav>
-        <main class="main-content">
-            <div id="view-feed" class="view"><div class="post-composer"><div class="sidebar-avatar" id="feed-compose-avatar">👤</div><div style="flex:1;"><textarea id="feed-input" class="composer-input" placeholder="Что нового?" oninput="checkInput(this, 'btn-pub-feed')"></textarea><div class="composer-tools"><div style="display:flex; gap:15px; color:var(--accent);"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg></div><button id="btn-pub-feed" class="btn-small" onclick="publishPost('feed')">Опубликовать</button></div></div></div><div id="feed-container"></div></div>
-            <div id="view-profile" class="view"><div class="profile-banner"><img id="prof-banner-img" src="" alt=""></div><div class="profile-actions" id="prof-actions-container"></div><div class="profile-info"><h2 id="prof-view-name" style="font-size:24px;">User</h2><p id="prof-view-handle" style="color:var(--text-muted);">@user</p></div><div class="profile-tabs"><div class="profile-tab active">Записи</div></div><div id="prof-composer" class="post-composer" style="display:none;"><div class="sidebar-avatar" id="prof-compose-avatar">👤</div><div style="flex:1;"><textarea id="prof-input" class="composer-input" placeholder="Написать на стене..."></textarea><div class="composer-tools"><div></div><button class="btn-small ready" onclick="publishPost('prof')">Отправить</button></div></div></div><div id="prof-wall-container"></div></div>
-            <div id="view-chats" class="view"><div class="chat-search"><input type="text" placeholder="Поиск по имени или @юзернейму..." oninput="filterChats(this.value)"></div><div id="users-list"></div><div class="chat-window" id="chat-window"><div class="chat-header"><div style="display:flex; align-items:center; gap:10px;"><button class="btn-icon" onclick="closeChat()"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><div class="sidebar-avatar" id="chat-header-avatar" style="width:35px;height:35px;font-size:18px; cursor:pointer;">👤</div><strong style="cursor:pointer;" id="chat-target-name">User</strong></div><div class="chat-actions"><button class="btn-icon" onclick="startCall('audio')"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button><button class="btn-icon" onclick="startCall('video')"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></button><button class="btn-icon" onclick="startCall('screen')"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.11-.9-2-2-2H4c-1.11 0-2 .89-2 2v10c0 1.1.89 2 2 2H0v2h24v-2h-4zM4 16V6h16v10H4z"/></svg></button></div></div><div class="chat-messages" id="chat-messages"></div><div style="padding: 15px; border-top: 1px solid var(--border-color); display:flex; gap:10px; background:var(--bg-card);"><input type="text" id="chat-input" class="auth-input" style="border:1px solid var(--border-color); border-radius:20px; padding:12px 15px;" placeholder="Написать сообщение..." onkeydown="if(event.key==='Enter') sendChatMessage()"><button class="btn-small ready" onclick="sendChatMessage()">Отправить</button></div></div></div>
-            <div id="view-games" class="view"><h2 style="padding: 20px; border-bottom: 1px solid var(--border-color);">Мини-игры Zap!</h2><div class="game-list"><div class="game-card" onclick="openGameWindow('snake')"><div style="font-size:50px; margin-bottom:10px;">🐍</div><h3>Snake Neo</h3><p style="color:var(--text-muted); font-size:14px; margin-top:5px;">Управление стрелочками</p></div><div class="game-card" onclick="openGameWindow('rocket')"><div style="font-size:50px; margin-bottom:10px;">🚀</div><h3>Astro Dodge</h3><p style="color:var(--text-muted); font-size:14px; margin-top:5px;">Управление мышью по всему экрану</p></div></div><div class="game-window-wrapper" id="game-window"><div class="game-window-header"><span id="game-title">Игра</span><button class="btn-icon" style="padding:2px;" onclick="closeGameWindow()"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button></div><div class="game-canvas-container" id="game-canvas-container"></div></div></div>
-            <div id="view-updates" class="view"><h2 style="padding: 20px; border-bottom: 1px solid var(--border-color);">История обновлений</h2><div class="update-box"><h3 style="color: var(--accent); margin-bottom:15px; font-size:22px;">v1.0.5 (Текущая)</h3><ul style="color: var(--text-main); line-height: 1.8; margin-left: 20px;"><li><b>Критический баг исправлен:</b> Восстановлена работа всех кнопок и навигации.</li><li><b>Лента по умолчанию:</b> При входе теперь всегда открывается лента новостей.</li><li><b>Улучшенная Адаптивность:</b> Доработано мобильное меню, добавлен оверлей.</li><li><b>Поиск по смайлам:</b> Теперь можно искать смайлик по ключевому слову на английском.</li><li><b>Баланс Игр:</b> Игры стали медленнее и проще для освоения.</li><li><b>Полное соответствие стилю ИТД</b> и удаление всех заглушек.</li></ul></div></div>
-        </main>
+
+        <!-- Контент -->
+        <div id="tab-content">
+            <!-- Главная -->
+            <div class="tab-panel" id="tab-main">
+                <div class="panel">
+                    <h2><span class="pixel-icon"></span> Добро пожаловать в Хазбиково!</h2>
+                    <p style="font-size:1.05em;line-height:1.6;color:#d0c8b0;">
+                        <strong>Хазбиково</strong> — уютный и процветающий город на нашем сервере Minecraft.
+                        Здесь живут дружелюбные игроки, строятся невероятные здания и кипит жизнь!
+                        Присоединяйся к нам и стань частью нашей истории. 🏰
+                    </p>
+                    <div style="text-align:center;margin-top:18px;">
+                        <span class="btn-mc gold" id="btnJoin">⚡ Подключиться к серверу</span>
+                    </div>
+                </div>
+
+                <!-- Статистика -->
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-number" id="stat-residents">47</div>
+                        <div class="stat-label">Жителей</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">120+</div>
+                        <div class="stat-label">Построек</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Районов</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Онлайн</div>
+                    </div>
+                </div>
+
+                <!-- Особенности -->
+                <div class="panel" style="margin-top:20px;">
+                    <h2><span class="pixel-icon"></span> Почему Хазбиково?</h2>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-icon">🏛️</div>
+                            <h3>Уникальная архитектура</h3>
+                            <p>Каждое здание построено с душой — от средневековых замков до современных небоскрёбов.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🤝</div>
+                            <h3>Дружное комьюнити</h3>
+                            <p>Мы всегда рады новым игрокам! Проводим совместные ивенты и фестивали.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🛡️</div>
+                            <h3>Защита от гриферов</h3>
+                            <p>Плагины защиты территории и отзывчивая администрация обеспечат сохранность твоих построек.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🌟</div>
+                            <h3>Экономика</h3>
+                            <p>Собственная валюта, магазины, аукционы и рынок — развивайся и богатей!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Жители -->
+            <div class="tab-panel" id="tab-residents" style="display:none;">
+                <div class="panel">
+                    <h2><span class="pixel-icon"></span> Почётные жители</h2>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Никнейм</th><th>Роль</th><th>Район</th><th>Статус</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Mayor_Alex</td><td>🏛️ Мэр</td><td>Центр</td><td><span class="badge">Онлайн</span></td></tr>
+                                <tr><td>Builder_Kate</td><td>🏗️ Главный архитектор</td><td>Северный</td><td><span class="badge">Онлайн</span></td></tr>
+                                <tr><td>Redstone_Max</td><td>🔧 Инженер</td><td>Техно-парк</td><td><span class="badge orange">AFK</span></td></tr>
+                                <tr><td>Farmer_Lena</td><td>🌾 Фермер</td><td>Южный</td><td><span class="badge">Онлайн</span></td></tr>
+                                <tr><td>Trader_Bob</td><td>💼 Торговец</td><td>Рыночная площадь</td><td><span class="badge red">Оффлайн</span></td></tr>
+                                <tr><td>Guard_Steve</td><td>🛡️ Страж</td><td>Центр</td><td><span class="badge">Онлайн</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Постройки -->
+            <div class="tab-panel" id="tab-buildings" style="display:none;">
+                <div class="panel">
+                    <h2><span class="pixel-icon"></span> Знаменитые постройки</h2>
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-icon">🏰</div>
+                            <h3>Ратуша</h3>
+                            <p>Главное административное здание в центре города. Высота — 64 блока.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">⛪</div>
+                            <h3>Храм Единства</h3>
+                            <p>Величественный собор из кварца и тёмного дуба с витражами.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🏪</div>
+                            <h3>Торговый центр</h3>
+                            <p>Огромный молл с десятками магазинов, кафе и кинотеатром.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🌉</div>
+                            <h3>Мост Хасана</h3>
+                            <p>Подвесной мост через реку, соединяющий Северный и Южный районы.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🏟️</div>
+                            <h3>Арена PvP</h3>
+                            <p>Колизей для сражений и турниров с призами.</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon">🚂</div>
+                            <h3>Ж/д вокзал</h3>
+                            <p>Станция с разветвлённой сетью путей по всему серверу.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Галерея -->
+            <div class="tab-panel" id="tab-gallery" style="display:none;">
+                <div class="panel">
+                    <h2><span class="pixel-icon"></span> Скриншоты города</h2>
+                    <div class="gallery">
+                        <div class="gallery-item" title="Центральная площадь">
+                            <span class="placeholder">🏛️<br>Центральная<br>площадь</span>
+                        </div>
+                        <div class="gallery-item" title="Ночной город">
+                            <span class="placeholder">🌃<br>Ночной<br>вид</span>
+                        </div>
+                        <div class="gallery-item" title="Фермы">
+                            <span class="placeholder">🌾<br>Фермы</span>
+                        </div>
+                        <div class="gallery-item" title="Порт">
+                            <span class="placeholder">⚓<br>Порт</span>
+                        </div>
+                        <div class="gallery-item" title="Шахта">
+                            <span class="placeholder">⛏️<br>Шахта</span>
+                        </div>
+                        <div class="gallery-item" title="Парк">
+                            <span class="placeholder">🌳<br>Парк</span>
+                        </div>
+                        <div class="gallery-item" title="Библиотека">
+                            <span class="placeholder">📚<br>Библиотека</span>
+                        </div>
+                        <div class="gallery-item" title="Стадион">
+                            <span class="placeholder">🏟️<br>Стадион</span>
+                        </div>
+                    </div>
+                    <p style="text-align:center;margin-top:12px;color:#8b7b5a;font-style:italic;">
+                        Кликни по картинке, чтобы открыть скриншот (заглушки — добавь свои!)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Правила -->
+            <div class="tab-panel" id="tab-rules" style="display:none;">
+                <div class="panel">
+                    <h2><span class="pixel-icon"></span> Правила города</h2>
+                    <ol style="line-height:2;padding-left:24px;color:#d0c8b0;font-size:1em;">
+                        <li><strong>Не гриферить</strong> — за порчу чужих построек бан.</li>
+                        <li><strong>Уважай соседей</strong> — не строй вплотную без согласования.</li>
+                        <li><strong>Честная игра</strong> — никаких читов и дюпов.</li>
+                        <li><strong>Соблюдай стиль</strong> — новые постройки должны вписываться в общий дизайн района.</li>
+                        <li><strong>Помогай новичкам</strong> — мы ценим дружелюбие!</li>
+                        <li><strong>Не засоряй чат</strong> — флуд и спам запрещены.</li>
+                        <li><strong>Следи за редстоуном</strong> — лаг-машины будут удалены.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <p>Подключайся прямо сейчас!</p>
+            <div class="ip-box" id="ipBox" title="Нажми, чтобы скопировать">🎮 mc.khazbikovo.ru</div>
+            <p style="margin-top:8px;">Версия: 1.21 • Java Edition • Город основан 15 мая 2024</p>
+            <p style="margin-top:6px;font-size:0.7em;">© 2024 Город Хазбиково. Все права защищены (в мире Minecraft 😄)</p>
+        </footer>
     </div>
-    <!-- МОДАЛЬНЫЕ ОКНА И ОВЕРЛЕИ -->
-    <div id="call-modal"><h2 id="call-status" style="margin-bottom: 30px; font-weight:400;">Подключение...</h2><div class="call-avatar" id="call-avatar">👤</div><h1 id="call-name" style="margin-bottom: 10px;">User</h1><p id="call-time" style="color:var(--text-muted); font-size:18px; margin-bottom:20px;">00:00</p><div class="video-feed" id="video-feed"><div class="video-inner-avatar" id="video-inner-avatar">👤</div></div><div class="call-controls"><button class="call-btn" style="background:#2f3336;" onclick="showToast('Микрофон выключен', 'info')">🎤</button><button class="call-btn" style="background:#2f3336;" onclick="showToast('Камера не найдена', 'error')">📹</button><button class="call-btn end" onclick="endCall()">📞</button></div></div>
-    <div id="context-menu"></div>
-    <div id="draw-modal"><div class="draw-box"><div class="draw-toolbar"><button class="btn-icon" style="color:var(--text-main);" onclick="setDrawTool('brush')"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button><button class="btn-icon" style="color:var(--text-main);" onclick="setDrawTool('eraser')"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12z"/></svg></button><div style="width:1px; height:24px; background:var(--border-color);"></div><div class="color-dot active" style="background:#0f1419" onclick="setDrawColor('#0f1419', this)"></div><div class="color-dot" style="background:#f4212e" onclick="setDrawColor('#f4212e', this)"></div><div class="color-dot" style="background:#1d9bf0" onclick="setDrawColor('#1d9bf0', this)"></div><div class="color-dot" style="background:#00ba7c" onclick="setDrawColor('#00ba7c', this)"></div><div class="color-dot" style="background:#ffd400" onclick="setDrawColor('#ffd400', this)"></div><div class="color-dot" style="background:#ffffff" onclick="setDrawColor('#ffffff', this)"></div><div style="width:1px; height:24px; background:var(--border-color);"></div><input type="range" id="draw-size" min="1" max="50" value="5" style="width:100px;"><button class="btn-small" style="margin-left:auto;" onclick="clearDrawCanvas()">Очистить</button></div><div class="draw-area"><canvas id="canvas-banner" width="800" height="250"></canvas></div><div style="padding: 15px; background: var(--bg-card); display:flex; justify-content:flex-end; gap:10px; border-top: 1px solid var(--border-color);"><button class="btn-outline" onclick="closeDrawModal()">Отмена</button><button class="btn-small ready" onclick="saveBanner()">Сохранить</button></div></div></div>
-    <div id="toast-container"></div>
-    <!-- СКРИПТЫ -->
+
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <button class="close-btn" id="modalClose">✖</button>
+            <h2 id="modalTitle">Подключение</h2>
+            <p id="modalText" style="color:#d0c8b0;line-height:1.5;"></p>
+        </div>
+    </div>
+
     <script>
-        // Код из предыдущего ответа, с исправленной функцией nav и улучшениями
-        // ДАННЫЕ И ИНИЦИАЛИЗАЦИЯ
-        let currentUser = null, selectedAvatar = '👽', allUsers = [], viewingUser = null, activeChatUser = null, ctxTargetMsgId = null;
-        const emojiMap = {
-            '👽': 'alien', '👻': 'ghost', '🤖': 'robot', '🐱': 'cat', '🐶': 'dog', '🦊': 'fox', '🦁': 'lion', '🐸': 'frog',
-            '🐼': 'panda', '🦄': 'unicorn', '🦖': 'dinosaur', '🐙': 'octopus', '🔥': 'fire', '⭐': 'star', '🤡': 'clown',
-            '👺': 'goblin', '👾': 'monster', '🤠': 'cowboy', '🥶': 'cold face', '😎': 'sunglasses', '🤯': 'exploding head', '🥸': 'disguised'
-        };
-        const allEmojis = Object.keys(emojiMap);
-        function initTheme() {
-            const saved = localStorage.getItem('zap_theme');
-            if (saved === 'dark') document.body.setAttribute('data-theme', 'dark'); else document.body.removeAttribute('data-theme');
+        // Переключение вкладок
+        const nav = document.getElementById('nav');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        const navBtns = nav.querySelectorAll('.nav-btn');
+
+        nav.addEventListener('click', function(e) {
+            const btn = e.target.closest('.nav-btn');
+            if (!btn) return;
+            const tabName = btn.dataset.tab;
+
+            // Скрыть все панели
+            tabPanels.forEach(panel => panel.style.display = 'none');
+            // Показать нужную
+            const targetPanel = document.getElementById('tab-' + tabName);
+            if (targetPanel) targetPanel.style.display = 'block';
+
+            // Обновить активную кнопку
+            navBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+
+        // Модальное окно
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const btnJoin = document.getElementById('btnJoin');
+        const ipBox = document.getElementById('ipBox');
+
+        function openModal(title, text) {
+            modalTitle.textContent = title;
+            modalText.textContent = text;
+            modalOverlay.classList.add('show');
         }
-        function toggleTheme() {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            localStorage.setItem('zap_theme', isDark ? 'light' : 'dark');
+
+        function closeModal() {
+            modalOverlay.classList.remove('show');
         }
-        window.onload = () => {
-            initTheme();
-            const savedUser = localStorage.getItem('zap_session');
-            if (savedUser) { currentUser = JSON.parse(savedUser); startApp(); }
-            allUsers = JSON.parse(localStorage.getItem('zap_users') || '[]');
-            window.addEventListener('storage', e => {
-                if (e.key === 'zap_posts' || e.key === 'zap_wall') renderPosts();
-                if (e.key === 'zap_users') renderChatList();
-                if (e.key?.startsWith('zap_chat_')) renderChatMessages();
+
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) closeModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        btnJoin.addEventListener('click', function() {
+            openModal('Подключение к серверу',
+                'IP-адрес сервера: mc.khazbikovo.ru\nВерсия: Minecraft Java 1.21\n\nЗайди в игру, нажми "Сетевая игра" → "Добавить сервер" и введи адрес. Ждём тебя в Хазбиково! 🎉');
+        });
+
+        ipBox.addEventListener('click', function() {
+            const ip = 'mc.khazbikovo.ru';
+            navigator.clipboard.writeText(ip).then(() => {
+                openModal('✅ Скопировано!',
+                    'IP-адрес ' + ip + ' скопирован в буфер обмена.\nЗаходи в Minecraft и присоединяйся!');
+            }).catch(() => {
+                openModal('IP-адрес', 'Скопируй вручную: ' + ip);
             });
-            document.addEventListener('click', () => { document.getElementById('context-menu').style.display = 'none'; });
-        };
-        // УВЕДОМЛЕНИЯ (TOASTS)
-        function showToast(text, type = 'info') {
-            const c = document.getElementById('toast-container'), t = document.createElement('div');
-            t.className = 'toast';
-            t.innerHTML = `<span>${type === 'error' ? '❌' : type === 'success' ? '✅' : '🔔'}</span> <span>${text}</span>`;
-            c.appendChild(t);
-            setTimeout(() => { t.style.animation = 'fadeOut 0.3s forwards'; setTimeout(() => t.remove(), 300); }, 3000);
-        }
-        // АВТОРИЗАЦИЯ И ЭМОДЗИ
-        function openEmojiPicker() { document.getElementById('emoji-picker').style.display = 'flex'; renderEmojis(allEmojis); }
-        function closeEmojiPicker() { document.getElementById('emoji-picker').style.display = 'none'; }
-        function renderEmojis(list) { document.getElementById('emoji-grid-container').innerHTML = list.map(e => `<div class="emoji-item" onclick="selectEmoji('${e}')">${e}</div>`).join(''); }
-        function filterEmojis(query) {
-            const filtered = allEmojis.filter(e => emojiMap[e]?.includes(query.toLowerCase()));
-            renderEmojis(filtered.length > 0 ? filtered : allEmojis);
-        }
-        function selectEmoji(e) { selectedAvatar = e; document.getElementById('auth-avatar-btn').innerText = e; closeEmojiPicker(); }
-        function login() {
-            const name = document.getElementById('auth-login').value.trim();
-            if (!name) return showToast('Введите имя пользователя!', 'error');
-            currentUser = { name, avatar: selectedAvatar, handle: '@' + name.toLowerCase().replace(/\s/g, '') };
-            localStorage.setItem('zap_session', JSON.stringify(currentUser));
-            if (!allUsers.find(u => u.name === name)) {
-                allUsers.push(currentUser);
-                localStorage.setItem('zap_users', JSON.stringify(allUsers));
-            }
-            startApp();
-        }
-        function setupEventListeners() {
-            document.querySelectorAll('.nav-btn[data-nav-id]').forEach(button => {
-                const navId = button.getAttribute('data-nav-id');
-                if (navId === 'profile') {
-                    button.addEventListener('click', openMyProfile);
+        });
+
+        // Галерея — клик по картинкам
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.getAttribute('title') || 'Скриншот';
+                openModal('📷 ' + title,
+                    'Это заглушка для скриншота. Здесь будет настоящая картинка из игры!\n\nДобавь свои скриншоты, заменив плейсхолдеры в галерее.');
+            });
+        });
+
+        // Переключатель день/ночь
+        const themeToggle = document.getElementById('themeToggle');
+        let isNight = false;
+        themeToggle.addEventListener('click', function() {
+            isNight = !isNight;
+            document.body.classList.toggle('night-mode', isNight);
+            themeToggle.textContent = isNight ? '🌙' : '☀️';
+        });
+
+        // Анимация счётчика жителей
+        const statResidents = document.getElementById('stat-residents');
+        let residentCount = 47;
+        let animating = false;
+
+        function animateResidents() {
+            if (animating) return;
+            animating = true;
+            const target = residentCount + Math.floor(Math.random() * 3) - 1;
+            const start = residentCount;
+            const duration = 800;
+            const startTime = performance.now();
+
+            function step(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.round(start + (target - start) * progress);
+                statResidents.textContent = current;
+                if (progress < 1) {
+                    requestAnimationFrame(step);
                 } else {
-                    button.addEventListener('click', () => nav(navId));
+                    residentCount = target;
+                    statResidents.textContent = residentCount;
+                    animating = false;
                 }
-            });
-            // Link chat header to profile view
-            document.getElementById('chat-header-avatar').addEventListener('click', () => { if (activeChatUser) viewProfile(activeChatUser); });
-            document.getElementById('chat-target-name').addEventListener('click', () => { if (activeChatUser) viewProfile(activeChatUser); });
-        }
-        function startApp() {
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app').style.display = 'flex';
-            document.getElementById('side-avatar').innerText = currentUser.avatar;
-            document.getElementById('side-name').innerText = currentUser.name;
-            document.getElementById('feed-compose-avatar').innerText = currentUser.avatar;
-            setupEventListeners();
-            renderChatList();
-            nav('feed'); 
-        }
-        function logout() { localStorage.removeItem('zap_session'); location.reload(); }
-        // НАВИГАЦИЯ
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-        function nav(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const viewToShow = document.getElementById('view-' + id);
-            const buttonToActivate = document.querySelector(`.nav-btn[data-nav-id="${id}"]`);
-            if (viewToShow) viewToShow.classList.add('active');
-            if (buttonToActivate) buttonToActivate.classList.add('active');
-            if (document.getElementById('sidebar').classList.contains('open')) { toggleMobileMenu(); }
-            closeGameWindow();
-            if (id === 'feed') renderPosts();
-            if (id === 'chats') renderChatList();
-        }
-        // ПОСТЫ И ЛЕНТА
-        function checkInput(input, btnId) { if (input) document.getElementById(btnId).classList.toggle('ready', input.value.trim().length > 0); }
-        function publishPost(type) {
-            const isProf = type === 'prof', inputId = isProf ? 'prof-input' : 'feed-input';
-            const input = document.getElementById(inputId), text = input.value.trim();
-            if (!text) return;
-            const dbKey = isProf ? 'zap_wall' : 'zap_posts';
-            let posts = JSON.parse(localStorage.getItem(dbKey) || '[]');
-            posts.unshift({ id: Date.now(), author: currentUser.name, handle: currentUser.handle, avatar: currentUser.avatar, text, targetProfile: isProf ? viewingUser.name : null });
-            localStorage.setItem(dbKey, JSON.stringify(posts));
-            input.value = '';
-            showToast('Опубликовано!', 'success');
-            renderPosts();
-        }
-        function renderPosts() {
-            if (!currentUser) return;
-            if (document.getElementById('view-feed').classList.contains('active')) {
-                const posts = JSON.parse(localStorage.getItem('zap_posts') || '[]');
-                document.getElementById('feed-container').innerHTML = posts.map(createPostHTML).join('');
             }
-            if (document.getElementById('view-profile').classList.contains('active') && viewingUser) {
-                const wall = JSON.parse(localStorage.getItem('zap_wall') || '[]');
-                const myWall = wall.filter(p => p.targetProfile === viewingUser.name);
-                document.getElementById('prof-wall-container').innerHTML = myWall.map(createPostHTML).join('');
-            }
+            requestAnimationFrame(step);
         }
-        function createPostHTML(p) { return `<div class="post"><div class="sidebar-avatar" style="cursor:pointer;" onclick="viewProfile('${p.author}')">${p.avatar}</div><div style="flex:1;"><div class="post-header"><strong style="cursor:pointer;" onclick="viewProfile('${p.author}')">${p.author}</strong><span style="color:var(--text-muted); font-size:14px;">${p.handle}</span></div><div class="post-text">${p.text}</div></div></div>`; }
-        // ПРОФИЛЬ
-        function openMyProfile() { viewProfile(currentUser.name); }
-        function viewProfile(username) {
-            viewingUser = allUsers.find(u => u.name === username) || currentUser;
-            document.getElementById('prof-view-name').innerText = viewingUser.name;
-            document.getElementById('prof-view-handle').innerText = viewingUser.handle;
-            const isMyProfile = viewingUser.name === currentUser.name;
-            document.getElementById('prof-actions-container').innerHTML = `<div class="profile-avatar-large">${viewingUser.avatar}</div>` + (isMyProfile ? `<button class="btn-outline" onclick="openDrawModal()">Изменить баннер</button>` : `<button class="btn-outline" onclick="openChat('${viewingUser.name}')">Написать сообщение</button>`);
-            document.getElementById('prof-banner-img').src = localStorage.getItem('zap_banner_' + viewingUser.name) || '';
-            document.getElementById('prof-composer').style.display = 'flex';
-            if (isMyProfile) document.getElementById('prof-compose-avatar').innerText = currentUser.avatar;
-            nav('profile');
-            renderPosts();
-        }
-        // ЧАТЫ И ПКМ
-        function renderChatList(filter = '') {
-            const others = allUsers.filter(u => u.name !== currentUser.name && (u.name.toLowerCase().includes(filter.toLowerCase()) || u.handle.toLowerCase().includes(filter.toLowerCase())));
-            document.getElementById('users-list').innerHTML = others.map(u => `<div class="user-item" onclick="openChat('${u.name}')"><div class="sidebar-avatar">${u.avatar}</div><div><div style="font-weight: 700;">${u.name}</div><div style="color:var(--text-muted); font-size:14px;">${u.handle}</div></div></div>`).join('');
-        }
-        function filterChats(v) { renderChatList(v); }
-        function openChat(targetName) {
-            activeChatUser = targetName; const target = allUsers.find(u => u.name === targetName);
-            document.getElementById('chat-window').style.display = 'flex';
-            document.getElementById('chat-target-name').innerText = targetName;
-            document.getElementById('chat-header-avatar').innerText = target ? target.avatar : '👤';
-            nav('chats');
-            renderChatMessages();
-        }
-        function closeChat() { document.getElementById('chat-window').style.display = 'none'; activeChatUser = null; }
-        function getChatKey() { return 'zap_chat_' + [currentUser.name, activeChatUser].sort().join('_'); }
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input'), text = input.value.trim();
-            if (!text || !activeChatUser) return;
-            const key = getChatKey(), msgs = JSON.parse(localStorage.getItem(key) || '[]');
-            msgs.push({ id: Date.now(), sender: currentUser.name, text });
-            localStorage.setItem(key, JSON.stringify(msgs));
-            input.value = '';
-            renderChatMessages();
-        }
-        function renderChatMessages() {
-            if (!activeChatUser) return;
-            const msgs = JSON.parse(localStorage.getItem(getChatKey()) || '[]'), box = document.getElementById('chat-messages');
-            box.innerHTML = msgs.map(m => `<div class="msg ${m.sender === currentUser.name ? 'my' : 'other'}" oncontextmenu="handleContextMenu(event, ${m.id}, '${m.sender}')">${m.text}</div>`).join('');
-            box.scrollTop = box.scrollHeight;
-        }
-        function handleContextMenu(e, msgId, sender) {
-            e.preventDefault(); ctxTargetMsgId = msgId; const menu = document.getElementById('context-menu');
-            menu.innerHTML = sender === currentUser.name ? `<div class="ctx-item danger" onclick="deleteMessage()">🗑 Удалить у всех</div>` : `<div class="ctx-item" onclick="reportMessage()">⚠️ Пожаловаться</div>`;
-            menu.style.display = 'block'; let x = e.clientX, y = e.clientY;
-            if (x + menu.offsetWidth > window.innerWidth) x -= menu.offsetWidth;
-            if (y + menu.offsetHeight > window.innerHeight) y -= menu.offsetHeight;
-            menu.style.left = x + 'px'; menu.style.top = y + 'px';
-        }
-        function deleteMessage() {
-            const key = getChatKey(); let msgs = JSON.parse(localStorage.getItem(key) || '[]').filter(m => m.id !== ctxTargetMsgId);
-            localStorage.setItem(key, JSON.stringify(msgs));
-            renderChatMessages();
-            showToast('Сообщение удалено', 'success');
-        }
-        function reportMessage() { showToast('Жалоба отправлена модераторам!', 'success'); }
-        // ФЕЙК-ЗВОНКИ (DISCORD PARODY)
-        let callTimerInterval;
-        function startCall(type) {
-            if (!activeChatUser) return;
-            const modal = document.getElementById('call-modal');
-            modal.style.display = 'flex';
-            document.getElementById('call-name').innerText = activeChatUser;
-            document.getElementById('call-avatar').innerText = document.getElementById('chat-header-avatar').innerText;
-            document.getElementById('call-status').innerText = 'Подключение...';
-            document.getElementById('video-feed').style.display = 'none';
-            document.getElementById('call-time').innerText = '';
-            setTimeout(() => {
-                document.getElementById('call-status').innerText = 'В сети';
-                document.getElementById('call-avatar').style.animation = 'none';
-                if (type === 'video' || type === 'screen') {
-                    document.getElementById('video-feed').style.display = 'block';
-                    document.getElementById('video-inner-avatar').innerText = document.getElementById('call-avatar').innerText;
-                }
-                let secs = 0;
-                callTimerInterval = setInterval(() => { secs++; const m = Math.floor(secs / 60).toString().padStart(2, '0'), s = (secs % 60).toString().padStart(2, '0'); document.getElementById('call-time').innerText = `${m}:${s}`; }, 1000);
-            }, 2000);
-        }
-        function endCall() { clearInterval(callTimerInterval); document.getElementById('call-modal').style.display = 'none'; document.getElementById('call-avatar').style.animation = 'pulse 2s infinite'; showToast('Звонок завершен', 'info'); }
-        // РИСОВАЛКА
-        const cvsB = document.getElementById('canvas-banner'), ctxB = cvsB.getContext('2d');
-        let dP = false, dC = '#0f1419', dT = 'brush';
-        function openDrawModal() { document.getElementById('draw-modal').style.display = 'flex'; clearDrawCanvas(); const saved = localStorage.getItem('zap_banner_' + currentUser.name); if (saved) { const i = new Image(); i.onload = () => ctxB.drawImage(i, 0, 0); i.src = saved; } }
-        function closeDrawModal() { document.getElementById('draw-modal').style.display = 'none'; }
-        function saveBanner() { const data = cvsB.toDataURL(); localStorage.setItem('zap_banner_' + currentUser.name, data); document.getElementById('prof-banner-img').src = data; closeDrawModal(); showToast('Баннер сохранен!', 'success'); }
-        function setDrawColor(c, el) { dC = c; document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active')); el.classList.add('active'); setDrawTool('brush'); }
-        function setDrawTool(t) { dT = t; }
-        function clearDrawCanvas() { ctxB.fillStyle = '#fff'; ctxB.fillRect(0, 0, cvsB.width, cvsB.height); }
-        const strDraw = e => { dP = true; drawB(e); }, endDraw = () => { dP = false; ctxB.beginPath(); };
-        const drawB = e => {
-            if (!dP) return; const r = cvsB.getBoundingClientRect(), x = ((e.clientX || e.touches?.[0].clientX) - r.left) * (cvsB.width / r.width), y = ((e.clientY || e.touches?.[0].clientY) - r.top) * (cvsB.height / r.height);
-            ctxB.lineWidth = document.getElementById('draw-size').value; ctxB.lineCap = 'round'; ctxB.strokeStyle = dT === 'eraser' ? '#fff' : dC;
-            ctxB.lineTo(x, y); ctxB.stroke(); ctxB.beginPath(); ctxB.moveTo(x, y); e.preventDefault();
-        };
-        cvsB.addEventListener('mousedown', strDraw); cvsB.addEventListener('mouseup', endDraw); cvsB.addEventListener('mousemove', drawB); cvsB.addEventListener('touchstart', strDraw, { passive: false }); cvsB.addEventListener('touchend', endDraw); cvsB.addEventListener('touchmove', drawB, { passive: false });
-        // ИГРЫ (ОКОННАЯ СИСТЕМА)
-        const win = document.getElementById('game-window'), winHeader = document.querySelector('.game-window-header'), canvasContainer = document.getElementById('game-canvas-container');
-        let activeGame = null, gameLoopAnim = null, gameCanvas = null, gameCtx = null, isDragging = false, dragOffX = 0, dragOffY = 0, snakeKeyHandler, globalMouseX = 0;
-        winHeader.addEventListener('mousedown', e => { isDragging = true; dragOffX = e.clientX - win.offsetLeft; dragOffY = e.clientY - win.offsetTop; });
-        window.addEventListener('mouseup', () => isDragging = false); window.addEventListener('mousemove', e => { if (isDragging) { win.style.left = (e.clientX - dragOffX) + 'px'; win.style.top = (e.clientY - dragOffY) + 'px'; } });
-        const resizeObserver = new ResizeObserver(() => { if (gameCanvas) { gameCanvas.width = canvasContainer.clientWidth; gameCanvas.height = canvasContainer.clientHeight; } });
-        resizeObserver.observe(canvasContainer);
-        function openGameWindow(id) {
-            activeGame = id; win.style.display = 'flex';
-            document.getElementById('game-title').innerText = id === 'snake' ? 'Snake Neo' : 'Astro Dodge';
-            canvasContainer.innerHTML = '<canvas class="playable-canvas"></canvas>';
-            gameCanvas = canvasContainer.querySelector('canvas'); gameCtx = gameCanvas.getContext('2d');
-            setTimeout(() => {
-                gameCanvas.width = canvasContainer.clientWidth; gameCanvas.height = canvasContainer.clientHeight;
-                if (id === 'snake') runSnakeEngine(); if (id === 'rocket') runRocketEngine();
-            }, 50);
-        }
-        function closeGameWindow() { win.style.display = 'none'; cancelAnimationFrame(gameLoopAnim); activeGame = null; }
-        function runSnakeEngine() {
-            const box = 20; let s = [{ x: 10 * box, y: 10 * box }], f = spawnFood(), d = 'R';
-            function spawnFood() { return { x: Math.floor(Math.random() * (gameCanvas.width / box)) * box, y: Math.floor(Math.random() * (gameCanvas.height / box)) * box }; }
-            if (snakeKeyHandler) window.removeEventListener('keydown', snakeKeyHandler);
-            snakeKeyHandler = e => { if (e.key === 'ArrowLeft' && d != 'R') d = 'L'; if (e.key === 'ArrowUp' && d != 'D') d = 'U'; if (e.key === 'ArrowRight' && d != 'L') d = 'R'; if (e.key === 'ArrowDown' && d != 'U') d = 'D'; };
-            window.addEventListener('keydown', snakeKeyHandler);
-            let lastTime = 0;
-            function loop(t) {
-                if (activeGame !== 'snake') return; gameLoopAnim = requestAnimationFrame(loop);
-                if (t - lastTime < 180) return; lastTime = t; // Slower speed
-                gameCtx.fillStyle = '#000'; gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-                gameCtx.fillStyle = '#f4212e'; gameCtx.fillRect(f.x, f.y, box - 1, box - 1);
-                let nx = s[0].x, ny = s[0].y;
-                if (d === 'L') nx -= box; if (d === 'U') ny -= box; if (d === 'R') nx += box; if (d === 'D') ny += box;
-                if (nx < 0 || nx >= gameCanvas.width || ny < 0 || ny >= gameCanvas.height || s.some(p => p.x === nx && p.y === ny)) { showToast('Игра окончена!', 'error'); return openGameWindow('snake'); }
-                if (f.x >= gameCanvas.width || f.y >= gameCanvas.height) f = spawnFood();
-                if (Math.abs(nx - f.x) < box && Math.abs(ny - f.y) < box) f = spawnFood(); else s.pop();
-                s.unshift({ x: nx, y: ny });
-                gameCtx.fillStyle = '#1d9bf0'; s.forEach(p => gameCtx.fillRect(p.x, p.y, box - 1, box - 1));
-            } loop(0);
-        }
-        window.addEventListener('mousemove', e => globalMouseX = e.clientX); window.addEventListener('touchmove', e => globalMouseX = e.touches[0].clientX, { passive: true });
-        function runRocketEngine() {
-            let ast = [], f = 0;
-            function loop() {
-                if (activeGame !== 'rocket') return; gameCtx.fillStyle = '#000'; gameCtx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-                const rect = gameCanvas.getBoundingClientRect(); let px = globalMouseX - rect.left - 15;
-                px = Math.max(0, Math.min(px, gameCanvas.width - 30));
-                gameCtx.fillStyle = '#ffffff'; gameCtx.fillRect(px, gameCanvas.height - 60, 30, 50);
-                if (f % 60 === 0) ast.push({ x: Math.random() * (gameCanvas.width - 20), y: -30, s: 15 + Math.random() * 20 });
-                gameCtx.fillStyle = '#8a8a93';
-                for (let i = 0; i < ast.length; i++) {
-                    let a = ast[i]; a.y += 2.5; gameCtx.fillRect(a.x, a.y, a.s, a.s); // Slower fall speed
-                    if (px < a.x + a.s && px + 30 > a.x && gameCanvas.height - 60 < a.y + a.s && gameCanvas.height - 10 > a.y) { showToast('Корабль разбит!', 'error'); return openGameWindow('rocket'); }
-                    if (a.y > gameCanvas.height) ast.splice(i, 1);
-                }
-                f++; gameLoopAnim = requestAnimationFrame(loop);
-            } loop();
-        }
+        // Периодическое обновление
+        setInterval(() => {
+            if (Math.random() < 0.4) animateResidents();
+        }, 8000);
+
+        // Инициализация — показать главную вкладку
+        document.getElementById('tab-main').style.display = 'block';
     </script>
 </body>
 </html>
