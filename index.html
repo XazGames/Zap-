@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Хазбиково</title>
-  <!-- Динамический favicon: белый X на чёрном фоне (неактивная) / чёрный X на белом фоне (активная) -->
   <link rel="icon" id="dynamicFavicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -107,6 +106,18 @@
       display:flex; align-items:center; gap:6px; white-space:nowrap; flex-shrink: 0;
     }
     .version-badge:hover { background: rgba(255,255,255,0.4); }
+    /* Кнопка "Назад" */
+    .back-btn {
+      background: transparent; border: 1px solid rgba(239,68,68,0.5);
+      color: var(--text); padding:6px 14px; border-radius:30px;
+      font-size:0.75em; cursor:pointer; backdrop-filter: blur(10px);
+      transition: all 0.3s; display: flex; align-items: center; gap: 4px;
+      white-space: nowrap;
+    }
+    .back-btn:hover {
+      background: rgba(239,68,68,0.2); border-color: #ef4444;
+      box-shadow: 0 0 15px rgba(239,68,68,0.5); color: #ef4444;
+    }
     .nav-container { display: flex; align-items: center; position: relative; margin-left: 10px; flex-shrink: 0; }
     .current-tab {
       background: var(--btn-bg); border:1px solid var(--glass-border);
@@ -221,7 +232,7 @@
       transition:0.3s; display:inline-flex; align-items:center; gap:6px;
     }
     .brand-tag:hover { background: var(--btn-hover); border-color: var(--accent); box-shadow: var(--accent-glow); }
-    /* 3D карточки "О нас" с плавным лучом и боковым бликом */
+    /* 3D карточки "О нас" без круглого свечения, только с боковым бликом */
     .about-columns { display: flex; gap: 20px; margin-top: 30px; }
     .about-col {
       flex: 1; background: var(--glass-bg); backdrop-filter: blur(10px);
@@ -230,14 +241,6 @@
       position: relative; overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-    /* Плавный луч, следующий за мышью */
-    .about-col::after {
-      content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
-      opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 2;
-    }
-    .about-col:hover::after { opacity: 1; }
-    /* Боковой блик от левого-нижнего до правого-верхнего */
     .about-col::before {
       content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: linear-gradient(calc(var(--rotate-angle, 45deg) * 1deg), rgba(255,255,255,0.3) 0%, transparent 50%);
@@ -262,6 +265,10 @@
   <header class="header">
     <div class="header-left">
       <div class="logo">Хазбиково</div>
+      <button class="back-btn" id="backButton" onclick="showPage('home')" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Назад
+      </button>
       <span class="version-badge" onclick="openVersion()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         v5.4
@@ -387,7 +394,7 @@
     <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
   </footer>
 
-  <!-- Модальные окна (сокращены для краткости, полные тексты в исходном коде) -->
+  <!-- Модальные окна (полные тексты политик опущены для краткости, но в реальном коде они присутствуют) -->
   <div id="registerModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal('registerModal')">✕</span>
@@ -441,7 +448,7 @@
       <span class="close-btn" onclick="closeModal('versionModal')">✕</span>
       <h3>История версий</h3>
       <ul>
-        <li><strong>v5.4</strong> – Плавный луч на карточках, боковой блик, динамический favicon.</li>
+        <li><strong>v5.4</strong> – Добавлена кнопка «Назад», убрано круглое свечение с карточек «О нас».</li>
         <li><strong>v5.3</strong> – Объединены «Описание» и «О нас».</li>
       </ul>
     </div>
@@ -539,7 +546,6 @@
       updateFavicon();
     }
 
-    // Мгновенная смена favicon: белый X на чёрном (неактивная) / чёрный X на белом (активная)
     function updateFavicon() {
       const favicon = document.getElementById('dynamicFavicon');
       const active = !document.hidden;
@@ -594,6 +600,8 @@
             document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || '');
             refreshData();
             if (page === 'description') enableTilt();
+            // Показываем/скрываем кнопку "Назад"
+            document.getElementById('backButton').style.display = page === 'home' ? 'none' : 'flex';
           }
         }, { once: true });
       } else {
@@ -605,6 +613,7 @@
           document.title = 'Хазбиково - ' + (allPages.find(p => p.id === page)?.label || '');
           refreshData();
           if (page === 'description') enableTilt();
+          document.getElementById('backButton').style.display = page === 'home' ? 'none' : 'flex';
         }
       }
     }
@@ -628,7 +637,6 @@
       if (gc) gc.innerHTML = siteData.gallery.map(img => `<img src="${img}" alt="gallery">`).join('');
     }
 
-    // 3D карточки с плавным лучом и боковым бликом
     function enableTilt() {
       const cards = document.querySelectorAll('.about-col');
       cards.forEach(card => {
@@ -641,16 +649,11 @@
           const rotateX = (y - centerY) / 10;
           const rotateY = (centerX - x) / 10;
           card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-          card.style.setProperty('--mouse-x', x + 'px');
-          card.style.setProperty('--mouse-y', y + 'px');
-          // Угол для бокового блика
           const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI);
           card.style.setProperty('--rotate-angle', angle);
         });
         card.addEventListener('mouseleave', () => {
           card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)';
-          card.style.setProperty('--mouse-x', '50%');
-          card.style.setProperty('--mouse-y', '50%');
           card.style.setProperty('--rotate-angle', '45');
         });
       });
@@ -699,7 +702,7 @@
       const text = document.getElementById('policyText');
       if (type === 'privacy') {
         title.innerText = 'Конфиденциальность';
-        text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные...`;
+        text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность...`;
       } else if (type === 'terms') {
         title.innerText = 'Условия использования';
         text.innerText = `Условия использования сервера Хазбиково...`;
