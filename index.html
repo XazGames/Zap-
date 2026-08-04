@@ -8,8 +8,8 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --glass-bg: rgba(20,20,25,0.5);
-            --glass-border: rgba(255,255,255,0.1);
+            --glass-bg: rgba(20,20,25,0.4);
+            --glass-border: rgba(255,255,255,0.06);
             --text: #e8e8f0;
             --text-secondary: #a0a0b0;
             --accent: #ffffff;
@@ -17,15 +17,15 @@
             --shadow: 0 15px 40px rgba(0,0,0,0.6);
             --btn-bg: rgba(40,40,50,0.55);
             --btn-hover: rgba(60,60,70,0.85);
-            --header-bg: rgba(10,10,15,0.35);
-            --footer-bg: rgba(10,10,15,0.35);
+            --header-bg: rgba(8,8,12,0.4);
+            --footer-bg: rgba(8,8,12,0.4);
             --input-bg: rgba(30,30,40,0.7);
-            --bg: radial-gradient(ellipse at 50% 50%, rgba(30,30,50,0.4) 0%, #0d0d0d 80%);
+            --bg: radial-gradient(ellipse at 40% 45%, rgba(30,30,50,0.5) 0%, #0d0d0d 80%);
             --selection-bg: #555;
             --selection-text: #fff;
         }
         body.light-theme {
-            --glass-bg: rgba(255,255,255,0.25);
+            --glass-bg: rgba(255,255,255,0.2);
             --glass-border: rgba(255,255,255,0.5);
             --text: #1e1e2f;
             --text-secondary: #3d3d5c;
@@ -33,10 +33,10 @@
             --shadow: 0 15px 40px rgba(0,0,0,0.08);
             --btn-bg: rgba(255,255,255,0.35);
             --btn-hover: rgba(255,255,255,0.7);
-            --header-bg: rgba(255,255,255,0.25);
-            --footer-bg: rgba(255,255,255,0.25);
+            --header-bg: rgba(255,255,255,0.2);
+            --footer-bg: rgba(255,255,255,0.2);
             --input-bg: rgba(255,255,255,0.5);
-            --bg: radial-gradient(ellipse at 50% 50%, rgba(200,200,220,0.4) 0%, #e0e0ea 80%);
+            --bg: radial-gradient(ellipse at 40% 45%, rgba(180,180,200,0.4) 0%, #e0e0ea 80%);
             --selection-bg: #ccc;
             --selection-text: #000;
         }
@@ -54,22 +54,23 @@
             transition: background 0.4s, color 0.3s;
             position: relative;
         }
-        /* Точка как в версии 5.5 — левее центра, серая, с анимацией */
+        /* Серая точка с плавной анимацией, смещённая левее */
         .bg-dot {
             position: fixed;
-            top: 40%;
-            left: 30%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(128,128,128,0.2) 0%, transparent 70%);
+            top: 42%;
+            left: 35%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(120,120,120,0.2) 0%, transparent 70%);
             border-radius: 50%;
             z-index: -1;
-            animation: dotPulse 8s infinite alternate;
+            animation: dotPulse 10s infinite alternate ease-in-out;
             pointer-events: none;
+            transform: translate(-50%, -50%);
         }
         @keyframes dotPulse {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.2); }
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
         }
         .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
             position: relative; overflow: hidden;
@@ -87,10 +88,23 @@
         }
         .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .back-btn:hover::before { opacity:1; }
         .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
-        .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:15px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
+        .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:12px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
         .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
-        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:2px; }
-        .logo-icon { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--text); color: var(--bg); font-weight: 900; font-size: 1.4em; line-height: 1; transform: translateY(-1px); }
+        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:6px; }
+        .logo-icon {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            background: var(--text);
+            color: var(--bg);
+            font-weight: 900; font-size: 1.3em;
+            line-height: 1;
+            vertical-align: middle;
+            /* смещаем вниз для выравнивания с текстом */
+            position: relative;
+            top: -2px;
+        }
         body.light-theme .logo-icon { background: #111; color: #fff; }
         body.dark-theme .logo-icon { background: #fff; color: #111; }
         .back-btn { background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:8px 20px; border-radius:25px; font-size:0.85em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; display:inline-flex; align-items:center; gap:6px; }
@@ -141,14 +155,14 @@
         .toast.error { border-left:4px solid #ef4444; }
         .toast.success { border-left:4px solid #10b981; }
         @keyframes slideRight { from{transform:translateX(120%); opacity:0;} to{transform:translateX(0); opacity:1;} }
-        .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:15px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
+        .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:12px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
         .footer-left { display:flex; gap:25px; align-items:center; }
         .footer-right { display:flex; gap:25px; align-items:center; }
         .footer a { color:var(--text-secondary); text-decoration:none; transition:0.2s; display:flex; align-items:center; gap:6px; }
         .footer a:hover { color:var(--accent); }
         .copyright { color:#888; font-size:0.9em; white-space:nowrap; }
         body.light-theme .copyright { color:#555; }
-        .brand-tag { background:rgba(255,255,255,0.2); border:1px solid var(--glass-border); color:var(--text); padding:8px 16px; border-radius:15px; font-size:0.75em; cursor:pointer; backdrop-filter:blur(10px); display:inline-flex; align-items:center; gap:6px; }
+        .brand-tag { background:rgba(255,255,255,0.2); border:1px solid var(--glass-border); color:var(--text); padding:8px 16px; border-radius:12px; font-size:0.75em; cursor:pointer; backdrop-filter:blur(10px); display:inline-flex; align-items:center; gap:6px; }
         .brand-tag:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
         .brands-row { margin-top:25px; display:flex; justify-content:center; gap:15px; }
         .settings-hint { position:relative; }
@@ -175,7 +189,7 @@
             </div>
             <span class="version-badge" onclick="openVersion()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                v1.5.8
+                v1.5.9
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
@@ -267,7 +281,7 @@
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.8</strong> – Логотип с иконкой X, прозрачные панели, анимированная точка.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.9</strong> – Точка с анимацией, улучшенный логотип.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
