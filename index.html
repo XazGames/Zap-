@@ -8,7 +8,7 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --glass-bg: rgba(15,15,20,0.7);
+            --glass-bg: rgba(20,20,25,0.5);
             --glass-border: rgba(255,255,255,0.1);
             --text: #e8e8f0;
             --text-secondary: #a0a0b0;
@@ -20,23 +20,23 @@
             --header-bg: rgba(10,10,15,0.5);
             --footer-bg: rgba(10,10,15,0.5);
             --input-bg: rgba(30,30,40,0.7);
-            --bg: #0d0d0d;
+            --bg: radial-gradient(ellipse at 50% 50%, rgba(30,30,50,0.4) 0%, #0d0d0d 80%);
             --selection-bg: #555;
             --selection-text: #fff;
         }
         body.light-theme {
-            --glass-bg: rgba(255,255,255,0.4);
-            --glass-border: rgba(255,255,255,0.6);
+            --glass-bg: rgba(255,255,255,0.25);
+            --glass-border: rgba(255,255,255,0.5);
             --text: #1e1e2f;
             --text-secondary: #3d3d5c;
             --accent-glow: 0 0 12px rgba(255,255,255,0.4);
             --shadow: 0 15px 40px rgba(0,0,0,0.08);
             --btn-bg: rgba(255,255,255,0.35);
             --btn-hover: rgba(255,255,255,0.7);
-            --header-bg: rgba(255,255,255,0.4);
-            --footer-bg: rgba(255,255,255,0.4);
+            --header-bg: rgba(255,255,255,0.3);
+            --footer-bg: rgba(255,255,255,0.3);
             --input-bg: rgba(255,255,255,0.5);
-            --bg: #e0e0ea;
+            --bg: radial-gradient(ellipse at 50% 50%, rgba(200,200,220,0.4) 0%, #e0e0ea 80%);
             --selection-bg: #ccc;
             --selection-text: #000;
         }
@@ -54,12 +54,23 @@
             transition: background 0.4s, color 0.3s;
             position: relative;
         }
+        /* Анимированная серая точка */
         .bg-dot {
-            position: fixed; top: 30%; left: 20%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(128,128,128,0.4) 0%, transparent 70%);
-            z-index: -1; animation: dotPulse 8s infinite alternate;
+            position: fixed;
+            top: 20%;
+            left: 15%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(128,128,128,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: dotPulse 8s infinite alternate;
+            pointer-events: none;
         }
-        @keyframes dotPulse { 0%{opacity:0.5; transform:scale(1);} 100%{opacity:1; transform:scale(1.1);} }
+        @keyframes dotPulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.3); }
+        }
         .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
             position: relative; overflow: hidden;
         }
@@ -76,10 +87,12 @@
         }
         .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .back-btn:hover::before { opacity:1; }
         .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
-        .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:12px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
+        .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:15px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
         .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
-        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:6px; }
-        .logo-icon { width:28px; height:28px; background:white; border-radius:6px; display:flex; align-items:center; justify-content:center; color:black; font-weight:900; font-size:1.2em; }
+        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:4px; }
+        .logo-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--text); color: var(--bg); font-weight: 900; font-size: 1.2em; }
+        body.light-theme .logo-icon { background: #111; color: #fff; }
+        body.dark-theme .logo-icon { background: #fff; color: #111; }
         .back-btn { background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:8px 20px; border-radius:25px; font-size:0.85em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; display:inline-flex; align-items:center; gap:6px; }
         .back-btn:hover { background:rgba(255,0,0,0.4); border-color:red; box-shadow:0 0 15px red; }
         .version-badge { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); color:var(--text); padding:5px 14px; border-radius:30px; font-size:0.75em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; white-space:nowrap; }
@@ -128,16 +141,16 @@
         .toast.error { border-left:4px solid #ef4444; }
         .toast.success { border-left:4px solid #10b981; }
         @keyframes slideRight { from{transform:translateX(120%); opacity:0;} to{transform:translateX(0); opacity:1;} }
-        .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:12px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
+        .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:15px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
         .footer-left { display:flex; gap:25px; align-items:center; }
         .footer-right { display:flex; gap:25px; align-items:center; }
         .footer a { color:var(--text-secondary); text-decoration:none; transition:0.2s; display:flex; align-items:center; gap:6px; }
         .footer a:hover { color:var(--accent); }
         .copyright { color:#888; font-size:0.9em; white-space:nowrap; }
         body.light-theme .copyright { color:#555; }
-        .brand-tag { background:rgba(255,255,255,0.2); border:1px solid var(--glass-border); color:var(--text); padding:10px 24px; border-radius:20px; font-size:0.8em; cursor:pointer; backdrop-filter:blur(10px); display:inline-flex; align-items:center; gap:6px; }
+        .brand-tag { background:rgba(255,255,255,0.2); border:1px solid var(--glass-border); color:var(--text); padding:8px 16px; border-radius:15px; font-size:0.75em; cursor:pointer; backdrop-filter:blur(10px); display:inline-flex; align-items:center; gap:6px; }
         .brand-tag:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
-        .brands-row { margin-top:30px; display:flex; justify-content:center; gap:20px; }
+        .brands-row { margin-top:25px; display:flex; justify-content:center; gap:15px; }
         .settings-hint { position:relative; }
         .settings-hint::after { content:attr(data-tooltip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:4px 8px; border-radius:4px; font-size:0.7em; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.2s; }
         .settings-hint:hover::after { opacity:1; }
@@ -162,7 +175,7 @@
             </div>
             <span class="version-badge" onclick="openVersion()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                v1.5.9
+                v1.5.8
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
@@ -249,12 +262,12 @@
         <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
     </footer>
 
-    <!-- Модальные окна (полный код без сокращений) -->
+    <!-- Модальные окна -->
     <div id="registerModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('registerModal')">✕</span><h3>Регистрация</h3><input type="text" id="regNick" placeholder="Ник в Minecraft"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPass" placeholder="Пароль"><input type="password" id="regPassConfirm" placeholder="Повторите пароль"><button class="btn-glass primary" onclick="register()" style="width:100%; margin-top:10px;">Зарегистрироваться</button></div></div>
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.9</strong> – Логотип с иконкой, точка на фоне, прозрачные панели, прямоугольные бренды.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.8</strong> – Прозрачный фон, точка с анимацией, улучшенный логотип.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
@@ -274,34 +287,115 @@
 
         function toast(msg, type='info') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
         function playSound() { try { const a = new AudioContext(); const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 800; o.type = 'sine'; g.gain.value = soundVolume * 0.3; o.start(); setTimeout(() => o.stop(), 80); } catch(e) {} }
-        function applyTheme() { document.body.classList.toggle('light-theme', !isDark); document.getElementById('themeLabel').textContent = isDark ? 'Тёмная' : 'Светлая'; localStorage.setItem('theme', isDark ? 'dark' : 'light'); updateFavicon(); }
-        function updateFavicon() { const favicon = document.getElementById('dynamicFavicon'); const active = !document.hidden; if (isDark) { favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E"; } else { favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E"; } }
+        function applyTheme() {
+            document.body.classList.toggle('light-theme', !isDark);
+            document.getElementById('themeLabel').textContent = isDark ? 'Тёмная' : 'Светлая';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateFavicon();
+        }
+        function updateFavicon() {
+            const favicon = document.getElementById('dynamicFavicon');
+            const active = !document.hidden;
+            if (isDark) {
+                favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
+            } else {
+                favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
+            }
+        }
         document.addEventListener('visibilitychange', updateFavicon);
         window.toggleTheme = () => { isDark = !isDark; applyTheme(); playSound(); };
         window.updateVolume = () => { soundVolume = parseFloat(document.getElementById('volumeSlider').value); localStorage.setItem('volume', soundVolume); playSound(); };
         window.openSettings = () => { document.getElementById('volumeSlider').value = soundVolume; document.getElementById('settingsModal').classList.add('active'); };
         window.closeModal = id => document.getElementById(id).classList.remove('active');
 
-        window.toggleMenu = () => { const wrapper = document.getElementById('mainMenuWrapper'); const btn = document.getElementById('toggleSiteButton'); if (wrapper.classList.contains('open')) { wrapper.classList.remove('open'); btn.innerHTML = 'Перейти к сайту'; } else { wrapper.classList.add('open'); btn.innerHTML = 'Закрыть'; } playSound(); };
-        window.showBrand = (brand) => { document.getElementById('brandTitle').innerText = brand; document.getElementById('brandText').innerText = siteBrands[brand] || ''; document.getElementById('brandModal').classList.add('active'); };
+        window.toggleMenu = () => {
+            const wrapper = document.getElementById('mainMenuWrapper');
+            const btn = document.getElementById('toggleSiteButton');
+            if (wrapper.classList.contains('open')) {
+                wrapper.classList.remove('open');
+                btn.innerHTML = 'Перейти к сайту';
+            } else {
+                wrapper.classList.add('open');
+                btn.innerHTML = 'Закрыть';
+            }
+            playSound();
+        };
+
+        window.showBrand = (brand) => {
+            document.getElementById('brandTitle').innerText = brand;
+            document.getElementById('brandText').innerText = siteBrands[brand] || '';
+            document.getElementById('brandModal').classList.add('active');
+        };
+
         window.openTelegramModal = () => document.getElementById('telegramModal').classList.add('active');
         window.openDiscordModal = () => document.getElementById('discordModal').classList.add('active');
-        window.showPolicy = (type) => { const title = document.getElementById('policyTitle'); const text = document.getElementById('policyText'); if (type === 'privacy') { title.innerText = 'Конфиденциальность'; text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`; } else if (type === 'terms') { title.innerText = 'Условия пользования'; text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`; } document.getElementById('policyModal').classList.add('active'); };
+
+        window.showPolicy = (type) => {
+            const title = document.getElementById('policyTitle');
+            const text = document.getElementById('policyText');
+            if (type === 'privacy') {
+                title.innerText = 'Конфиденциальность';
+                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
+            } else if (type === 'terms') {
+                title.innerText = 'Условия пользования';
+                text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
+            }
+            document.getElementById('policyModal').classList.add('active');
+        };
+
         window.openVersion = () => document.getElementById('versionModal').classList.add('active');
         window.openRegister = () => document.getElementById('registerModal').classList.add('active');
         window.openLogin = () => document.getElementById('loginModal').classList.add('active');
-        window.register = () => { const nick = document.getElementById('regNick').value.trim(); const email = document.getElementById('regEmail').value.trim(); const pass = document.getElementById('regPass').value; const pass2 = document.getElementById('regPassConfirm').value; if (!nick || !email || !pass) return toast('Заполните поля', 'error'); if (pass !== pass2) return toast('Пароли не совпадают', 'error'); if (users.find(u => u.nick === nick)) return toast('Ник занят', 'error'); users.push({ nick, email, pass, uid: 'u'+Date.now() }); localStorage.setItem('xazUsers', JSON.stringify(users)); toast('Регистрация успешна!', 'success'); closeModal('registerModal'); };
-        window.login = () => { const nick = document.getElementById('loginNick').value.trim(); const pass = document.getElementById('loginPass').value; const user = users.find(u => u.nick === nick && u.pass === pass); if (!user) return toast('Неверный ник или пароль', 'error'); currentUser = user; updateUI(); closeModal('loginModal'); toast('Добро пожаловать, ' + user.nick + '!', 'success'); };
-        function updateUI() { document.getElementById('authArea').style.display = currentUser ? 'none' : 'flex'; document.getElementById('userArea').style.display = currentUser ? 'flex' : 'none'; if (currentUser) { document.getElementById('userNick').textContent = currentUser.nick; document.getElementById('userAvatar').src = `https://minotar.net/avatar/${currentUser.nick}/36`; } }
+
+        window.register = () => {
+            const nick = document.getElementById('regNick').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPassConfirm').value;
+            if (!nick || !email || !pass) return toast('Заполните поля', 'error');
+            if (pass !== pass2) return toast('Пароли не совпадают', 'error');
+            if (users.find(u => u.nick === nick)) return toast('Ник занят', 'error');
+            users.push({ nick, email, pass, uid: 'u'+Date.now() });
+            localStorage.setItem('xazUsers', JSON.stringify(users));
+            toast('Регистрация успешна!', 'success');
+            closeModal('registerModal');
+        };
+        window.login = () => {
+            const nick = document.getElementById('loginNick').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const user = users.find(u => u.nick === nick && u.pass === pass);
+            if (!user) return toast('Неверный ник или пароль', 'error');
+            currentUser = user;
+            updateUI();
+            closeModal('loginModal');
+            toast('Добро пожаловать, ' + user.nick + '!', 'success');
+        };
+        function updateUI() {
+            document.getElementById('authArea').style.display = currentUser ? 'none' : 'flex';
+            document.getElementById('userArea').style.display = currentUser ? 'flex' : 'none';
+            if (currentUser) {
+                document.getElementById('userNick').textContent = currentUser.nick;
+                document.getElementById('userAvatar').src = `https://minotar.net/avatar/${currentUser.nick}/36`;
+            }
+        }
         window.logout = () => { currentUser = null; updateUI(); closeModal('profileModal'); };
-        window.openProfile = () => { if (!currentUser) return; document.getElementById('profNick').textContent = currentUser.nick; document.getElementById('profEmail').textContent = currentUser.email || '-'; document.getElementById('profUid').textContent = currentUser.uid; document.getElementById('profileModal').classList.add('active'); };
+        window.openProfile = () => {
+            if (!currentUser) return;
+            document.getElementById('profNick').textContent = currentUser.nick;
+            document.getElementById('profEmail').textContent = currentUser.email || '-';
+            document.getElementById('profUid').textContent = currentUser.uid;
+            document.getElementById('profileModal').classList.add('active');
+        };
         window.copyUID = () => { if (currentUser) navigator.clipboard.writeText(currentUser.uid).then(() => toast('UID скопирован')); };
 
         applyTheme();
-        const saved = localStorage.getItem('xazCurrentUser'); if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
+        const saved = localStorage.getItem('xazCurrentUser');
+        if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
         window.addEventListener('beforeunload', () => { if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick); else localStorage.removeItem('xazCurrentUser'); });
 
-        document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => { btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px'); btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px'); }); });
+        document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px'); btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px'); });
+        });
     </script>
 </body>
 </html>
