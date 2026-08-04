@@ -6,10 +6,10 @@
     <title>Хазбиково / Главная</title>
     <link rel="icon" id="dynamicFavicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --glass-bg: rgba(20,20,25,0.75);
-            --glass-border: rgba(255,255,255,0.08);
+            --glass-bg: rgba(20,20,25,0.8);
+            --glass-border: rgba(255,255,255,0.1);
             --text: #e8e8f0;
             --text-secondary: #a0a0b0;
             --accent: #ffffff;
@@ -17,15 +17,15 @@
             --shadow: 0 15px 40px rgba(0,0,0,0.6);
             --btn-bg: rgba(40,40,50,0.55);
             --btn-hover: rgba(60,60,70,0.85);
-            --header-bg: rgba(20,20,25,0.7);
-            --footer-bg: rgba(15,15,20,0.5);
+            --header-bg: rgba(20,20,25,0.8);
+            --footer-bg: rgba(15,15,20,0.7);
             --input-bg: rgba(30,30,40,0.7);
             --bg: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
             --selection-bg: #555;
             --selection-text: #fff;
         }
         body.light-theme {
-            --glass-bg: rgba(255,255,255,0.3);
+            --glass-bg: rgba(255,255,255,0.35);
             --glass-border: rgba(255,255,255,0.5);
             --text: #1e1e2f;
             --text-secondary: #3d3d5c;
@@ -33,8 +33,8 @@
             --shadow: 0 15px 40px rgba(0,0,0,0.08);
             --btn-bg: rgba(255,255,255,0.35);
             --btn-hover: rgba(255,255,255,0.7);
-            --header-bg: rgba(255,255,255,0.35);
-            --footer-bg: rgba(255,255,255,0.15);
+            --header-bg: rgba(255,255,255,0.4);
+            --footer-bg: rgba(255,255,255,0.25);
             --input-bg: rgba(255,255,255,0.5);
             --bg: linear-gradient(145deg, #f0f0f5 0%, #e0e0ea 100%);
             --selection-bg: #ccc;
@@ -74,8 +74,8 @@
         .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
         .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:15px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
         .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
-        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:2px; }
-        .logo-icon { width: 28px; height: 28px; flex-shrink: 0; }
+        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:4px; }
+        .logo-icon { width: 32px; height: 32px; flex-shrink: 0; position: relative; top: -2px; }
         .back-btn { background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:8px 20px; border-radius:25px; font-size:0.85em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; display:inline-flex; align-items:center; gap:6px; }
         .back-btn:hover { background:rgba(255,0,0,0.4); border-color:red; box-shadow:0 0 15px red; }
         .version-badge { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); color:var(--text); padding:5px 14px; border-radius:30px; font-size:0.75em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; white-space:nowrap; }
@@ -154,12 +154,12 @@
     <header class="header">
         <div class="header-left">
             <div class="logo">
-                <svg class="logo-icon" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="currentColor"/><text x="32" y="46" font-family="Arial Black" font-weight="900" font-size="48" fill="var(--text)" text-anchor="middle">X</text></svg>
+                <svg class="logo-icon" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="currentColor"/><text x="32" y="46" font-family="Arial Black" font-weight="900" font-size="48" fill="var(--bg)" text-anchor="middle">X</text></svg>
                 азбиково
             </div>
             <span class="version-badge" onclick="openVersion()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                v1.5.8
+                v1.5.9
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
@@ -233,11 +233,11 @@
     </div>
 
     <footer class="footer">
-        <div class="footer-left">
+        <div class="footer-left" style="justify-content: flex-start; width: auto;">
             <a href="#" onclick="openTelegramModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.938z"/></svg> Telegram</a>
             <a href="#" onclick="openDiscordModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 10.5c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5zm-7 0c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5S10 12.8 10 12s-.7-1.5-1.5-1.5zm9.7-4.3c-1.4-1.1-3-1.7-4.6-2l-.5 1c-1.4-.3-2.9-.3-4.3 0l-.5-1c-1.6.3-3.2.9-4.6 2C2.2 8.5 1.4 11.5 1.2 14.5c1.6 1.2 3.3 1.9 5 2.3l1-1.6c-1-.3-1.9-.8-2.7-1.4.9.7 2 1.2 3.2 1.6 1.2.4 2.5.6 3.8.6s2.6-.2 3.8-.6c1.2-.4 2.3-.9 3.2-1.6-.8.6-1.7 1.1-2.7 1.4l1 1.6c1.7-.4 3.4-1.1 5-2.3-.2-3-1-6-2.9-8.2z"/></svg> Discord</a>
         </div>
-        <div class="footer-right">
+        <div class="footer-right" style="justify-content: flex-end; width: auto;">
             <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
             <a href="#" onclick="showPolicy('terms')">Условия пользования</a>
             <a href="#" onclick="openSettings()" class="settings-hint" data-tooltip="Тут можно переключить тему и громкость">Настройки</a>
@@ -251,7 +251,7 @@
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.8</strong> – Иконка в логотипе, анимация меню, серый скроллбар, выделение, модальные окна Telegram/Discord.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.9</strong> – Исправлена иконка, скроллбар, выделение, фон, прозрачность меню.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
