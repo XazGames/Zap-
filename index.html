@@ -46,7 +46,6 @@
             transition: background 0.4s, color 0.3s;
             position: relative;
         }
-        /* лучи и свечения кнопок */
         .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
             position: relative; overflow: hidden;
         }
@@ -89,15 +88,14 @@
             justify-content:center; align-items:center; font-size:0.85em; font-weight:600;
             text-align:center; line-height:1.3; display:inline-flex; gap:10px;
         }
-        .neon-purple { border-color:#a855f7; box-shadow:0 0 15px rgba(168,85,247,0.5); }
-        .neon-blue { border-color:#3b82f6; box-shadow:0 0 15px rgba(59,130,246,0.5); }
-        .neon-pink { border-color:#ec4899; box-shadow:0 0 15px rgba(236,72,153,0.5); }
-        .neon-green { border-color:#10b981; box-shadow:0 0 15px rgba(16,185,129,0.5); }
+        .neon-purple { border-color:#a855f7; box-shadow:0 0 20px rgba(168,85,247,0.7); }
+        .neon-blue { border-color:#3b82f6; box-shadow:0 0 20px rgba(59,130,246,0.7); }
+        .neon-pink { border-color:#ec4899; box-shadow:0 0 20px rgba(236,72,153,0.7); }
+        .neon-green { border-color:#10b981; box-shadow:0 0 20px rgba(16,185,129,0.7); }
         .profile-trigger { display:flex; align-items:center; gap:8px; cursor:pointer; padding:5px 14px 5px 5px; border-radius:30px; background:rgba(255,255,255,0.2); backdrop-filter:blur(10px); border:1px solid var(--glass-border); }
         .profile-trigger:hover { background:var(--btn-hover); }
         .avatar-img { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.3); object-fit:cover; }
         .container { max-width:1200px; margin:30px auto; padding:0 20px; flex:1; }
-        .back-button-container { max-width:1200px; margin:0 auto; padding:10px 20px 0; display:none; }
         .main-menu-wrapper { max-height:0; overflow:hidden; transition:max-height 0.5s ease; margin-top:20px; }
         .main-menu-wrapper.open { max-height:400px; }
         .grid-2col { display:grid; grid-template-columns:1fr 1fr; gap:25px; max-width:500px; margin:0 auto; }
@@ -149,7 +147,7 @@
             <div class="logo">Хазбиково</div>
             <span class="version-badge" onclick="openVersion()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                v1.5.7
+                v1.5.8
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
@@ -187,11 +185,12 @@
     </header>
 
     <div class="container">
+        <!-- Основной контент -->
         <div class="glass" style="padding:40px; text-align:center;">
             <h1 style="font-size:2.5em;">Хазбиково</h1>
             <p style="color:var(--text-secondary); margin-bottom:2em;">Цифровой город будущего. Присоединяйтесь!</p>
             <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:1.5em;">
-                <button class="btn-glass primary" onclick="toggleMenu()">Перейти к сайту</button>
+                <button class="btn-glass primary" id="toggleSiteButton" onclick="toggleMenu()">Перейти к сайту</button>
                 <a href="description.html" class="btn-glass">Описание</a>
             </div>
             <div class="main-menu-wrapper" id="mainMenuWrapper">
@@ -214,11 +213,13 @@
                     </a>
                 </div>
             </div>
-            <div class="brands-row">
-                <span class="brand-tag" onclick="showBrand('ChichWaka™')">ChichWaka™</span>
-                <span class="brand-tag" onclick="showBrand('Xaz&Der1™')">Xaz&Der1™</span>
-                <span class="brand-tag" onclick="showBrand('Minecraft™')">Minecraft™</span>
-            </div>
+        </div>
+
+        <!-- Бренды отдельно, ниже основного блока -->
+        <div class="brands-row">
+            <span class="brand-tag" onclick="showBrand('ChichVAKA')">ChichVAKA</span>
+            <span class="brand-tag" onclick="showBrand('Xaz&Der1')">Xaz&Der1™</span>
+            <span class="brand-tag" onclick="showBrand('Minecraft')">Minecraft™</span>
         </div>
     </div>
 
@@ -241,24 +242,27 @@
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.7</strong> – Многостраничная структура, ссылки на отдельные страницы.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.8</strong> – Обновлены тексты брендов, усилено неоновое свечение.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Перейти в канал?</p><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Перейти на сервер?</p><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
     <div id="settingsModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('settingsModal')">✕</span><h3>Настройки</h3><div style="display:flex; align-items:center; gap:15px; margin:15px 0;"><span>Тема:</span><button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button></div><div style="display:flex; align-items:center; gap:15px;"><span>Громкость:</span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()"></div></div></div>
-    <div id="brandModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('brandModal')">✕</span><h3 id="brandTitle"></h3><p>Скоро будет</p></div></div>
+    <div id="brandModal" class="modal"><div class="modal-content" style="text-align:left;"><span class="modal-close-btn" onclick="closeModal('brandModal')">✕</span><h3 id="brandTitle"></h3><p id="brandText" style="white-space: pre-wrap;"></p></div></div>
 
     <script>
+        // Данные пользователей и сайта
         let users = JSON.parse(localStorage.getItem('xazUsers')) || [];
         let currentUser = null;
         let adminMode = false;
         let soundVolume = parseFloat(localStorage.getItem('volume') || 0.5);
         let isDark = localStorage.getItem('theme') !== 'light';
-        let siteData = JSON.parse(localStorage.getItem('xazSiteData')) || {
-            brands: {'ChichWaka™':'Креатив','Xaz&Der1™':'Разработчики','Minecraft™':'Игра'}
+        const siteBrands = {
+            'ChichVAKA': 'ChichVAKA — это сервер ванила+ режим с элементами экономики и РП, созданный для контента на стримах и зрителей стримеров. На нём есть много разных людей, государств и городов. Самый лучший рп-сервер по мнению Xazbik_.',
+            'Xaz&Der1': 'Компания Xaz&Der1 начала своё производство совсем недавно. В компанию входят игроки ChichVAKA Xazbik_ и Der1zon. Они лучшие друзья и всегда играли вместе. Впервые создали свой Дискорд-сервер 10.02.2026. После чего создали свой первый Тест-сервер в Minecraft 01.03.2026. А уже 20.03.2026 года игроку Xazbik_ пришла идея создать сайт города. Вот так и появился данный сайт от компании Xaz&Der1.',
+            'Minecraft': 'Minecraft — игра-песочница с процедурно генерируемым миром из блоков. Здесь нет фиксированного сюжета или строгих правил. Каждый новый мир уникален: горы, леса, океаны, пещеры и даже подземные крепости появляются случайно.'
         };
 
-        function save() { localStorage.setItem('xazUsers', JSON.stringify(users)); localStorage.setItem('xazSiteData', JSON.stringify(siteData)); }
+        function saveUsers() { localStorage.setItem('xazUsers', JSON.stringify(users)); }
         function toast(msg, type='info') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
         function playSound() { try { const a = new AudioContext(); const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 800; o.type = 'sine'; g.gain.value = soundVolume * 0.3; o.start(); setTimeout(() => o.stop(), 80); } catch(e) {} }
         function applyTheme() {
@@ -282,9 +286,10 @@
         window.openSettings = () => { document.getElementById('volumeSlider').value = soundVolume; document.getElementById('settingsModal').classList.add('active'); };
         window.closeModal = id => document.getElementById(id).classList.remove('active');
 
+        // Меню "Перейти к сайту"
         window.toggleMenu = () => {
             const wrapper = document.getElementById('mainMenuWrapper');
-            const btn = document.querySelector('.btn-glass.primary');
+            const btn = document.getElementById('toggleSiteButton');
             if (wrapper.classList.contains('open')) {
                 wrapper.classList.remove('open');
                 btn.innerHTML = 'Перейти к сайту';
@@ -295,20 +300,23 @@
             playSound();
         };
 
-        window.toggleAdmin = () => { if (currentUser?.nick !== 'Xazbik_') return; adminMode = !adminMode; };
-        window.showBrand = b => { document.getElementById('brandTitle').innerText = b; document.getElementById('brandModal').classList.add('active'); };
-        window.openDiscord = () => document.getElementById('discordModal').classList.add('active');
-        window.openTelegram = () => document.getElementById('telegramModal').classList.add('active');
+        // Показ брендов
+        window.showBrand = (brand) => {
+            document.getElementById('brandTitle').innerText = brand;
+            document.getElementById('brandText').innerText = siteBrands[brand] || '';
+            document.getElementById('brandModal').classList.add('active');
+        };
 
+        // Политики
         window.showPolicy = (type) => {
             const title = document.getElementById('policyTitle');
             const text = document.getElementById('policyText');
             if (type === 'privacy') {
                 title.innerText = 'Конфиденциальность';
-                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность...`;
+                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
             } else if (type === 'terms') {
                 title.innerText = 'Условия пользования';
-                text.innerText = `Условия использования сервера Хазбиково...`;
+                text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
             }
             document.getElementById('policyModal').classList.add('active');
         };
@@ -317,21 +325,52 @@
         window.openRegister = () => document.getElementById('registerModal').classList.add('active');
         window.openLogin = () => document.getElementById('loginModal').classList.add('active');
 
-        window.register = () => { /* ... */ };
-        window.login = () => { /* ... */ };
-
-        function requestCode(action, email) { /* ... */ }
-        window.resendCode = () => { /* ... */ };
-        window.handleCode = input => { /* ... */ };
-        window.verifyCode = () => { /* ... */ };
-
-        function updateUI() { /* ... */ }
+        // Заглушки регистрации и входа (полная реализация будет в следующих версиях)
+        window.register = () => {
+            const nick = document.getElementById('regNick').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value;
+            const pass2 = document.getElementById('regPassConfirm').value;
+            if (!nick || !email || !pass) return toast('Заполните поля', 'error');
+            if (pass !== pass2) return toast('Пароли не совпадают', 'error');
+            if (users.find(u => u.nick === nick)) return toast('Ник занят', 'error');
+            users.push({ nick, email, pass, uid: 'u'+Date.now() });
+            saveUsers();
+            toast('Регистрация успешна!', 'success');
+            closeModal('registerModal');
+        };
+        window.login = () => {
+            const nick = document.getElementById('loginNick').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const user = users.find(u => u.nick === nick && u.pass === pass);
+            if (!user) return toast('Неверный ник или пароль', 'error');
+            currentUser = user;
+            updateUI();
+            closeModal('loginModal');
+            toast('Добро пожаловать, ' + user.nick + '!', 'success');
+        };
+        function updateUI() {
+            document.getElementById('authArea').style.display = currentUser ? 'none' : 'flex';
+            document.getElementById('userArea').style.display = currentUser ? 'flex' : 'none';
+            if (currentUser) {
+                document.getElementById('userNick').textContent = currentUser.nick;
+                document.getElementById('userAvatar').src = `https://minotar.net/avatar/${currentUser.nick}/36`;
+            }
+        }
         window.logout = () => { currentUser = null; updateUI(); closeModal('profileModal'); };
-        window.openProfile = () => { /* ... */ };
-        window.copyUID = () => { /* ... */ };
+        window.openProfile = () => {
+            if (!currentUser) return;
+            document.getElementById('profNick').textContent = currentUser.nick;
+            document.getElementById('profEmail').textContent = currentUser.email || '-';
+            document.getElementById('profUid').textContent = currentUser.uid;
+            document.getElementById('profileModal').classList.add('active');
+        };
+        window.copyUID = () => { if (currentUser) navigator.clipboard.writeText(currentUser.uid).then(() => toast('UID скопирован')); };
 
+        // Инициализация
         applyTheme();
-        const saved = localStorage.getItem('xazCurrentUser'); if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
+        const saved = localStorage.getItem('xazCurrentUser');
+        if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
         window.addEventListener('beforeunload', () => { if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick); else localStorage.removeItem('xazCurrentUser'); });
 
         document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge').forEach(btn => {
