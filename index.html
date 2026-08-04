@@ -8,8 +8,8 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --glass-bg: rgba(20,20,25,0.4);
-            --glass-border: rgba(255,255,255,0.06);
+            --glass-bg: rgba(20,20,25,0.35);
+            --glass-border: rgba(255,255,255,0.08);
             --text: #e8e8f0;
             --text-secondary: #a0a0b0;
             --accent: #ffffff;
@@ -17,10 +17,10 @@
             --shadow: 0 15px 40px rgba(0,0,0,0.6);
             --btn-bg: rgba(40,40,50,0.55);
             --btn-hover: rgba(60,60,70,0.85);
-            --header-bg: rgba(8,8,12,0.4);
-            --footer-bg: rgba(8,8,12,0.4);
+            --header-bg: rgba(8,8,12,0.35);
+            --footer-bg: rgba(8,8,12,0.35);
             --input-bg: rgba(30,30,40,0.7);
-            --bg: radial-gradient(ellipse at 40% 45%, rgba(30,30,50,0.5) 0%, #0d0d0d 80%);
+            --bg: radial-gradient(ellipse at 35% 40%, rgba(30,30,50,0.5) 0%, #0d0d0d 80%);
             --selection-bg: #555;
             --selection-text: #fff;
         }
@@ -36,7 +36,7 @@
             --header-bg: rgba(255,255,255,0.2);
             --footer-bg: rgba(255,255,255,0.2);
             --input-bg: rgba(255,255,255,0.5);
-            --bg: radial-gradient(ellipse at 40% 45%, rgba(180,180,200,0.4) 0%, #e0e0ea 80%);
+            --bg: radial-gradient(ellipse at 35% 40%, rgba(180,180,200,0.4) 0%, #e0e0ea 80%);
             --selection-bg: #ccc;
             --selection-text: #000;
         }
@@ -54,14 +54,14 @@
             transition: background 0.4s, color 0.3s;
             position: relative;
         }
-        /* Серая точка с плавной анимацией, смещённая левее */
+        /* Серая точка левее центра */
         .bg-dot {
             position: fixed;
-            top: 42%;
+            top: 40%;
             left: 35%;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(120,120,120,0.2) 0%, transparent 70%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(120,120,120,0.3) 0%, transparent 70%);
             border-radius: 50%;
             z-index: -1;
             animation: dotPulse 10s infinite alternate ease-in-out;
@@ -69,8 +69,8 @@
             transform: translate(-50%, -50%);
         }
         @keyframes dotPulse {
-            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
         }
         .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
             position: relative; overflow: hidden;
@@ -90,20 +90,22 @@
         .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
         .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:12px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
         .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
-        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; display:flex; align-items:center; gap:6px; }
+        .logo {
+            font-weight:800; font-size:1.7em; letter-spacing:2px;
+            color:var(--text); white-space:nowrap;
+            display:flex; align-items:center; gap:4px;
+            line-height: 1.2;
+        }
         .logo-icon {
             width: 28px; height: 28px;
             border-radius: 6px;
+            background: var(--text); color: var(--bg);
+            font-weight: 900; font-size: 1.2em;
             display: inline-flex;
-            align-items: center; justify-content: center;
-            background: var(--text);
-            color: var(--bg);
-            font-weight: 900; font-size: 1.3em;
+            align-items: center;
+            justify-content: center;
             line-height: 1;
-            vertical-align: middle;
-            /* смещаем вниз для выравнивания с текстом */
-            position: relative;
-            top: -2px;
+            transform: translateY(-1px);
         }
         body.light-theme .logo-icon { background: #111; color: #fff; }
         body.dark-theme .logo-icon { background: #fff; color: #111; }
@@ -128,10 +130,15 @@
             justify-content:center; align-items:center; font-size:0.85em; font-weight:600;
             text-align:center; line-height:1.3; display:inline-flex; gap:10px;
         }
-        .neon-purple { border-color:#a855f7; box-shadow:0 0 20px rgba(168,85,247,0.7); }
-        .neon-blue { border-color:#3b82f6; box-shadow:0 0 20px rgba(59,130,246,0.7); }
-        .neon-pink { border-color:#ec4899; box-shadow:0 0 20px rgba(236,72,153,0.7); }
-        .neon-green { border-color:#10b981; box-shadow:0 0 20px rgba(16,185,129,0.7); }
+        /* Неон при наведении своего цвета */
+        .neon-purple { border-color:#a855f7; box-shadow:0 0 15px rgba(168,85,247,0.5); }
+        .neon-purple:hover { background:rgba(168,85,247,0.2); border-color:#c084fc; box-shadow:0 0 30px rgba(168,85,247,0.9); }
+        .neon-blue { border-color:#3b82f6; box-shadow:0 0 15px rgba(59,130,246,0.5); }
+        .neon-blue:hover { background:rgba(59,130,246,0.2); border-color:#60a5fa; box-shadow:0 0 30px rgba(59,130,246,0.9); }
+        .neon-pink { border-color:#ec4899; box-shadow:0 0 15px rgba(236,72,153,0.5); }
+        .neon-pink:hover { background:rgba(236,72,153,0.2); border-color:#f472b6; box-shadow:0 0 30px rgba(236,72,153,0.9); }
+        .neon-green { border-color:#10b981; box-shadow:0 0 15px rgba(16,185,129,0.5); }
+        .neon-green:hover { background:rgba(16,185,129,0.2); border-color:#34d399; box-shadow:0 0 30px rgba(16,185,129,0.9); }
         .profile-trigger { display:flex; align-items:center; gap:8px; cursor:pointer; padding:5px 14px 5px 5px; border-radius:30px; background:rgba(255,255,255,0.2); backdrop-filter:blur(10px); border:1px solid var(--glass-border); }
         .profile-trigger:hover { background:var(--btn-hover); }
         .avatar-img { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.3); object-fit:cover; }
@@ -189,7 +196,7 @@
             </div>
             <span class="version-badge" onclick="openVersion()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                v1.5.9
+                v1.5.10
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
@@ -281,7 +288,7 @@
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPass" placeholder="Пароль"><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.9</strong> – Точка с анимацией, улучшенный логотип.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.10</strong> – Улучшенный логотип, неоновый ховер, прозрачность панелей.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
@@ -349,10 +356,10 @@
             const text = document.getElementById('policyText');
             if (type === 'privacy') {
                 title.innerText = 'Конфиденциальность';
-                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
+                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность...`;
             } else if (type === 'terms') {
                 title.innerText = 'Условия пользования';
-                text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
+                text.innerText = `Условия использования сервера Хазбиково...`;
             }
             document.getElementById('policyModal').classList.add('active');
         };
