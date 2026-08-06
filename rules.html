@@ -1,407 +1,253 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Хазбиково / Правила</title>
-  <link rel="icon" id="dynamicFavicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --glass-bg: rgba(20,20,25,0.35);
-      --glass-border: rgba(255,255,255,0.08);
-      --text: #e8e8f0;
-      --text-secondary: #a0a0b0;
-      --accent: #ffffff;
-      --accent-glow: 0 0 12px rgba(255,255,255,0.3);
-      --shadow: 0 15px 40px rgba(0,0,0,0.6);
-      --btn-bg: rgba(40,40,50,0.55);
-      --btn-hover: rgba(60,60,70,0.85);
-      --header-bg: rgba(8,8,12,0.35);
-      --footer-bg: rgba(8,8,12,0.35);
-      --input-bg: rgba(30,30,40,0.7);
-      --bg: radial-gradient(ellipse at 35% 40%, rgba(30,30,50,0.5) 0%, #0d0d0d 80%);
-      --selection-bg: #555;
-      --selection-text: #fff;
-    }
-    body.light-theme {
-      --glass-bg: rgba(255,255,255,0.2);
-      --glass-border: rgba(255,255,255,0.5);
-      --text: #1e1e2f;
-      --text-secondary: #3d3d5c;
-      --accent-glow: 0 0 12px rgba(255,255,255,0.4);
-      --shadow: 0 15px 40px rgba(0,0,0,0.08);
-      --btn-bg: rgba(255,255,255,0.35);
-      --btn-hover: rgba(255,255,255,0.7);
-      --header-bg: rgba(255,255,255,0.2);
-      --footer-bg: rgba(255,255,255,0.2);
-      --input-bg: rgba(255,255,255,0.5);
-      --bg: radial-gradient(ellipse at 35% 40%, rgba(180,180,200,0.4) 0%, #e0e0ea 80%);
-      --selection-bg: #ccc;
-      --selection-text: #000;
-    }
-    ::selection { background: var(--selection-bg); color: var(--selection-text); }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: rgba(128,128,128,0.2); }
-    ::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      transition: background 0.4s, color 0.3s;
-      position: relative;
-    }
-    .bg-dot {
-      position: fixed; top: 40%; left: 35%;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(120,120,120,0.3) 0%, transparent 70%);
-      border-radius: 50%; z-index: -1;
-      animation: dotPulse 10s infinite alternate ease-in-out;
-      pointer-events: none; transform: translate(-50%, -50%);
-    }
-    @keyframes dotPulse {
-      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
-    }
-    .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
-      position: relative; overflow: hidden;
-    }
-    .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after, .back-btn::after {
-      content: ""; position: absolute; top:0; left:-100%; width:100%; height:100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: left 0.6s; pointer-events: none; z-index:2;
-    }
-    .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after, .back-btn:hover::after { left:100%; }
-    .btn-glass::before, .nav-btn::before, .current-tab::before, .brand-tag::before, .version-badge::before, .back-btn::before {
-      content: ""; position: absolute; top:0; left:0; width:100%; height:100%;
-      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.5) 0%, transparent 80%);
-      opacity:0; transition: opacity 0.3s; pointer-events: none; z-index:1;
-    }
-    .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .back-btn:hover::before { opacity:1; }
-    .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
-    .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:12px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
-    .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
-    .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; }
-    .back-btn { background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:8px 20px; border-radius:25px; font-size:0.85em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; display:inline-flex; align-items:center; gap:6px; }
-    .back-btn:hover { background:rgba(255,0,0,0.4); border-color:red; box-shadow:0 0 15px red; }
-    .version-badge { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); color:var(--text); padding:5px 14px; border-radius:30px; font-size:0.75em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; white-space:nowrap; }
-    .version-badge:hover { background:rgba(255,255,255,0.4); }
-    .nav-container { display:flex; align-items:center; position:relative; margin-left:10px; }
-    .current-tab { background:var(--btn-bg); border:1px solid var(--glass-border); color:var(--text); padding:10px 18px; border-radius:30px; font-weight:500; font-size:0.85em; cursor:default; backdrop-filter:blur(10px); display:flex; align-items:center; gap:8px; white-space:nowrap; z-index:2; }
-    .collapsible-menu { display:flex; max-width:0; overflow:hidden; opacity:0; transition: max-width 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s; margin-left:10px; gap:10px; align-items:center; }
-    .nav-container:hover .collapsible-menu { max-width:600px; opacity:1; }
-    .nav-btn { background:var(--btn-bg); border:1px solid var(--glass-border); color:var(--text); padding:10px 18px; border-radius:30px; font-weight:500; font-size:0.85em; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:8px; white-space:nowrap; text-decoration:none; }
-    .nav-btn:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
-    .auth-area { display:flex; align-items:center; gap:12px; }
-    .btn-glass { background:var(--btn-bg); backdrop-filter:blur(14px); border:1px solid var(--glass-border); color:var(--text); padding:12px 24px; border-radius:30px; font-weight:600; font-size:0.85em; cursor:pointer; transition:all 0.3s; display:inline-flex; align-items:center; gap:8px; white-space:nowrap; text-decoration:none; }
-    .btn-glass:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
-    .btn-glass.primary { background:rgba(255,255,255,0.6); border-color:var(--accent); color:#111; }
-    .btn-glass.primary:hover { background:rgba(255,255,255,0.9); }
-    .container { max-width:900px; margin:50px auto 30px; padding:0 20px; flex:1; }
-    .rules-content { padding:40px; text-align:left; }
-    .rules-content h1 { font-size:2.2em; margin-bottom:30px; text-align:center; }
-    .rules-content h2 { font-size:1.4em; margin-top:30px; margin-bottom:15px; color: var(--accent); border-bottom: 1px solid var(--glass-border); padding-bottom:8px; }
-    .rules-content ul, .rules-content ol { margin-left:25px; margin-bottom:20px; line-height:1.8; }
-    .rules-content li { color: var(--text-secondary); }
-    .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:12px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
-    .footer-left { display:flex; gap:25px; align-items:center; }
-    .footer-right { display:flex; gap:25px; align-items:center; }
-    .footer a { color:var(--text-secondary); text-decoration:none; transition:0.2s; display:flex; align-items:center; gap:6px; }
-    .footer a:hover { color:var(--accent); }
-    .copyright { color:#888; font-size:0.9em; white-space:nowrap; }
-    body.light-theme .copyright { color:#555; }
-    .settings-hint { position:relative; }
-    .settings-hint::after { content:attr(data-tooltip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:4px 8px; border-radius:4px; font-size:0.7em; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.2s; }
-    .settings-hint:hover::after { opacity:1; }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    (function() {
-      if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'dark');
-      document.body.classList.toggle('light-theme', localStorage.getItem('theme') === 'light');
-      emailjs.init("YOUR_PUBLIC_KEY");
-    })();
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Хазбиково / Правила</title>
+    <link rel="icon" id="dynamicFavicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --glass-bg: rgba(20,20,25,0.35);
+            --glass-border: rgba(255,255,255,0.08);
+            --text: #e8e8f0;
+            --text-secondary: #a0a0b0;
+            --accent: #ffffff;
+            --accent-glow: 0 0 12px rgba(255,255,255,0.3);
+            --shadow: 0 15px 40px rgba(0,0,0,0.6);
+            --btn-bg: rgba(40,40,50,0.55);
+            --btn-hover: rgba(60,60,70,0.85);
+            --header-bg: rgba(8,8,12,0.35);
+            --footer-bg: rgba(8,8,12,0.35);
+            --input-bg: rgba(30,30,40,0.7);
+            --bg: radial-gradient(ellipse at 35% 40%, rgba(30,30,50,0.5) 0%, #0d0d0d 80%);
+            --selection-bg: #555;
+            --selection-text: #fff;
+        }
+        body.light-theme {
+            --glass-bg: rgba(255,255,255,0.2);
+            --glass-border: rgba(255,255,255,0.5);
+            --text: #1e1e2f;
+            --text-secondary: #3d3d5c;
+            --accent-glow: 0 0 12px rgba(255,255,255,0.4);
+            --shadow: 0 15px 40px rgba(0,0,0,0.08);
+            --btn-bg: rgba(255,255,255,0.35);
+            --btn-hover: rgba(255,255,255,0.7);
+            --header-bg: rgba(255,255,255,0.2);
+            --footer-bg: rgba(255,255,255,0.2);
+            --input-bg: rgba(255,255,255,0.5);
+            --bg: radial-gradient(ellipse at 35% 40%, rgba(180,180,200,0.4) 0%, #e0e0ea 80%);
+            --selection-bg: #ccc;
+            --selection-text: #000;
+        }
+        ::selection { background: var(--selection-bg); color: var(--selection-text); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(128,128,128,0.2); }
+        ::-webkit-scrollbar-thumb { background: #666; border-radius: 4px; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            transition: background 0.4s, color 0.3s;
+            position: relative;
+        }
+        .bg-dot {
+            position: fixed; top: 40%; left: 35%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(120,120,120,0.3) 0%, transparent 70%);
+            border-radius: 50%; z-index: -1;
+            animation: dotPulse 10s infinite alternate ease-in-out;
+            pointer-events: none; transform: translate(-50%, -50%);
+        }
+        @keyframes dotPulse {
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+        }
+        .btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn {
+            position: relative; overflow: hidden;
+        }
+        .btn-glass::after, .nav-btn::after, .current-tab::after, .brand-tag::after, .version-badge::after, .back-btn::after {
+            content: ""; position: absolute; top:0; left:-100%; width:100%; height:100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s; pointer-events: none; z-index:2;
+        }
+        .btn-glass:hover::after, .nav-btn:hover::after, .current-tab:hover::after, .brand-tag:hover::after, .version-badge:hover::after, .back-btn:hover::after { left:100%; }
+        .btn-glass::before, .nav-btn::before, .current-tab::before, .brand-tag::before, .version-badge::before, .back-btn::before {
+            content: ""; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.5) 0%, transparent 80%);
+            opacity:0; transition: opacity 0.3s; pointer-events: none; z-index:1;
+        }
+        .btn-glass:hover::before, .nav-btn:hover::before, .current-tab:hover::before, .brand-tag:hover::before, .version-badge:hover::before, .back-btn:hover::before { opacity:1; }
+        .glass { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:28px; box-shadow:var(--shadow); }
+        .header { position:sticky; top:0; z-index:100; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); background:var(--header-bg); border-bottom:1px solid var(--glass-border); padding:12px 30px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:space-between; gap:20px; }
+        .header-left { display:flex; align-items:center; gap:15px; flex-shrink:0; }
+        .logo { font-weight:800; font-size:1.7em; letter-spacing:2px; color:var(--text); white-space:nowrap; }
+        .back-btn { background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:8px 20px; border-radius:25px; font-size:0.85em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; display:inline-flex; align-items:center; gap:6px; }
+        .back-btn:hover { background:rgba(255,0,0,0.4); border-color:red; box-shadow:0 0 15px red; }
+        .version-badge { background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.5); color:var(--text); padding:5px 14px; border-radius:30px; font-size:0.75em; font-weight:600; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:6px; white-space:nowrap; }
+        .version-badge:hover { background:rgba(255,255,255,0.4); }
+        .nav-container { display:flex; align-items:center; position:relative; margin-left:10px; }
+        .current-tab { background:var(--btn-bg); border:1px solid var(--glass-border); color:var(--text); padding:10px 18px; border-radius:30px; font-weight:500; font-size:0.85em; cursor:default; backdrop-filter:blur(10px); display:flex; align-items:center; gap:8px; white-space:nowrap; z-index:2; }
+        .collapsible-menu { display:flex; max-width:0; overflow:hidden; opacity:0; transition: max-width 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s; margin-left:10px; gap:10px; align-items:center; }
+        .nav-container:hover .collapsible-menu { max-width:600px; opacity:1; }
+        .nav-btn { background:var(--btn-bg); border:1px solid var(--glass-border); color:var(--text); padding:10px 18px; border-radius:30px; font-weight:500; font-size:0.85em; cursor:pointer; backdrop-filter:blur(10px); display:flex; align-items:center; gap:8px; white-space:nowrap; text-decoration:none; }
+        .nav-btn:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
+        .auth-area { display:flex; align-items:center; gap:12px; }
+        .btn-glass { background:var(--btn-bg); backdrop-filter:blur(14px); border:1px solid var(--glass-border); color:var(--text); padding:12px 24px; border-radius:30px; font-weight:600; font-size:0.85em; cursor:pointer; transition:all 0.3s; display:inline-flex; align-items:center; gap:8px; white-space:nowrap; text-decoration:none; }
+        .btn-glass:hover { background:var(--btn-hover); border-color:var(--accent); box-shadow:var(--accent-glow); }
+        .btn-glass.primary { background:rgba(255,255,255,0.6); border-color:var(--accent); color:#111; }
+        .btn-glass.primary:hover { background:rgba(255,255,255,0.9); }
+        .container { max-width:1200px; margin:50px auto 30px; padding:0 20px; flex:1; }
+        .page-transition { animation: fadeSlideIn 0.4s ease; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .rules-content { padding:40px; text-align:left; }
+        .rules-content h1 { font-size:2.2em; margin-bottom:30px; text-align:center; }
+        .rules-content h2 { font-size:1.4em; margin-top:30px; margin-bottom:15px; color: var(--accent); border-bottom: 1px solid var(--glass-border); padding-bottom:8px; }
+        .rules-content ul, .rules-content ol { margin-left:25px; margin-bottom:20px; line-height:1.8; }
+        .rules-content li { color: var(--text-secondary); }
+        .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:12px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
+        .footer-left { display:flex; gap:25px; align-items:center; }
+        .footer-right { display:flex; gap:25px; align-items:center; }
+        .footer a { color:var(--text-secondary); text-decoration:none; transition:0.2s; display:flex; align-items:center; gap:6px; }
+        .footer a:hover { color:var(--accent); }
+        .copyright { color:#888; font-size:0.9em; white-space:nowrap; }
+        body.light-theme .copyright { color:#555; }
+    </style>
+    <script>
+        (function() {
+            if (!localStorage.getItem('theme')) localStorage.setItem('theme', 'dark');
+            document.body.classList.toggle('light-theme', localStorage.getItem('theme') === 'light');
+        })();
+    </script>
 </head>
 <body>
-  <div class="bg-dot"></div>
-  <div class="toast-container" id="toastContainer"></div>
+    <div class="bg-dot"></div>
 
-  <header class="header">
-    <div class="header-left">
-      <div class="logo">Хазбиково</div>
-      <a href="index.html" class="back-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Назад
-      </a>
-      <span class="version-badge" onclick="openVersion()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        v1.5.12
-      </span>
-      <div class="nav-container">
-        <div class="current-tab" id="currentTab">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Правила
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">Хазбиково</div>
+            <a href="index.html" class="back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Назад
+            </a>
+            <span class="version-badge" onclick="alert('Версия 1.5.12')">v1.5.12</span>
+            <div class="nav-container">
+                <div class="current-tab" id="currentTab">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Правила
+                </div>
+                <div class="collapsible-menu" id="collapsibleMenu">
+                    <a href="index.html" class="nav-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
+                    </a>
+                    <a href="residents.html" class="nav-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
+                    </a>
+                    <a href="description.html" class="nav-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
+                    </a>
+                    <a href="news.html" class="nav-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
+                    </a>
+                    <a href="tasks.html" class="nav-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задания
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="collapsible-menu" id="collapsibleMenu">
-          <a href="index.html" class="nav-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
-          </a>
-          <a href="residents.html" class="nav-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
-          </a>
-          <a href="description.html" class="nav-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
-          </a>
-          <a href="news.html" class="nav-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
-          </a>
-          <a href="tasks.html" class="nav-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задания
-          </a>
+        <div class="auth-area">
+            <button class="btn-glass primary" onclick="alert('Регистрация')">Регистрация</button>
+            <button class="btn-glass" onclick="alert('Вход')">Войти</button>
         </div>
-      </div>
+    </header>
+
+    <div class="container page-transition">
+        <div class="glass rules-content">
+            <h1>Правила города Хазбиково</h1>
+
+            <h2>Основные правила</h2>
+            <ol>
+                <li><strong>Соблюдать правила сервера</strong></li>
+                <li><strong>Запрещено:</strong>
+                    <ul>
+                        <li>2.1 Не гриферить</li>
+                        <li>2.2 Не воровать</li>
+                        <li>2.3 Не драться где попало</li>
+                    </ul>
+                </li>
+                <li><strong>Хорошо себя вести</strong></li>
+                <li><strong>Помогать друг другу</strong></li>
+                <li><strong>Развитие города:</strong>
+                    <ul>
+                        <li>5.1 Развивать город</li>
+                        <li>5.2 Приглашать вступить других</li>
+                    </ul>
+                </li>
+                <li><strong>Отношение к мэру:</strong>
+                    <ul>
+                        <li>6.1 Слушаться мэра Xazbik_</li>
+                        <li>6.2 Любить и уважать мэра</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h2>На территории Москва-сити запрещается</h2>
+            <ol>
+                <li>Использование взрывоопасных предметов: ТНТ, кристаллов Края, зарядов ветра.</li>
+                <li>Использование источников огня: огнива, оружия с зачарованием «Заговор огня», а также лука с зачарованием «Воспламенение».</li>
+                <li>Разливание воды</li>
+                <li>Применение булавы</li>
+                <li>Провоцирование драк и ведение боя в непредназначенных для этого местах.</li>
+                <li>Использование любых иных предметов, механизмов или действий, способных причинить вред игрокам или постройкам.</li>
+            </ol>
+
+            <h2>Просьба</h2>
+            <ol>
+                <li><strong>Соблюдать правила</strong></li>
+                <li><strong>Помощь и развитие:</strong>
+                    <ul>
+                        <li>2.1 Помогать городу и жителям</li>
+                        <li>2.2 Развивать город</li>
+                    </ul>
+                </li>
+                <li><strong>Активность:</strong>
+                    <ul>
+                        <li>3.1 Быть не афк</li>
+                        <li>3.2 Быть активным в тг города</li>
+                    </ul>
+                </li>
+                <li><strong>Покупать лицензию для ларьков и магазинов</strong></li>
+            </ol>
+        </div>
     </div>
-    <div class="auth-area" id="authArea">
-      <button class="btn-glass primary" onclick="openRegister()">Регистрация</button>
-      <button class="btn-glass" onclick="openLogin()">Войти</button>
-    </div>
-    <div id="userArea" style="display:none; align-items:center; gap:12px;">
-      <button class="btn-glass" id="adminBtn" style="display:none;" onclick="toggleAdmin()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M16.9 16.9l2.8 2.8M1 12h4M19 12h4M4.2 19.8l2.8-2.8M16.9 7.1l2.8-2.8"/></svg>
-        Админ
-      </button>
-      <div class="profile-trigger" onclick="openProfile()">
-        <img id="userAvatar" class="avatar-img" src="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Ccircle cx=%2212%22 cy=%228%22 r=%224%22 fill=%22%23fff%22/%3E%3C/svg%3E'">
-        <span id="userNick"></span>
-      </div>
-      <button class="btn-glass logout" onclick="logout()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-        Выход
-      </button>
-    </div>
-  </header>
 
-  <div class="container">
-    <div class="glass rules-content">
-      <h1>Правила города Хазбиково</h1>
-      <h2>Основные правила</h2>
-      <ol>
-        <li><strong>Соблюдать правила сервера</strong></li>
-        <li><strong>Запрещено:</strong>
-          <ul>
-            <li>2.1 Не гриферить</li>
-            <li>2.2 Не воровать</li>
-            <li>2.3 Не драться где попало</li>
-          </ul>
-        </li>
-        <li><strong>Хорошо себя вести</strong></li>
-        <li><strong>Помогать друг другу</strong></li>
-        <li><strong>Развитие города:</strong>
-          <ul>
-            <li>5.1 Развивать город</li>
-            <li>5.2 Приглашать вступить других</li>
-          </ul>
-        </li>
-        <li><strong>Отношение к мэру:</strong>
-          <ul>
-            <li>6.1 Слушаться мэра Xazbik_</li>
-            <li>6.2 Любить и уважать мэра</li>
-          </ul>
-        </li>
-      </ol>
-      <h2>На территории Москва-сити запрещается</h2>
-      <ol>
-        <li>Использование взрывоопасных предметов: ТНТ, кристаллов Края, зарядов ветра.</li>
-        <li>Использование источников огня: огнива, оружия с зачарованием «Заговор огня», а также лука с зачарованием «Воспламенение».</li>
-        <li>Разливание воды</li>
-        <li>Применение булавы</li>
-        <li>Провоцирование драк и ведение боя в непредназначенных для этого местах.</li>
-        <li>Использование любых иных предметов, механизмов или действий, способных причинить вред игрокам или постройкам.</li>
-      </ol>
-      <h2>Просьба</h2>
-      <ol>
-        <li><strong>Соблюдать правила</strong></li>
-        <li><strong>Помощь и развитие:</strong>
-          <ul>
-            <li>2.1 Помогать городу и жителям</li>
-            <li>2.2 Развивать город</li>
-          </ul>
-        </li>
-        <li><strong>Активность:</strong>
-          <ul>
-            <li>3.1 Быть не афк</li>
-            <li>3.2 Быть активным в тг города</li>
-          </ul>
-        </li>
-        <li><strong>Покупать лицензию для ларьков и магазинов</strong></li>
-      </ol>
-    </div>
-  </div>
+    <footer class="footer">
+        <div class="footer-left">
+            <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.938z"/></svg> Telegram</a>
+            <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 10.5c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5zm-7 0c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5S10 12.8 10 12s-.7-1.5-1.5-1.5zm9.7-4.3c-1.4-1.1-3-1.7-4.6-2l-.5 1c-1.4-.3-2.9-.3-4.3 0l-.5-1c-1.6.3-3.2.9-4.6 2C2.2 8.5 1.4 11.5 1.2 14.5c1.6 1.2 3.3 1.9 5 2.3l1-1.6c-1-.3-1.9-.8-2.7-1.4.9.7 2 1.2 3.2 1.6 1.2.4 2.5.6 3.8.6s2.6-.2 3.8-.6c1.2-.4 2.3-.9 3.2-1.6-.8.6-1.7 1.1-2.7 1.4l1 1.6c1.7-.4 3.4-1.1 5-2.3-.2-3-1-6-2.9-8.2z"/></svg> Discord</a>
+        </div>
+        <div class="footer-right">
+            <a href="#">Конфиденциальность</a>
+            <a href="#">Условия пользования</a>
+            <a href="#">Настройки</a>
+        </div>
+        <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
+    </footer>
 
-  <footer class="footer">
-    <div class="footer-left">
-      <a href="#" onclick="openTelegramModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.938z"/></svg> Telegram</a>
-      <a href="#" onclick="openDiscordModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 10.5c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5 1.5-.7 1.5-1.5-.7-1.5-1.5-1.5zm-7 0c-.8 0-1.5.7-1.5 1.5s.7 1.5 1.5 1.5S10 12.8 10 12s-.7-1.5-1.5-1.5zm9.7-4.3c-1.4-1.1-3-1.7-4.6-2l-.5 1c-1.4-.3-2.9-.3-4.3 0l-.5-1c-1.6.3-3.2.9-4.6 2C2.2 8.5 1.4 11.5 1.2 14.5c1.6 1.2 3.3 1.9 5 2.3l1-1.6c-1-.3-1.9-.8-2.7-1.4.9.7 2 1.2 3.2 1.6 1.2.4 2.5.6 3.8.6s2.6-.2 3.8-.6c1.2-.4 2.3-.9 3.2-1.6-.8.6-1.7 1.1-2.7 1.4l1 1.6c1.7-.4 3.4-1.1 5-2.3-.2-3-1-6-2.9-8.2z"/></svg> Discord</a>
-    </div>
-    <div class="footer-right">
-      <a href="#" onclick="showPolicy('privacy')">Конфиденциальность</a>
-      <a href="#" onclick="showPolicy('terms')">Условия пользования</a>
-      <a href="#" onclick="openSettings()" class="settings-hint" data-tooltip="Тут можно переключить тему и громкость">Настройки</a>
-      <a href="description.html">О нас</a>
-    </div>
-    <div class="copyright">Хазбиково © 2026. Все права защищены.</div>
-  </footer>
-
-  <!-- Модальные окна (идентичны главной) -->
-  <div id="registerModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('registerModal')">✕</span><h3>Регистрация</h3><input type="text" id="regNick" placeholder="Ник в Minecraft"><input type="email" id="regEmail" placeholder="Email"><div class="password-field"><input type="password" id="regPass" placeholder="Пароль"><button class="password-toggle" onclick="togglePassword('regPass', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><div class="password-field"><input type="password" id="regPassConfirm" placeholder="Повторите пароль"><button class="password-toggle" onclick="togglePassword('regPassConfirm', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="btn-glass primary" onclick="register()" style="width:100%; margin-top:10px;">Зарегистрироваться</button></div></div>
-  <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><div class="password-field"><input type="password" id="loginPass" placeholder="Пароль"><button class="password-toggle" onclick="togglePassword('loginPass', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
-  <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
-  <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-  <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.12</strong> – Страница правил с точной копией главной страницы.</li></ul></div></div>
-  <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
-  <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
-  <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
-  <div id="settingsModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('settingsModal')">✕</span><h3>Настройки</h3><div style="display:flex; align-items:center; gap:15px; margin:15px 0;"><span>Тема:</span><button class="btn-glass" onclick="toggleTheme()" id="themeLabel">Светлая</button></div><div style="display:flex; align-items:center; gap:15px;"><span>Громкость:</span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5" oninput="updateVolume()"></div></div></div>
-  <div id="brandModal" class="modal"><div class="modal-content" style="text-align:left;"><span class="modal-close-btn" onclick="closeModal('brandModal')">✕</span><h3 id="brandTitle"></h3><p id="brandText" style="white-space: pre-wrap;"></p></div></div>
-
-  <script>
-    let users = JSON.parse(localStorage.getItem('xazUsers')) || [];
-    let currentUser = null;
-    let soundVolume = parseFloat(localStorage.getItem('volume') || 0.5);
-    let isDark = localStorage.getItem('theme') !== 'light';
-    const siteBrands = {
-      'ChichVAKA': 'ChichVAKA — это сервер ванила+ режим с элементами экономики и РП, созданный для контента на стримах и зрителей стримеров. На нём есть много разных людей, государств и городов. Самый лучший рп-сервер по мнению Xazbik_.',
-      'Xaz&Der1': 'Компания Xaz&Der1 начала своё производство совсем недавно. В компанию входят игроки ChichVAKA Xazbik_ и Der1zon. Они лучшие друзья и всегда играли вместе. Впервые создали свой Дискорд-сервер 10.02.2026. После чего создали свой первый Тест-сервер в Minecraft 01.03.2026. А уже 20.03.2026 года игроку Xazbik_ пришла идея создать сайт города. Вот так и появился данный сайт от компании Xaz&Der1.',
-      'Minecraft': 'Minecraft — игра-песочница с процедурно генерируемым миром из блоков. Здесь нет фиксированного сюжета или строгих правил. Каждый новый мир уникален: горы, леса, океаны, пещеры и даже подземные крепости появляются случайно.'
-    };
-
-    function saveUsers() { localStorage.setItem('xazUsers', JSON.stringify(users)); }
-    function toast(msg, type='info') { const c = document.getElementById('toastContainer'); const t = document.createElement('div'); t.className = `toast ${type}`; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
-    function playSound() { try { const a = new AudioContext(); const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 800; o.type = 'sine'; g.gain.value = soundVolume * 0.3; o.start(); setTimeout(() => o.stop(), 80); } catch(e) {} }
-    function applyTheme() {
-      document.body.classList.toggle('light-theme', !isDark);
-      document.getElementById('themeLabel').textContent = isDark ? 'Тёмная' : 'Светлая';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      updateFavicon();
-    }
-    function updateFavicon() {
-      const favicon = document.getElementById('dynamicFavicon');
-      const active = !document.hidden;
-      if (isDark) {
-        favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
-      } else {
-        favicon.href = active ? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E" : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='white'/%3E%3Ctext x='32' y='46' font-family='Arial Black' font-weight='900' font-size='48' fill='black' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E";
-      }
-    }
-    document.addEventListener('visibilitychange', updateFavicon);
-    window.toggleTheme = () => { isDark = !isDark; applyTheme(); playSound(); };
-    window.updateVolume = () => { soundVolume = parseFloat(document.getElementById('volumeSlider').value); localStorage.setItem('volume', soundVolume); playSound(); };
-    window.openSettings = () => { document.getElementById('volumeSlider').value = soundVolume; document.getElementById('settingsModal').classList.add('active'); };
-    window.closeModal = id => document.getElementById(id).classList.remove('active');
-
-    window.toggleMenu = () => {
-      const wrapper = document.getElementById('mainMenuWrapper');
-      const btn = document.getElementById('toggleSiteButton');
-      if (wrapper.classList.contains('open')) {
-        wrapper.classList.remove('open');
-        btn.innerHTML = 'Перейти к сайту';
-      } else {
-        wrapper.classList.add('open');
-        btn.innerHTML = 'Закрыть';
-      }
-      playSound();
-    };
-
-    window.showBrand = (brand) => {
-      document.getElementById('brandTitle').innerText = brand;
-      document.getElementById('brandText').innerText = siteBrands[brand] || '';
-      document.getElementById('brandModal').classList.add('active');
-    };
-
-    window.openTelegramModal = () => document.getElementById('telegramModal').classList.add('active');
-    window.openDiscordModal = () => document.getElementById('discordModal').classList.add('active');
-
-    window.showPolicy = (type) => {
-      const title = document.getElementById('policyTitle');
-      const text = document.getElementById('policyText');
-      if (type === 'privacy') {
-        title.innerText = 'Конфиденциальность';
-        text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
-      } else if (type === 'terms') {
-        title.innerText = 'Условия пользования';
-        text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
-      }
-      document.getElementById('policyModal').classList.add('active');
-    };
-
-    window.openVersion = () => document.getElementById('versionModal').classList.add('active');
-    window.openRegister = () => document.getElementById('registerModal').classList.add('active');
-    window.openLogin = () => document.getElementById('loginModal').classList.add('active');
-
-    window.togglePassword = (inputId, btn) => {
-      const input = document.getElementById(inputId);
-      const svg = btn.querySelector('svg');
-      if (input.type === 'password') {
-        input.type = 'text';
-        svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-      } else {
-        input.type = 'password';
-        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-      }
-    };
-
-    window.register = () => {
-      const nick = document.getElementById('regNick').value.trim();
-      const email = document.getElementById('regEmail').value.trim();
-      const pass = document.getElementById('regPass').value;
-      const pass2 = document.getElementById('regPassConfirm').value;
-      if (!nick || !email || !pass) return toast('Заполните поля', 'error');
-      if (pass !== pass2) return toast('Пароли не совпадают', 'error');
-      if (users.find(u => u.nick === nick)) return toast('Ник занят', 'error');
-      users.push({ nick, email, pass, uid: 'u'+Date.now() });
-      saveUsers();
-      toast('Регистрация успешна!', 'success');
-      closeModal('registerModal');
-    };
-    window.login = () => {
-      const nick = document.getElementById('loginNick').value.trim();
-      const pass = document.getElementById('loginPass').value;
-      const user = users.find(u => u.nick === nick && u.pass === pass);
-      if (!user) return toast('Неверный ник или пароль', 'error');
-      currentUser = user;
-      updateUI();
-      closeModal('loginModal');
-      toast('Добро пожаловать, ' + user.nick + '!', 'success');
-    };
-    function updateUI() {
-      document.getElementById('authArea').style.display = currentUser ? 'none' : 'flex';
-      document.getElementById('userArea').style.display = currentUser ? 'flex' : 'none';
-      if (currentUser) {
-        document.getElementById('userNick').textContent = currentUser.nick;
-        document.getElementById('userAvatar').src = `https://minotar.net/avatar/${currentUser.nick}/36`;
-      }
-    }
-    window.logout = () => { currentUser = null; updateUI(); closeModal('profileModal'); };
-    window.openProfile = () => {
-      if (!currentUser) return;
-      document.getElementById('profNick').textContent = currentUser.nick;
-      document.getElementById('profEmail').textContent = currentUser.email || '-';
-      document.getElementById('profUid').textContent = currentUser.uid;
-      document.getElementById('profileModal').classList.add('active');
-    };
-    window.copyUID = () => { if (currentUser) navigator.clipboard.writeText(currentUser.uid).then(() => toast('UID скопирован')); };
-
-    applyTheme();
-    const saved = localStorage.getItem('xazCurrentUser');
-    if (saved) { currentUser = users.find(u => u.nick === saved) || null; updateUI(); }
-    window.addEventListener('beforeunload', () => { if (currentUser) localStorage.setItem('xazCurrentUser', currentUser.nick); else localStorage.removeItem('xazCurrentUser'); });
-
-    document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .brand-tag, .version-badge, .back-btn').forEach(btn => {
-      btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px'); btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px'); });
-    });
-  </script>
+    <script>
+        // Лучики для кнопок
+        document.querySelectorAll('.btn-glass, .nav-btn, .current-tab, .back-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                btn.style.setProperty('--mouse-x', e.clientX - rect.left + 'px');
+                btn.style.setProperty('--mouse-y', e.clientY - rect.top + 'px');
+            });
+        });
+    </script>
 </body>
 </html>
