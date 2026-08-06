@@ -116,14 +116,6 @@
         @keyframes modalPop { from{transform:scale(0.85); opacity:0;} to{transform:scale(1); opacity:1;} }
         .modal-close-btn { position:absolute; top:18px; right:22px; background:rgba(128,128,128,0.4); border:1px solid rgba(128,128,128,0.5); color:var(--text); padding:6px 14px; border-radius:20px; font-size:0.8em; cursor:pointer; backdrop-filter:blur(10px); transition:all 0.3s; }
         .modal-close-btn:hover { background:rgba(255,0,0,0.4); border-color:red; box-shadow:0 0 15px red; }
-        input, textarea { width:100%; padding:14px 18px; margin:8px 0; background:var(--input-bg); border:1px solid var(--glass-border); border-radius:18px; color:var(--text); font-size:0.9em; outline:none; }
-        input:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 12px rgba(255,255,255,0.3); }
-        .password-field { position:relative; }
-        .password-field input { padding-right:50px; }
-        .password-toggle { position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; opacity:0.7; transition:opacity 0.2s; }
-        .password-toggle:hover { opacity:1; }
-        .code-inputs { display:flex; gap:10px; justify-content:center; margin:15px 0; }
-        .code-inputs input { width:48px; height:48px; text-align:center; font-size:1.4em; padding:0; border-radius:14px; }
         .footer { backdrop-filter:blur(16px); background:var(--footer-bg); border-top:1px solid var(--glass-border); padding:12px 30px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-size:0.8em; }
         .footer-left { display:flex; gap:25px; align-items:center; }
         .footer-right { display:flex; gap:25px; align-items:center; }
@@ -161,24 +153,24 @@
             </span>
             <div class="nav-container">
                 <div class="current-tab" id="currentTab">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     Правила
                 </div>
                 <div class="collapsible-menu" id="collapsibleMenu">
                     <a href="index.html" class="nav-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Главная
                     </a>
                     <a href="residents.html" class="nav-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Жители
                     </a>
                     <a href="description.html" class="nav-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="8" x2="22" y2="8"/></svg> Описание
                     </a>
                     <a href="news.html" class="nav-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M14 10h4M14 14h4"/></svg> Новости
                     </a>
                     <a href="tasks.html" class="nav-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задания
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Задания
                     </a>
                 </div>
             </div>
@@ -282,7 +274,7 @@
     <div id="loginModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('loginModal')">✕</span><h3>Вход</h3><input type="text" id="loginNick" placeholder="Ник в Minecraft"><input type="email" id="loginEmail" placeholder="Email"><div class="password-field"><input type="password" id="loginPass" placeholder="Пароль"><button class="password-toggle" onclick="togglePassword('loginPass', this)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div><button class="btn-glass primary" onclick="login()" style="width:100%; margin-top:10px;">Получить код</button></div></div>
     <div id="codeModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('codeModal')">✕</span><h3>Подтверждение</h3><p>Введите код, отправленный на почту</p><div class="code-inputs" id="codeInputs"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"><input type="text" maxlength="1" oninput="handleCode(this)"></div><button class="btn-glass primary" onclick="verifyCode()">Подтвердить</button><p id="resendTimer" style="font-size:0.8em; margin-top:10px;"></p></div></div>
     <div id="profileModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('profileModal')">✕</span><h3>Профиль</h3><p><strong>Ник:</strong> <span id="profNick"></span></p><p><strong>Email:</strong> <span id="profEmail"></span></p><p style="cursor:pointer;" onclick="copyUID()">UID: <span id="profUid"></span></p><button class="btn-glass logout" onclick="logout()" style="width:100%; margin-top:10px;">Выйти</button></div></div>
-    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.12</strong> – Страница правил с полным функционалом.</li></ul></div></div>
+    <div id="versionModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('versionModal')">✕</span><h3>История версий</h3><ul><li><strong>v1.5.12</strong> – Страница правил с анимацией перехода.</li></ul></div></div>
     <div id="telegramModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('telegramModal')">✕</span><h3>Telegram</h3><p>Вы действительно хотите перейти в Telegram канал?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('telegramModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://t.me/+Fre-aGZTPlswNGYy'">Перейти</button></div></div></div>
     <div id="discordModal" class="modal"><div class="modal-content" style="text-align:center;"><span class="modal-close-btn" onclick="closeModal('discordModal')">✕</span><h3>Discord</h3><p>Вы действительно хотите перейти на Discord сервер?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:20px;"><button class="btn-glass" onclick="closeModal('discordModal')">Отмена</button><button class="btn-glass primary" onclick="window.location.href='https://discord.gg/puGyWzpk'">Перейти</button></div></div></div>
     <div id="policyModal" class="modal"><div class="modal-content"><span class="modal-close-btn" onclick="closeModal('policyModal')">✕</span><h3 id="policyTitle"></h3><div id="policyText" style="max-height:50vh; overflow-y:auto; white-space: pre-wrap;"></div></div></div>
@@ -351,10 +343,10 @@
             const text = document.getElementById('policyText');
             if (type === 'privacy') {
                 title.innerText = 'Конфиденциальность';
-                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность...`;
+                text.innerText = `Политика конфиденциальности Хазбиково\n\nМы уважаем вашу приватность и стремимся защитить персональные данные. Настоящая Политика объясняет, как мы собираем, используем и защищаем информацию о вас.\n\n1. Какие данные мы собираем:\n- Никнейм в Minecraft (обязательно)\n- Адрес электронной почты (обязательно)\n- IP-адрес (автоматически)\n- Файлы cookie и данные об использовании сайта.\n\n2. Для чего используются данные:\n- Для авторизации и идентификации на сайте\n- Для отправки уведомлений и кодов подтверждения\n- Для улучшения работы сайта\n\n3. Хранение данных:\nДанные хранятся в локальном хранилище браузера и на сервере. Мы применяем технические меры для предотвращения несанкционированного доступа.\n\n4. Передача третьим лицам:\nМы не продаём и не передаём данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n5. Ваши права:\nВы можете запросить удаление аккаунта и всех связанных данных, обратившись к администрации.\n\n6. Изменения политики:\nМы оставляем за собой право обновлять Политику конфиденциальности. Обновления публикуются на этой странице.\n\nЕсли у вас есть вопросы, свяжитесь с нами через Discord или Telegram.`;
             } else if (type === 'terms') {
                 title.innerText = 'Условия пользования';
-                text.innerText = `Условия использования сервера Хазбиково...`;
+                text.innerText = `Условия использования сервера Хазбиково\n\nДобро пожаловать в город Хазбиково! Используя наш сайт и сервер, вы соглашаетесь со следующими условиями.\n\n1. Общие положения:\n- Сервер предназначен для игроков Minecraft.\n- Администрация оставляет за собой право изменять правила без предварительного уведомления.\n\n2. Правила поведения:\n- Запрещены гриферство, воровство ресурсов, оскорбления, спам, использование читов и эксплойтов.\n- Уважайте других игроков и их постройки.\n\n3. Ответственность:\n- Вы несёте ответственность за свои действия на сервере.\n- Администрация не несёт ответственности за потерю игровых предметов или построек в результате технических сбоев.\n\n4. Безопасность:\n- Не передавайте свои учётные данные третьим лицам.\n- Защищайте свой аккаунт.\n\n5. Авторские права:\n- Все постройки и контент, созданные игроками, принадлежат им.\n- Запрещено копирование и распространение контента без разрешения авторов.\n\n6. Прекращение доступа:\n- Администрация может заблокировать доступ к серверу за нарушение правил.\n\n7. Контакты:\nДля связи используйте Discord или Telegram, указанные на сайте.`;
             }
             document.getElementById('policyModal').classList.add('active');
         };
